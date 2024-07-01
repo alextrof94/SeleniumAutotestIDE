@@ -24,7 +24,9 @@ namespace SeleniumAutotest
     public partial class Form1 : Form
     {
         // TODO:
-        // NOTHING
+        // StepByStep mode
+        // Add info about selected element if error when click or enter value
+        // Add disabling steps
         private const string Version = "v1";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
@@ -295,6 +297,8 @@ namespace SeleniumAutotest
             {
                 case StepTypes.Group:
                 case StepTypes.Click:
+                case StepTypes.AltClick:
+                case StepTypes.JsClick:
                 case StepTypes.DoubleClick:
                     break;
                 case StepTypes.WaitElement:
@@ -313,6 +317,7 @@ namespace SeleniumAutotest
                     TeStepValue.Visible = true;
                     ChStepIgnoreError.Visible = true;
                     break;
+                case StepTypes.JsEvent:
                 case StepTypes.EnterValue:
                     TeStepValue.Visible = true;
                     break;
@@ -328,6 +333,10 @@ namespace SeleniumAutotest
                 case StepTypes.CheckClassNotExists:
                     TeStepValue.Visible = true;
                     ChStepIgnoreError.Visible = true;
+                    break;
+                case StepTypes.SetAttribute:
+                    TeStepValue.Visible = true;
+                    TeStepSelector.Visible = true;
                     break;
                 case StepTypes.ReadAttributeToParameter:
                     TeStepSelector.Visible = true;
@@ -551,9 +560,13 @@ namespace SeleniumAutotest
 
                     case StepTypes.DoubleClick:
                     case StepTypes.Click:
+                    case StepTypes.AltClick:
+                    case StepTypes.JsClick:
+                    case StepTypes.JsEvent:
                         node.ImageIndex = 1;
                         break;
 
+                    case StepTypes.SetAttribute:
                     case StepTypes.EnterValue:
                         node.ImageIndex = 2;
                         break;

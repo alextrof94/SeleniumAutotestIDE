@@ -65,11 +65,15 @@ namespace SeleniumAutotest
             switch (this.Type)
             {
                 case StepTypes.Click:
+                case StepTypes.JsClick:
+                case StepTypes.AltClick:
                 case StepTypes.DoubleClick:
                 case StepTypes.Group:
                     return Name;
                 case StepTypes.EnterValue:
                     return $"{Name} [{Value}]";
+                case StepTypes.SetAttribute:
+                    return $"{Name} [{Selector}={Value}]";
                 case StepTypes.CheckElement:
                     return $"{Name} | {Selector}" + ((IgnoreError)?" | IgnoreError":"");
                 case StepTypes.WaitTime:
@@ -94,6 +98,8 @@ namespace SeleniumAutotest
                     return $"{Name} [TEXT => {Parameter}]";
                 case StepTypes.ReadAddressToParameter:
                     return $"{Name} [URL => {Parameter}]";
+                case StepTypes.JsEvent:
+                    return $"{Name} [EVENT={Value}]";
                 default:
                     return "!!! " + Name;
             }
@@ -144,9 +150,21 @@ namespace SeleniumAutotest
                         break;
                     case StepTypes.EnterValue:
                         {
+                            string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                             var el = this.Parent.FoundElement;
-                            el.Clear();
-                            el.SendKeys(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters));
+                            //el.Clear();
+                            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                            js.ExecuteScript("arguments[0].value = '';", el);
+                            el.SendKeys(value);
+                            this.StepState = StepStates.Passed;
+                        }
+                        break;
+                    case StepTypes.SetAttribute:
+                        {
+                            string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                            var el = this.Parent.FoundElement;
+                            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                            js.ExecuteScript("arguments[0].setAttribute(arguments[1], arguments[2]);", el, this.Selector, value);
                             this.StepState = StepStates.Passed;
                         }
                         break;
@@ -155,17 +173,23 @@ namespace SeleniumAutotest
                             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
                             var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
                             el.Click();
-                            /* alternate method with JS try, but without error
-                            var el = this.Parent.FoundElement;
-                            try
-                            {
-                                el.Click();
-                            }
-                            catch (ElementNotInteractableException)
-                            {
-                                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", el);
-                            }
-                            */
+                            this.StepState = StepStates.Passed;
+                        }
+                        break;
+                    case StepTypes.JsClick:
+                        {
+                            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                            var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
+                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", el);
+                            this.StepState = StepStates.Passed;
+                        }
+                        break;
+                    case StepTypes.AltClick:
+                        {
+                            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                            var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
+                            Actions action = new Actions(driver);
+                            action.Click(el).Build().Perform();
                             this.StepState = StepStates.Passed;
                         }
                         break;
@@ -175,6 +199,14 @@ namespace SeleniumAutotest
                             var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
                             Actions action = new Actions(driver);
                             action.DoubleClick(el).Build().Perform();
+                            this.StepState = StepStates.Passed;
+                        }
+                        break;
+                    case StepTypes.JsEvent:
+                        {
+                            var el = this.Parent.FoundElement;
+                            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                            js.ExecuteScript($"arguments[0].dispatchEvent(new Event('{Value}'));", el);
                             this.StepState = StepStates.Passed;
                         }
                         break;

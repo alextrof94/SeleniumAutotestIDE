@@ -8,7 +8,7 @@ namespace SeleniumAutotest
 {
     internal enum StepTypes
     {
-        Group, Open, WaitElement, Click, CheckText, EnterValue, CheckElement, WaitTime, CheckClass, DoubleClick, CheckAttribute, ReadAttributeToParameter, ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters
+        Group, Open, WaitElement, Click, CheckText, EnterValue, CheckElement, WaitTime, CheckClass, DoubleClick, CheckAttribute, ReadAttributeToParameter, ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, JsClick, AltClick, JsEvent, SetAttribute
     }
     // TODO: Предусмотреть прямое нажатие клавиш клавиатуры (например, для сочетаний)
 
@@ -20,17 +20,21 @@ namespace SeleniumAutotest
             { StepTypes.ReadAddressToParameter, "Считать адрес в параметр" },
             { StepTypes.WaitElement, "Ожидать нахождения элемента" },
             { StepTypes.Click, "Кликнуть" },
+            { StepTypes.AltClick, "Кликнуть (альтернативно)" },
+            { StepTypes.JsClick, "Кликнуть через JS" },
             { StepTypes.DoubleClick, "Двойной клик" },
             { StepTypes.CheckText, "Проверить текст" },
             { StepTypes.CheckClass, "Проверить наличие класса" },
             { StepTypes.CheckClassNotExists, "Проверить отсутствия класса" },
             { StepTypes.CheckAttribute, "Проверить атрибут" },
             { StepTypes.EnterValue, "Ввести значение" },
+            { StepTypes.SetAttribute, "Установить значение атрибута" },
             { StepTypes.CheckElement, "Проверка нахождения элемента" },
             { StepTypes.WaitTime, "Ждать время" },
             { StepTypes.ReadAttributeToParameter, "Считать атрибут в параметр" },
             { StepTypes.ReadTextToParameter, "Считать текст в параметр" },
-            { StepTypes.CompareParameters, "Сравнить 2 параметра" }
+            { StepTypes.CompareParameters, "Сравнить 2 параметра" },
+            { StepTypes.JsEvent, "Вызвать событие" }
         };
 
         public static List<StepTypes> GetElementsForStepType(StepTypes stepType)
@@ -38,9 +42,11 @@ namespace SeleniumAutotest
             switch (stepType)
             {
                 case StepTypes.Group: return new List<StepTypes> { StepTypes.Group, StepTypes.Open, StepTypes.WaitElement, StepTypes.CheckElement, StepTypes.WaitTime, StepTypes.ReadAddressToParameter };
-                case StepTypes.WaitElement: return new List<StepTypes> { StepTypes.Click, StepTypes.DoubleClick, StepTypes.EnterValue, StepTypes.CheckText, StepTypes.CheckAttribute, StepTypes.CheckClass, StepTypes.CheckClassNotExists, StepTypes.CheckElement, StepTypes.ReadTextToParameter, StepTypes.ReadAttributeToParameter, StepTypes.WaitElement, StepTypes.WaitTime, StepTypes.CompareParameters };
+                case StepTypes.WaitElement: return new List<StepTypes> { StepTypes.Click, StepTypes.DoubleClick, StepTypes.JsClick, StepTypes.AltClick, StepTypes.EnterValue, StepTypes.SetAttribute, StepTypes.CheckText, StepTypes.CheckAttribute, StepTypes.CheckClass, StepTypes.CheckClassNotExists, StepTypes.CheckElement, StepTypes.CompareParameters, StepTypes.ReadTextToParameter, StepTypes.ReadAttributeToParameter, StepTypes.WaitElement, StepTypes.WaitTime, StepTypes.JsEvent };
                 case StepTypes.Open:
                 case StepTypes.Click:
+                case StepTypes.JsClick:
+                case StepTypes.AltClick:
                 case StepTypes.DoubleClick:
                 case StepTypes.CheckText:
                 case StepTypes.CheckAttribute:
@@ -52,6 +58,7 @@ namespace SeleniumAutotest
                 case StepTypes.ReadTextToParameter:
                 case StepTypes.ReadAddressToParameter:
                 case StepTypes.CompareParameters:
+                case StepTypes.JsEvent:
                 case StepTypes.WaitTime: return new List<StepTypes> { };
             }
             return new List<StepTypes> { StepTypes.Group };
