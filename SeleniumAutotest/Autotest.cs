@@ -28,6 +28,8 @@ namespace SeleniumAutotest
         public TimeSpan CompleteTime { get; set; }
         [JsonIgnore]
         public Project ParentProject { get; set; }
+        [JsonIgnore]
+        public bool RunGotError { get; set; }
 
         public Autotest()
         {
@@ -81,6 +83,7 @@ namespace SeleniumAutotest
         {
             try
             {
+                RunGotError = false;
                 if (RegenerateParametersOnRun)
                     GenerateParameters();
                 string driverPath = TryToDownloadDriver();
@@ -98,6 +101,10 @@ namespace SeleniumAutotest
                         if (token.IsCancellationRequested || !needToContinue)
                             break;
                         needToContinue = substep.Run(driver, token, StateUpdated);
+                        if (!needToContinue)
+                        {
+                            RunGotError = true;
+                        }
                     }
                 }
                 finally

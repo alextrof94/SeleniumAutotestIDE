@@ -170,6 +170,12 @@ namespace SeleniumAutotest
         private void SelectedAutotest_RunCompleted()
         {
             Stopwatch.Stop();
+            if (SelectedAutotest.RunGotError)
+            {
+                RunAutotestFinished?.Invoke();
+                return; 
+            }
+
             SelectedAutotest.CompleteTime = Stopwatch.Elapsed;
 
             int ind = Autotests.IndexOf(SelectedAutotest);
