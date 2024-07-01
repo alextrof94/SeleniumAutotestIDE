@@ -23,10 +23,15 @@ namespace SeleniumAutotest
         [JsonIgnore]
         private CancellationTokenSource CancellationTokenSource;
         [JsonIgnore]
-        private Stopwatch Stopwatch { get; set; } = new Stopwatch();
+        private Stopwatch TestStopwatch { get; set; } = new Stopwatch();
+        [JsonIgnore]
+        private Stopwatch RunStopwatch { get; set; } = new Stopwatch();
+        [JsonIgnore]
+        public TimeSpan RunTime { get; set; }
 
         public event Action ParametersUpdated;
         public event Action RunAutotestFinished;
+        public event Action SelectedAutotestChanged;
 
         public Project()
         {
@@ -169,23 +174,29 @@ namespace SeleniumAutotest
 
         private void SelectedAutotest_RunCompleted()
         {
-            Stopwatch.Stop();
+            TestStopwatch.Stop();
             if (SelectedAutotest.RunGotError)
             {
+                RunStopwatch.Stop();
+                RunTime = TestStopwatch.Elapsed;
                 RunAutotestFinished?.Invoke();
                 return; 
             }
 
-            SelectedAutotest.CompleteTime = Stopwatch.Elapsed;
+            SelectedAutotest.CompleteTime = TestStopwatch.Elapsed;
 
             int ind = Autotests.IndexOf(SelectedAutotest);
             if (ind < Autotests.Count - 1 && Autotests[ind + 1].RunAfterPrevious)
             {
                 SelectAutotest(Autotests[ind + 1]);
+                SelectedAutotestChanged?.Invoke();
+                Thread.Sleep(3000);
                 RunAutotest();
             }
             else
             {
+                RunStopwatch.Stop();
+                RunTime = TestStopwatch.Elapsed;
                 RunAutotestFinished?.Invoke();
             }
         }
@@ -221,9 +232,12 @@ namespace SeleniumAutotest
         public bool RunAutotest()
         {
             if (SelectedAutotest == null) { return false; }
-
-            Stopwatch.Reset();
-            Stopwatch.Start();
+            RunStopwatch.Restart();
+            if (RegenerateParametersOnRun)
+            {
+                GenerateParameters();
+            }
+            TestStopwatch.Restart();
             CancellationTokenSource = new CancellationTokenSource();
             Task.Run(() => SelectedAutotest.Run(CancellationTokenSource.Token), CancellationTokenSource.Token);
             return true;

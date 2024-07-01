@@ -23,12 +23,15 @@ namespace SeleniumAutotest
 {
     public partial class Form1 : Form
     {
+        // TODO:
+        // NOTHING
         private const string Version = "v1";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
         private Project Project { get; set; }
 
         bool NeedUpdateTestFields = true;
+        bool NeedToReselectAutotest = true;
 
         public Form1()
         {
@@ -36,6 +39,7 @@ namespace SeleniumAutotest
             Project = new Project();
             Project.ParametersUpdated += Project_ParametersGenerated;
             Project.RunAutotestFinished += Project_RunAutotestFinished;
+            Project.SelectedAutotestChanged += Project_SelectedAutotestChanged; ;
             ChProjectRegenerateParameters.Checked = Project.RegenerateParametersOnRun;
             LiTests.DataSource = Project.Autotests;
             toolTip1.SetToolTip(BuTestAdd, "Добавить автотест");
@@ -66,6 +70,7 @@ namespace SeleniumAutotest
                 {
                     Project.ParametersUpdated -= Project_ParametersGenerated;
                     Project.RunAutotestFinished -= Project_RunAutotestFinished;
+                    Project.SelectedAutotestChanged -= Project_SelectedAutotestChanged;
                     string str = File.ReadAllText(path);
                     Project = JsonConvert.DeserializeObject<Project>(str);
                     foreach (Autotest autotest in Project.Autotests)
@@ -75,6 +80,7 @@ namespace SeleniumAutotest
                     Project.ResetAllParentsForAutotests();
                     Project.ParametersUpdated += Project_ParametersGenerated;
                     Project.RunAutotestFinished += Project_RunAutotestFinished;
+                    Project.SelectedAutotestChanged += Project_SelectedAutotestChanged;
                     ChProjectRegenerateParameters.Checked = Project.RegenerateParametersOnRun;
                     Text = $"{AppName} - {Project.Name}";
                     LiTests.DataSource = Project.Autotests;
@@ -93,6 +99,7 @@ namespace SeleniumAutotest
             {
                 Project.ParametersUpdated -= Project_ParametersGenerated;
                 Project.RunAutotestFinished -= Project_RunAutotestFinished;
+                Project.SelectedAutotestChanged -= Project_SelectedAutotestChanged;
                 string str = File.ReadAllText(ofd.FileName);
                 Project = JsonConvert.DeserializeObject<Project>(str);
                 foreach (Autotest autotest in Project.Autotests)
@@ -102,6 +109,7 @@ namespace SeleniumAutotest
                 Project.ResetAllParentsForAutotests();
                 Project.ParametersUpdated += Project_ParametersGenerated;
                 Project.RunAutotestFinished += Project_RunAutotestFinished;
+                Project.SelectedAutotestChanged += Project_SelectedAutotestChanged;
                 ChProjectRegenerateParameters.Checked = Project.RegenerateParametersOnRun;
                 Text = $"{AppName} - {Project.Name}";
                 LiTests.DataSource = Project.Autotests;
@@ -277,6 +285,7 @@ namespace SeleniumAutotest
 
         private void SetStepFieldsVisible(StepTypes type)
         {
+            LaStepValue.Text = "Значение";
             TeStepSelector.Visible = false;
             TeStepValue.Visible = false;
             NuStepWait.Visible = false;
@@ -327,6 +336,12 @@ namespace SeleniumAutotest
                 case StepTypes.ReadAddressToParameter:
                 case StepTypes.ReadTextToParameter:
                     TeStepParameter.Visible = true;
+                    break;
+                case StepTypes.CompareParameters:
+                    LaStepValue.Text = "Параметр";
+                    TeStepValue.Visible = true;
+                    TeStepParameter.Visible = true;
+                    ChStepIgnoreError.Visible = true;
                     break;
             }
         }
@@ -411,10 +426,13 @@ namespace SeleniumAutotest
             GrTestSteps.Enabled = true;
             GrTestParameters.Enabled = true;
 
-            Project.SelectAutotest((Autotest)LiTests.SelectedItem);
+            if (NeedToReselectAutotest)
+            {
+                Project.SelectAutotest((Autotest)LiTests.SelectedItem);
+            }
 
             TeTestName.Text = Project.SelectedAutotest.Name;
-            LaTime.Text = "Время выполнения: " + Project.SelectedAutotest.CompleteTime;
+            LaTestTime.Text = "Время выполнения теста: " + Project.SelectedAutotest.CompleteTime;
             ChTestRegenerateParameters.Checked = Project.SelectedAutotest.RegenerateParametersOnRun;
             ChTestRunAfterPrevious.Checked = Project.SelectedAutotest.RunAfterPrevious;
 
@@ -453,8 +471,19 @@ namespace SeleniumAutotest
             {
                 BuTestRun.Enabled = true;
                 BuTestStop.Enabled = false;
-                LaTime.Text = "Время выполнения: " + Project.SelectedAutotest.CompleteTime;
+                LaTestTime.Text = "Время выполнения теста: " + Project.SelectedAutotest.CompleteTime;
+                LaRunTime.Text = "Время выполнения общее: " + Project.RunTime;
                 ReloadTree();
+            }));
+        }
+
+        private void Project_SelectedAutotestChanged()
+        {
+            this.Invoke(new Action(() =>
+            {
+                NeedToReselectAutotest = false;
+                LiTests.SelectedItem = Project.SelectedAutotest;
+                NeedToReselectAutotest = true;
             }));
         }
 
@@ -516,6 +545,7 @@ namespace SeleniumAutotest
                     case StepTypes.CheckAttribute:
                     case StepTypes.CheckClass:
                     case StepTypes.CheckClassNotExists:
+                    case StepTypes.CompareParameters:
                         node.ImageIndex = 0;
                         break;
 

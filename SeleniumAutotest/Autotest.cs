@@ -85,7 +85,9 @@ namespace SeleniumAutotest
             {
                 RunGotError = false;
                 if (RegenerateParametersOnRun)
+                {
                     GenerateParameters();
+                }
                 string driverPath = TryToDownloadDriver();
                 IWebDriver driver = new ChromeDriver(driverPath);
                 driver.Manage().Window.Maximize();
@@ -106,6 +108,7 @@ namespace SeleniumAutotest
                             RunGotError = true;
                         }
                     }
+                    Thread.Sleep(3000);
                 }
                 finally
                 {

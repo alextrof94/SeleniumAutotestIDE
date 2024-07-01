@@ -41,7 +41,7 @@
             this.BuTestDown = new System.Windows.Forms.Button();
             this.ImButtons = new System.Windows.Forms.ImageList(this.components);
             this.BuTestUp = new System.Windows.Forms.Button();
-            this.LaTime = new System.Windows.Forms.Label();
+            this.LaTestTime = new System.Windows.Forms.Label();
             this.BuTestStop = new System.Windows.Forms.Button();
             this.BuTestClone = new System.Windows.Forms.Button();
             this.BuTestDelete = new System.Windows.Forms.Button();
@@ -66,7 +66,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.ChStepIgnoreError = new System.Windows.Forms.CheckBox();
             this.TeStepValue = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.LaStepValue = new System.Windows.Forms.Label();
             this.NuStepWait = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.TeStepSelector = new System.Windows.Forms.TextBox();
@@ -99,6 +99,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.инфоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BuCantDownloadDriverHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.LaRunTime = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -178,9 +179,10 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.LaRunTime);
             this.groupBox1.Controls.Add(this.BuTestDown);
             this.groupBox1.Controls.Add(this.BuTestUp);
-            this.groupBox1.Controls.Add(this.LaTime);
+            this.groupBox1.Controls.Add(this.LaTestTime);
             this.groupBox1.Controls.Add(this.BuTestStop);
             this.groupBox1.Controls.Add(this.BuTestClone);
             this.groupBox1.Controls.Add(this.BuTestDelete);
@@ -237,15 +239,15 @@
             this.BuTestUp.UseVisualStyleBackColor = true;
             this.BuTestUp.Click += new System.EventHandler(this.BuTestUp_Click);
             // 
-            // LaTime
+            // LaTestTime
             // 
-            this.LaTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.LaTime.AutoSize = true;
-            this.LaTime.Location = new System.Drawing.Point(6, 492);
-            this.LaTime.Name = "LaTime";
-            this.LaTime.Size = new System.Drawing.Size(108, 13);
-            this.LaTime.TabIndex = 7;
-            this.LaTime.Text = "Время выполнения.";
+            this.LaTestTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.LaTestTime.AutoSize = true;
+            this.LaTestTime.Location = new System.Drawing.Point(6, 492);
+            this.LaTestTime.Name = "LaTestTime";
+            this.LaTestTime.Size = new System.Drawing.Size(136, 13);
+            this.LaTestTime.TabIndex = 7;
+            this.LaTestTime.Text = "Время выполнения теста";
             // 
             // BuTestStop
             // 
@@ -507,7 +509,7 @@
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.ChStepIgnoreError);
             this.groupBox3.Controls.Add(this.TeStepValue);
-            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.LaStepValue);
             this.groupBox3.Controls.Add(this.NuStepWait);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.TeStepSelector);
@@ -566,14 +568,14 @@
             this.TeStepValue.Visible = false;
             this.TeStepValue.TextChanged += new System.EventHandler(this.TeStepValue_TextChanged);
             // 
-            // label6
+            // LaStepValue
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 127);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(55, 13);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Значение";
+            this.LaStepValue.AutoSize = true;
+            this.LaStepValue.Location = new System.Drawing.Point(6, 127);
+            this.LaStepValue.Name = "LaStepValue";
+            this.LaStepValue.Size = new System.Drawing.Size(55, 13);
+            this.LaStepValue.TabIndex = 10;
+            this.LaStepValue.Text = "Значение";
             // 
             // NuStepWait
             // 
@@ -938,6 +940,16 @@
             this.BuCantDownloadDriverHelp.Text = "Нет доступа к интернету";
             this.BuCantDownloadDriverHelp.Click += new System.EventHandler(this.BuCantDownloadDriverHelp_Click);
             // 
+            // LaRunTime
+            // 
+            this.LaRunTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.LaRunTime.AutoSize = true;
+            this.LaRunTime.Location = new System.Drawing.Point(10, 542);
+            this.LaRunTime.Name = "LaRunTime";
+            this.LaRunTime.Size = new System.Drawing.Size(141, 13);
+            this.LaRunTime.TabIndex = 11;
+            this.LaRunTime.Text = "Время выполнения общее";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1006,14 +1018,14 @@
         private System.Windows.Forms.NumericUpDown NuStepWait;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox TeStepValue;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label LaStepValue;
         private System.Windows.Forms.RichTextBox RiLog;
         private System.Windows.Forms.Button BuStepUp;
         private System.Windows.Forms.Button BuStepDown;
         private System.Windows.Forms.Button BuTestStop;
         private System.Windows.Forms.Button BuStepClearFocus;
         private System.Windows.Forms.Button BuStepReloadTree;
-        private System.Windows.Forms.Label LaTime;
+        private System.Windows.Forms.Label LaTestTime;
         private System.Windows.Forms.ImageList ImTree;
         private System.Windows.Forms.Button BuStepPaste;
         private System.Windows.Forms.Button BuStepCopy;
@@ -1046,6 +1058,7 @@
         private System.Windows.Forms.Button BuTestUp;
         private System.Windows.Forms.ToolStripMenuItem инфоToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem BuCantDownloadDriverHelp;
+        private System.Windows.Forms.Label LaRunTime;
     }
 }
 

@@ -31,9 +31,9 @@ namespace SeleniumAutotest
         public float SecondsToWait { get; set; }
         public string Value { get; set; }
         public string Parameter { get; set; }
-        public bool IgnoreError { get; set; } = false;
+        public bool IgnoreError { get; set; }
 
-        public bool Expanded { get; set; } = false;
+        public bool Expanded { get; set; }
 
 
         [JsonIgnore]
@@ -51,7 +51,13 @@ namespace SeleniumAutotest
         {
             Id = Guid.NewGuid();
             Substeps = new List<TestStep>();
-            SecondsToWait = 1;
+            Selector = "";
+            SecondsToWait = 30;
+            Value = "";
+            Parameter = "";
+            Value = "";
+            IgnoreError = false;
+            Expanded = true;
         }
 
         public override string ToString()
@@ -76,6 +82,8 @@ namespace SeleniumAutotest
                     return $"{Name} [class={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
                 case StepTypes.CheckText:
                     return $"{Name} [TEXT={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
+                case StepTypes.CompareParameters:
+                    return $"{Name} [{Value} = {Parameter}]";
                 case StepTypes.Open:
                     return $"{Name} | {Value}";
                 case StepTypes.CheckAttribute:
@@ -102,6 +110,14 @@ namespace SeleniumAutotest
             bool needToContinue = true;
             try
             {
+                if (this.Selector == null)
+                {
+                    this.Selector = "";
+                }
+                if (this.Value == null)
+                {
+                    this.Value = "";
+                }
                 switch (Type)
                 {
                     case StepTypes.Open:
@@ -172,21 +188,26 @@ namespace SeleniumAutotest
                             else
                             {
                                 this.StepState = StepStates.Error;
-                                this.Error = $"Ожидалось {ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}, было {el.Text}";
+                                this.Error = $"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{el.Text}]";
                             }
                         }
                         break;
                     case StepTypes.CheckAttribute:
                         {
                             var el = this.Parent.FoundElement;
-                            if (el.GetAttribute(this.Selector) == ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters))
+                            if (el != null && el.GetAttribute(this.Selector) != null && el.GetAttribute(this.Selector) == ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters))
                             {
                                 this.StepState = StepStates.Passed;
                             }
                             else
                             {
                                 this.StepState = StepStates.Error;
-                                this.Error = $"Ожидалось {ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}, было {el.GetAttribute(this.Selector)}";
+                                string errValue = "Атрибут не найден";
+                                if (el.GetAttribute(this.Selector) != null)
+                                {
+                                    errValue = el.GetAttribute(this.Selector);
+                                }
+                                this.Error = $"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{errValue}]";
                             }
                         }
                         break;
@@ -221,7 +242,7 @@ namespace SeleniumAutotest
                             else
                             {
                                 this.StepState = StepStates.Error;
-                                this.Error = $"Класс {ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)} не найден в элементе";
+                                this.Error = $"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе";
                             }
                         }
                         break;
@@ -234,7 +255,7 @@ namespace SeleniumAutotest
                             else
                             {
                                 this.StepState = StepStates.Error;
-                                this.Error = $"Класс {ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)} не найден в элементе";
+                                this.Error = $"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе";
                             }
                         }
                         break;
@@ -310,6 +331,21 @@ namespace SeleniumAutotest
                                 }
                             }
                             this.StepState = StepStates.Passed;
+                        }
+                        break;
+                    case StepTypes.CompareParameters:
+                        {
+                            var value1 = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                            var value2 = ValuesFromParameters.ProcessInput(this.Parameter, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                            if (value1 == value2)
+                            {
+                                this.StepState = StepStates.Passed;
+                            }
+                            else
+                            {
+                                this.Error = $"Param1 [{value1}] ({value1.GetType()})\r\nParam2 [{value2}] ({value2.GetType()})";
+                                this.StepState = StepStates.Error;
+                            }
                         }
                         break;
                     default:
