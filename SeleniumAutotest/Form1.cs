@@ -23,7 +23,8 @@ namespace SeleniumAutotest
 {
     public partial class Form1 : Form
     {
-        private const string AppName = "Selenium Autotest IDE by alextrof94";
+        private const string Version = "v1";
+        private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
         private Project Project { get; set; }
 
@@ -894,6 +895,18 @@ namespace SeleniumAutotest
                     ChangeSelectedStep(TrSteps.SelectedNode);
                 }
             }
+        }
+
+        private void BuCantDownloadDriverHelp_Click(object sender, EventArgs e)
+        {
+            string msg = "Чтобы использовать программу без доступа к интернету требуется:\r\n";
+            msg += "1. Узнайте версию браузера в свойствах браузера\r\n";
+            msg += "2. Скачайте ChromeDriver этой версии (главное, чтобы первое число совпадало, т.е. из XXX.YYY.ZZZ, достаточно совпадения XXX)\r\n";
+            msg += "3. Положите chromedriver.exe в папку ./Chrome/DEF/ (если её нет - создать)\r\n";
+            msg += "???\r\n";
+            msg += "PROFIT\r\n\r\n";
+            msg += "Перезапускать программу не потребуется, достаточно перезапустить автотест.";
+            MessageBox.Show(msg, "Ручное скачивание драйвера");
         }
     }
 }

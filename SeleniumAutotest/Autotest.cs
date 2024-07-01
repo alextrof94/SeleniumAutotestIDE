@@ -7,6 +7,7 @@ using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 using Newtonsoft.Json;
 using System.Threading;
+using System.IO;
 
 namespace SeleniumAutotest
 {
@@ -82,8 +83,8 @@ namespace SeleniumAutotest
             {
                 if (RegenerateParametersOnRun)
                     GenerateParameters();
-                TryToDownloadDriver();
-                IWebDriver driver = new ChromeDriver();
+                string driverPath = TryToDownloadDriver();
+                IWebDriver driver = new ChromeDriver(driverPath);
                 driver.Manage().Window.Maximize();
                 try
                 {
@@ -131,10 +132,17 @@ namespace SeleniumAutotest
             ParametersUpdated?.Invoke();
         }
 
-        private void TryToDownloadDriver()
+        private string TryToDownloadDriver()
         {
-            var config = new ChromeConfig();
-            new DriverManager().SetUpDriver(config, version: config.GetMatchingBrowserVersion());
+            if (Directory.Exists("./Chrome") && Directory.Exists("./Chrome/DEF") && File.Exists("./Chrome/DEF/chromedriver.exe"))
+            {
+                return "./Chrome/DEF/";
+            }
+            else
+            {
+                var config = new ChromeConfig();
+                return Path.GetDirectoryName(new DriverManager().SetUpDriver(config, version: config.GetMatchingBrowserVersion()));
+            }
         }
 
         public void ResetGuid()

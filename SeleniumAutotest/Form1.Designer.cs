@@ -97,6 +97,8 @@
             this.GrTestSettings = new System.Windows.Forms.GroupBox();
             this.ChTestRunAfterPrevious = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.инфоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuCantDownloadDriverHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -113,7 +115,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.файлToolStripMenuItem});
+            this.файлToolStripMenuItem,
+            this.инфоToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1365, 24);
@@ -920,6 +923,21 @@
             this.ChTestRunAfterPrevious.UseVisualStyleBackColor = true;
             this.ChTestRunAfterPrevious.CheckedChanged += new System.EventHandler(this.ChTestRunAfterPrevious_CheckedChanged);
             // 
+            // инфоToolStripMenuItem
+            // 
+            this.инфоToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.BuCantDownloadDriverHelp});
+            this.инфоToolStripMenuItem.Name = "инфоToolStripMenuItem";
+            this.инфоToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.инфоToolStripMenuItem.Text = "Инфо";
+            // 
+            // BuCantDownloadDriverHelp
+            // 
+            this.BuCantDownloadDriverHelp.Name = "BuCantDownloadDriverHelp";
+            this.BuCantDownloadDriverHelp.Size = new System.Drawing.Size(208, 22);
+            this.BuCantDownloadDriverHelp.Text = "Нет доступа к интернету";
+            this.BuCantDownloadDriverHelp.Click += new System.EventHandler(this.BuCantDownloadDriverHelp_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1026,6 +1044,8 @@
         private System.Windows.Forms.Button BuFontIncrease;
         private System.Windows.Forms.Button BuTestDown;
         private System.Windows.Forms.Button BuTestUp;
+        private System.Windows.Forms.ToolStripMenuItem инфоToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem BuCantDownloadDriverHelp;
     }
 }
 
