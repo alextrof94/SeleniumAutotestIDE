@@ -25,9 +25,7 @@ namespace SeleniumAutotest
     {
         // TODO:
         // StepByStep mode
-        // Add info about selected element if error when click or enter value
-        // Add disabling steps
-        private const string Version = "v1";
+        private const string Version = "v1.1";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
         private Project Project { get; set; }
@@ -167,7 +165,7 @@ namespace SeleniumAutotest
 
         private void BuTestRun_Click(object sender, EventArgs e)
         {
-            if (Project.RunAutotest())
+            if (Project.RunAutotest(ChSlowMode.Checked, ChSelectFoundElements.Checked))
             {
                 BuTestRun.Enabled = false;
                 BuTestStop.Enabled = true;
@@ -301,7 +299,7 @@ namespace SeleniumAutotest
                 case StepTypes.JsClick:
                 case StepTypes.DoubleClick:
                     break;
-                case StepTypes.WaitElement:
+                case StepTypes.FindElement:
                     TeStepSelector.Visible = true;
                     NuStepWait.Visible = true;
                     break;
@@ -318,7 +316,7 @@ namespace SeleniumAutotest
                     ChStepIgnoreError.Visible = true;
                     break;
                 case StepTypes.JsEvent:
-                case StepTypes.EnterValue:
+                case StepTypes.EnterText:
                     TeStepValue.Visible = true;
                     break;
                 case StepTypes.WaitTime:
@@ -329,7 +327,7 @@ namespace SeleniumAutotest
                     TeStepValue.Visible = true;
                     ChStepIgnoreError.Visible = true;
                     break;
-                case StepTypes.CheckClass:
+                case StepTypes.CheckClassExists:
                 case StepTypes.CheckClassNotExists:
                     TeStepValue.Visible = true;
                     ChStepIgnoreError.Visible = true;
@@ -344,6 +342,7 @@ namespace SeleniumAutotest
                     break;
                 case StepTypes.ReadAddressToParameter:
                 case StepTypes.ReadTextToParameter:
+                case StepTypes.InputToParameterByUser:
                     TeStepParameter.Visible = true;
                     break;
                 case StepTypes.CompareParameters:
@@ -385,7 +384,7 @@ namespace SeleniumAutotest
             if (selectedStep.Substeps.Count > 0 && MessageBox.Show("Продолжить?", "Изменение типа приведёт к удалению дочерних элементов", MessageBoxButtons.YesNo) == DialogResult.No)
             {
                 NeedUpdateTestFields = false;
-                CoStepType.SelectedItem = StepType.descriptions[selectedStep.Type];
+                CoStepType.SelectedItem = StepType.Descriptions[selectedStep.Type];
                 NeedUpdateTestFields = true;
                 return;
             }
@@ -417,6 +416,11 @@ namespace SeleniumAutotest
         private void ChStepIgnoreError_CheckedChanged(object sender, EventArgs e)
         {
             UpdateStepField(nameof(TestStep.IgnoreError), ChStepIgnoreError.Checked);
+        }
+
+        private void ChStepIsEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateStepField(nameof(TestStep.Enabled), ChStepIsEnabled.Checked);
         }
 
         #endregion StepFields
@@ -474,7 +478,7 @@ namespace SeleniumAutotest
             }));
         }
 
-        private void Project_RunAutotestFinished()
+        private void Project_RunAutotestFinished(string errorMsg)
         {
             this.Invoke(new Action(() =>
             {
@@ -483,6 +487,15 @@ namespace SeleniumAutotest
                 LaTestTime.Text = "Время выполнения теста: " + Project.SelectedAutotest.CompleteTime;
                 LaRunTime.Text = "Время выполнения общее: " + Project.RunTime;
                 ReloadTree();
+                if (errorMsg != null)
+                {
+                    TreeNode nodeToBeSelected = FindNodeByGuid(TrSteps.Nodes, (Guid)Project.SelectedAutotest.ErrorStep.Id);
+                    if (nodeToBeSelected != null)
+                    {
+                        TrSteps.SelectedNode = nodeToBeSelected;
+                    }
+                    MessageBox.Show(errorMsg, "Произошла ошибка во время выполнения", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }));
         }
 
@@ -493,6 +506,14 @@ namespace SeleniumAutotest
                 NeedToReselectAutotest = false;
                 LiTests.SelectedItem = Project.SelectedAutotest;
                 NeedToReselectAutotest = true;
+                if (Project.SelectedAutotest.ErrorStep != null)
+                {
+                    TreeNode nodeToBeSelected = FindNodeByGuid(TrSteps.Nodes, (Guid)Project.SelectedAutotest.ErrorStep.Id);
+                    if (nodeToBeSelected != null)
+                    {
+                        TrSteps.SelectedNode = nodeToBeSelected;
+                    }
+                }
             }));
         }
 
@@ -547,53 +568,7 @@ namespace SeleniumAutotest
             {
                 var node = parentNodeCollection.Add(step.ToString());
                 node.Tag = step.Id;
-                switch (step.Type)
-                {
-                    case StepTypes.CheckElement:
-                    case StepTypes.CheckText:
-                    case StepTypes.CheckAttribute:
-                    case StepTypes.CheckClass:
-                    case StepTypes.CheckClassNotExists:
-                    case StepTypes.CompareParameters:
-                        node.ImageIndex = 0;
-                        break;
-
-                    case StepTypes.DoubleClick:
-                    case StepTypes.Click:
-                    case StepTypes.AltClick:
-                    case StepTypes.JsClick:
-                    case StepTypes.JsEvent:
-                        node.ImageIndex = 1;
-                        break;
-
-                    case StepTypes.SetAttribute:
-                    case StepTypes.EnterValue:
-                        node.ImageIndex = 2;
-                        break;
-
-                    case StepTypes.WaitElement:
-                        node.ImageIndex = 3;
-                        break;
-
-                    case StepTypes.Group: 
-                        node.ImageIndex = 4; 
-                        break;
-
-                    case StepTypes.Open: 
-                        node.ImageIndex = 5; 
-                        break;
-
-                    case StepTypes.ReadAddressToParameter:
-                    case StepTypes.ReadTextToParameter:
-                    case StepTypes.ReadAttributeToParameter:
-                        node.ImageIndex = 7;
-                        break;
-
-                    case StepTypes.WaitTime:
-                        node.ImageIndex = 8; 
-                        break;
-
-                }
+                node.ImageIndex = StepType.GetIndexOfGroupByType(step.Type) + 1;
                 switch (step.StepState)
                 {
                     case StepStates.NotStarted:
@@ -608,7 +583,23 @@ namespace SeleniumAutotest
                     case StepStates.IgnoredError:
                         node.BackColor = Color.Yellow;
                         break;
+                    case StepStates.Skipped:
+                        node.BackColor = Color.GreenYellow;
+                        break;
                 }
+                node.ForeColor = Color.Black;
+                if (step.IgnoreError || !step.Enabled)
+                {
+                    if (step.IgnoreError)
+                    {
+                        node.ForeColor = Color.Gray;
+                    }
+                    if (!step.Enabled)
+                    {
+                        node.ForeColor = Color.LightGray;
+                    }
+                }
+
                 AddTestStepsToNodes(node.Nodes, step.Substeps);
                 if (step.Expanded)
                 {
@@ -708,23 +699,23 @@ namespace SeleniumAutotest
 
             if (TrSteps.SelectedNode != null)
             {
-                var selectedStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
+                var parentStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
 
-                var appliableTypes = StepType.GetElementsForStepType(selectedStep.Type);
+                var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Contains(parentStep.Type)).Types;
                 if (appliableTypes.Count == 0)
                 {
                     return;
                 }
                 var type = appliableTypes.First();
-                selectedStep.Substeps.Add(new TestStep()
+                parentStep.Substeps.Add(new TestStep()
                 {
                     Type = type,
-                    Name = StepType.descriptions[type]
+                    Name = StepType.Descriptions[type]
                 });
             }
             else
             {
-                var appliableTypes = StepType.GetElementsForStepType(StepTypes.Group);
+                var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Count == 0 || x.Parents.Contains(StepTypes.Group)).Types;
                 if (appliableTypes.Count == 0)
                 {
                     return;
@@ -733,7 +724,7 @@ namespace SeleniumAutotest
                 Project.SelectedAutotest.Root.Substeps.Add(new TestStep()
                 {
                     Type = type,
-                    Name = StepType.descriptions[type]
+                    Name = StepType.Descriptions[type]
                 });
             }
             Project.SelectedAutotest.ResetAllParentsForSteps();
@@ -851,6 +842,7 @@ namespace SeleniumAutotest
             TeStepValue.Text = selectedStep.Value;
             TeStepParameter.Text = selectedStep.Parameter;
             ChStepIgnoreError.Checked = selectedStep.IgnoreError;
+            ChStepIsEnabled.Checked = selectedStep.Enabled;
             try
             {
                 NuStepWait.Value = (decimal)selectedStep.SecondsToWait;
@@ -861,13 +853,19 @@ namespace SeleniumAutotest
             }
             RiLog.Text = selectedStep.Error;
 
-            CoStepType.Items.Clear();
-            foreach (var type in StepType.GetElementsForStepType(selectedStep.Parent.Type))
+            CoStepTypeGroup.Items.Clear();
+            foreach (var group in StepType.StepTypesGroups.Where(x => x.Parents.Contains(selectedStep.Parent?.Type)))
             {
-                CoStepType.Items.Add(StepType.descriptions[type]);
+                CoStepTypeGroup.Items.Add(group);
             }
-            CoStepType.SelectedItem = StepType.descriptions[selectedStep.Type];
+            CoStepTypeGroup.SelectedItem = StepType.StepTypesGroups.First(x => x.Types.Contains(selectedStep.Type));
 
+            CoStepType.Items.Clear();
+            foreach (var type in ((StepTypesGroup)CoStepTypeGroup.SelectedItem).Types)
+            {
+                CoStepType.Items.Add(StepType.Descriptions[type]);
+            }
+            CoStepType.SelectedItem = StepType.Descriptions[selectedStep.Type];
             SetStepFieldsVisible(selectedStep.Type);
             NeedUpdateTestFields = true;
         }
@@ -950,6 +948,17 @@ namespace SeleniumAutotest
             msg += "PROFIT\r\n\r\n";
             msg += "Перезапускать программу не потребуется, достаточно перезапустить автотест.";
             MessageBox.Show(msg, "Ручное скачивание драйвера");
+        }
+
+        private void CoStepTypeGroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CoStepType.Items.Clear();
+            foreach (var type in ((StepTypesGroup)CoStepTypeGroup.SelectedItem).Types)
+            {
+                CoStepType.Items.Add(StepType.Descriptions[type]);
+            }
+            CoStepType.SelectedIndex = 0;
+            TeStepName.Text = CoStepTypeGroup.Text;
         }
     }
 }

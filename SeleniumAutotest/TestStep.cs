@@ -11,12 +11,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace SeleniumAutotest
 {
     public enum StepStates
     {
-        NotStarted, Passed, Error, IgnoredError
+        NotStarted, Passed, Error, IgnoredError, Skipped
     }
 
     [Serializable]
@@ -32,6 +33,7 @@ namespace SeleniumAutotest
         public string Value { get; set; }
         public string Parameter { get; set; }
         public bool IgnoreError { get; set; }
+        public bool Enabled { get; set; }
 
         public bool Expanded { get; set; }
 
@@ -58,6 +60,7 @@ namespace SeleniumAutotest
             Value = "";
             IgnoreError = false;
             Expanded = true;
+            Enabled = true;
         }
 
         public override string ToString()
@@ -70,7 +73,7 @@ namespace SeleniumAutotest
                 case StepTypes.DoubleClick:
                 case StepTypes.Group:
                     return Name;
-                case StepTypes.EnterValue:
+                case StepTypes.EnterText:
                     return $"{Name} [{Value}]";
                 case StepTypes.SetAttribute:
                     return $"{Name} [{Selector}={Value}]";
@@ -78,9 +81,9 @@ namespace SeleniumAutotest
                     return $"{Name} | {Selector}" + ((IgnoreError)?" | IgnoreError":"");
                 case StepTypes.WaitTime:
                     return $"{Name} ({SecondsToWait})";
-                case StepTypes.WaitElement:
+                case StepTypes.FindElement:
                     return $"{Name} | {Selector} ({SecondsToWait})";
-                case StepTypes.CheckClass:
+                case StepTypes.CheckClassExists:
                     return $"{Name} [class={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
                 case StepTypes.CheckClassNotExists:
                     return $"{Name} [class={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
@@ -98,6 +101,8 @@ namespace SeleniumAutotest
                     return $"{Name} [TEXT => {Parameter}]";
                 case StepTypes.ReadAddressToParameter:
                     return $"{Name} [URL => {Parameter}]";
+                case StepTypes.InputToParameterByUser:
+                    return $"{Name} [USER => {Parameter}]";
                 case StepTypes.JsEvent:
                     return $"{Name} [EVENT={Value}]";
                 default:
@@ -111,11 +116,13 @@ namespace SeleniumAutotest
             return res;
         }
 
-        public bool Run(IWebDriver driver, CancellationToken token, Action StateUpdated)
+        /// <returns>need to continue</returns>
+        public bool Run(IWebDriver driver, CancellationToken token, Action StateUpdated, bool slowMode, bool selectFoundElements)
         {
             bool needToContinue = true;
             try
             {
+                bool needToSlow = true;
                 if (this.Selector == null)
                 {
                     this.Selector = "";
@@ -124,31 +131,46 @@ namespace SeleniumAutotest
                 {
                     this.Value = "";
                 }
+                if (!Enabled)
+                {
+                    this.StepState = StepStates.Skipped;
+                    return true;
+                }
                 switch (Type)
                 {
                     case StepTypes.Open:
                         driver.Navigate().GoToUrl(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters));
                         this.StepState = StepStates.Passed;
                         break;
-                    case StepTypes.WaitElement:
+                    case StepTypes.FindElement:
                         {
                             if (this.Parent.FoundElement != null)
                             {
                                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(this.SecondsToWait));
                                 var el = wait.Until(d => this.Parent.FoundElement.FindElement(By.XPath(this.Selector)));
+                                if (selectFoundElements)
+                                {
+                                    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                    js.ExecuteScript("arguments[0].style.border='2px solid red';", el);
+                                }
                                 FoundElement = el;
                             }
                             else
                             {
                                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(this.SecondsToWait));
                                 var el = wait.Until(d => driver.FindElement(By.XPath(this.Selector)));
+                                if (selectFoundElements)
+                                {
+                                    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                    js.ExecuteScript("arguments[0].style.border='2px solid red';", el);
+                                }
                                 FoundElement = el;
                             }
 
                             this.StepState = StepStates.Passed;
                         }
                         break;
-                    case StepTypes.EnterValue:
+                    case StepTypes.EnterText:
                         {
                             string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                             var el = this.Parent.FoundElement;
@@ -213,7 +235,7 @@ namespace SeleniumAutotest
                     case StepTypes.CheckText:
                         {
                             var el = this.Parent.FoundElement;
-                            if (el.Text == ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters))
+                            if (IsMatchMask(el.Text, ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
                             {
                                 this.StepState = StepStates.Passed;
                             }
@@ -227,7 +249,7 @@ namespace SeleniumAutotest
                     case StepTypes.CheckAttribute:
                         {
                             var el = this.Parent.FoundElement;
-                            if (el != null && el.GetAttribute(this.Selector) != null && el.GetAttribute(this.Selector) == ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters))
+                            if (el != null && el.GetAttribute(this.Selector) != null && IsMatchMask(el.GetAttribute(this.Selector), ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
                             {
                                 this.StepState = StepStates.Passed;
                             }
@@ -265,7 +287,7 @@ namespace SeleniumAutotest
                             }
                         }
                         break;
-                    case StepTypes.CheckClass:
+                    case StepTypes.CheckClassExists:
                         {
                             if (this.Parent.FoundElement.GetAttribute("class").Contains(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
                             {
@@ -380,8 +402,39 @@ namespace SeleniumAutotest
                             }
                         }
                         break;
+                    case StepTypes.InputToParameterByUser:
+                        {
+                            InputDataForm inputDataForm = new InputDataForm(this.Parameter);
+                            if (inputDataForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            {
+                                foreach (var param in ParentAutotest.ParentProject.Parameters)
+                                {
+                                    if (param.Name == this.Parameter)
+                                    {
+                                        param.Value = inputDataForm.Result;
+                                        ParentAutotest.ParentProject.InvokeParametersUpdated();
+                                    }
+                                }
+                                foreach (var param in ParentAutotest.Parameters)
+                                {
+                                    if (param.Name == this.Parameter)
+                                    {
+                                        param.Value = inputDataForm.Result;
+                                        ParentAutotest.InvokeParametersUpdated();
+                                    }
+                                }
+                                this.StepState = StepStates.Passed;
+                            }
+                            else
+                            {
+                                this.Error = $"Не введён параметр";
+                                this.StepState = StepStates.Error;
+                            }
+                        }
+                        break;
                     default:
                         this.StepState = StepStates.Passed;
+                        needToSlow = false;
                         break;
                 }
                 if (this.StepState == StepStates.Error)
@@ -393,23 +446,42 @@ namespace SeleniumAutotest
                     else
                     {
                         needToContinue = false;
+                        ParentAutotest.ErrorStep = this;
                     }
                 }
                 StateUpdated?.Invoke();
+                if (needToSlow)
+                {
+                    Thread.Sleep(1000);
+                }
                 foreach (var substep in Substeps)
                 {
                     if (token.IsCancellationRequested || !needToContinue)
                         break;
-                    needToContinue = substep.Run(driver, token, StateUpdated);
+                    needToContinue = substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
                 }
             }
             catch (Exception ex)
             {
-                this.StepState = StepStates.Error;
+                if (this.IgnoreError)
+                {
+                    this.StepState = StepStates.IgnoredError;
+                }
+                else
+                {
+                    this.StepState = StepStates.Error;
+                    needToContinue = false;
+                    ParentAutotest.ErrorStep = this;
+                }
                 Error = ex.ToString();
-                needToContinue = false;
             }
             return needToContinue;
+        }
+
+        bool IsMatchMask(string input, string pattern)
+        {
+            string regexPattern = "^" + Regex.Escape(pattern).Replace(@"\?", ".").Replace(@"\*", ".*") + "$";
+            return Regex.IsMatch(input, regexPattern);
         }
 
         internal void ClearState()

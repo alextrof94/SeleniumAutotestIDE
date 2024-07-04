@@ -8,67 +8,113 @@ namespace SeleniumAutotest
 {
     internal enum StepTypes
     {
-        Group, Open, WaitElement, Click, CheckText, EnterValue, CheckElement, WaitTime, CheckClass, DoubleClick, CheckAttribute, ReadAttributeToParameter, ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, JsClick, AltClick, JsEvent, SetAttribute
+        Group, Open, FindElement, Click, CheckText, EnterText, CheckElement, WaitTime, CheckClassExists, DoubleClick, CheckAttribute, ReadAttributeToParameter, ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser
     }
     // TODO: Предусмотреть прямое нажатие клавиш клавиатуры (например, для сочетаний)
 
+    internal class StepTypesGroup
+    {
+        public int Index { get; set; }
+        public string Name { get; set; }
+        public List<StepTypes> Types { get; set; }
+
+        public List<StepTypes?> Parents { get; set; } = new List<StepTypes?>();
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
     internal static class StepType
     {
-        public static Dictionary<StepTypes, string> descriptions = new Dictionary<StepTypes, string>{
-            { StepTypes.Group, "Группа шагов" },
-            { StepTypes.Open, "Открыть сайт" },
-            { StepTypes.ReadAddressToParameter, "Считать адрес в параметр" },
-            { StepTypes.WaitElement, "Ожидать нахождения элемента" },
-            { StepTypes.Click, "Кликнуть" },
-            { StepTypes.AltClick, "Кликнуть (альтернативно)" },
-            { StepTypes.JsClick, "Кликнуть через JS" },
-            { StepTypes.DoubleClick, "Двойной клик" },
-            { StepTypes.CheckText, "Проверить текст" },
-            { StepTypes.CheckClass, "Проверить наличие класса" },
-            { StepTypes.CheckClassNotExists, "Проверить отсутствия класса" },
-            { StepTypes.CheckAttribute, "Проверить атрибут" },
-            { StepTypes.EnterValue, "Ввести значение" },
-            { StepTypes.SetAttribute, "Установить значение атрибута" },
-            { StepTypes.CheckElement, "Проверка нахождения элемента" },
-            { StepTypes.WaitTime, "Ждать время" },
-            { StepTypes.ReadAttributeToParameter, "Считать атрибут в параметр" },
-            { StepTypes.ReadTextToParameter, "Считать текст в параметр" },
-            { StepTypes.CompareParameters, "Сравнить 2 параметра" },
-            { StepTypes.JsEvent, "Вызвать событие" }
+        public static List<StepTypesGroup> StepTypesGroups { get; set; } = new List<StepTypesGroup>()
+        {
+            new StepTypesGroup(){ 
+                Index = 0,
+                Name = "Группа шагов",
+                Parents = new List<StepTypes?>(){ StepTypes.Group, null },
+                Types = new List<StepTypes>(){ StepTypes.Group } },
+            new StepTypesGroup(){
+                Index = 1,
+                Name = "Поиск",                
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },       
+                Types = new List<StepTypes>(){ StepTypes.FindElement } },
+            new StepTypesGroup(){
+                Index = 2,
+                Name = "Кликнуть",
+                Parents = new List<StepTypes?>(){ StepTypes.FindElement },
+                Types = new List<StepTypes>(){ StepTypes.Click, StepTypes.AltClick, StepTypes.JsClick, StepTypes.DoubleClick } },
+            new StepTypesGroup(){
+                Index = 3,
+                Name = "Изменить",
+                Parents = new List<StepTypes?>(){ StepTypes.FindElement },
+                Types = new List<StepTypes>(){ StepTypes.EnterText, StepTypes.SetAttribute } },
+            new StepTypesGroup(){
+                Index = 4,
+                Name = "Проверить",
+                Parents = new List<StepTypes?>(){ StepTypes.FindElement },
+                Types = new List<StepTypes>(){ StepTypes.CheckText, StepTypes.CheckClassExists, StepTypes.CheckClassNotExists, StepTypes.CheckAttribute, StepTypes.CheckElement, StepTypes.CompareParameters } },
+            new StepTypesGroup(){
+                Index = 6,
+                Name = "Сохранить в параметр",
+                Parents = new List<StepTypes?>(){ StepTypes.FindElement },
+                Types = new List<StepTypes>(){ StepTypes.ReadTextToParameter, StepTypes.ReadAttributeToParameter, StepTypes.ReadAddressToParameter, StepTypes.InputToParameterByUser } },
+            new StepTypesGroup(){
+                Index = 7,
+                Name = "Ждать время",
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
+                Types = new List<StepTypes>(){ StepTypes.WaitTime } },
+            new StepTypesGroup(){
+                Index = 8,
+                Name = "Открыть сайт",
+                Parents = new List<StepTypes?>(){ StepTypes.Group },
+                Types = new List<StepTypes>(){ StepTypes.Open } },
+            new StepTypesGroup(){
+                Index = 5,
+                Name = "Вызвать JS действие",  
+                Parents = new List<StepTypes?>(){ StepTypes.FindElement }, 
+                Types = new List<StepTypes>(){ StepTypes.JsEvent } },
         };
 
-        public static List<StepTypes> GetElementsForStepType(StepTypes stepType)
+        public static Dictionary<StepTypes, string> Descriptions { get; } = new Dictionary<StepTypes, string>{
+            { StepTypes.Group, "Группа шагов" },
+            { StepTypes.Open, "Открыть сайт" },
+            { StepTypes.FindElement, "Найти элемент" },
+            { StepTypes.WaitTime, "Ждать время" },
+            { StepTypes.JsEvent, "Вызвать событие" },
+
+            { StepTypes.Click, "Просто" },
+            { StepTypes.AltClick, "Альтернативно" },
+            { StepTypes.JsClick, "Через JS" },
+            { StepTypes.DoubleClick, "Двойной" },
+
+            { StepTypes.CheckText, "Текст" },
+            { StepTypes.CheckAttribute, "Атрибут" },
+            { StepTypes.CheckClassExists, "Наличие класса" },
+            { StepTypes.CheckClassNotExists, "Отсутствие класса" },
+            { StepTypes.CheckElement, "Существования элемента" },
+            { StepTypes.CompareParameters, "Сравнить 2 параметра" },
+
+            { StepTypes.EnterText, "Ввести значение" },
+            { StepTypes.SetAttribute, "Атрибут" },
+
+            { StepTypes.ReadTextToParameter, "Текст" },
+            { StepTypes.ReadAttributeToParameter, "Атрибут" },
+            { StepTypes.ReadAddressToParameter, "URL" },
+            { StepTypes.InputToParameterByUser, "Ввод пользователя" },
+        };
+
+        public static int GetIndexOfGroupByType(StepTypes stepType)
         {
-            switch (stepType)
-            {
-                case StepTypes.Group: return new List<StepTypes> { StepTypes.Group, StepTypes.Open, StepTypes.WaitElement, StepTypes.CheckElement, StepTypes.WaitTime, StepTypes.ReadAddressToParameter };
-                case StepTypes.WaitElement: return new List<StepTypes> { StepTypes.Click, StepTypes.DoubleClick, StepTypes.JsClick, StepTypes.AltClick, StepTypes.EnterValue, StepTypes.SetAttribute, StepTypes.CheckText, StepTypes.CheckAttribute, StepTypes.CheckClass, StepTypes.CheckClassNotExists, StepTypes.CheckElement, StepTypes.CompareParameters, StepTypes.ReadTextToParameter, StepTypes.ReadAttributeToParameter, StepTypes.WaitElement, StepTypes.WaitTime, StepTypes.JsEvent };
-                case StepTypes.Open:
-                case StepTypes.Click:
-                case StepTypes.JsClick:
-                case StepTypes.AltClick:
-                case StepTypes.DoubleClick:
-                case StepTypes.CheckText:
-                case StepTypes.CheckAttribute:
-                case StepTypes.CheckClass:
-                case StepTypes.CheckClassNotExists:
-                case StepTypes.EnterValue:
-                case StepTypes.CheckElement:
-                case StepTypes.ReadAttributeToParameter:
-                case StepTypes.ReadTextToParameter:
-                case StepTypes.ReadAddressToParameter:
-                case StepTypes.CompareParameters:
-                case StepTypes.JsEvent:
-                case StepTypes.WaitTime: return new List<StepTypes> { };
-            }
-            return new List<StepTypes> { StepTypes.Group };
+            return StepTypesGroups.First(x => x.Types.Contains(stepType)).Index;
         }
 
         public static StepTypes GetTypeByName(string name)
         {
-            if (descriptions.ContainsValue(name))
+            if (Descriptions.ContainsValue(name))
             {
-                return descriptions.FirstOrDefault(x => x.Value == name).Key;
+                return Descriptions.FirstOrDefault(x => x.Value == name).Key;
             }
             return StepTypes.Group;
         }
@@ -78,7 +124,7 @@ namespace SeleniumAutotest
             List<string> res = new List<string>();
             foreach (StepTypes type in types)
             {
-                res.Add(descriptions[type]);
+                res.Add(Descriptions[type]);
             }
             return string.Join("\r\n", res.ToArray());
         }

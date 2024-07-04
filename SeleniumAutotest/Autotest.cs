@@ -30,6 +30,8 @@ namespace SeleniumAutotest
         public Project ParentProject { get; set; }
         [JsonIgnore]
         public bool RunGotError { get; set; }
+        [JsonIgnore]
+        public TestStep ErrorStep { get; set; }
 
         public Autotest()
         {
@@ -79,11 +81,12 @@ namespace SeleniumAutotest
             return null;
         }
 
-        public void Run(CancellationToken token)
+        public void Run(CancellationToken token, bool slowMode, bool selectFoundElements)
         {
             try
             {
                 RunGotError = false;
+                ErrorStep = null;
                 if (RegenerateParametersOnRun)
                 {
                     GenerateParameters();
@@ -102,7 +105,7 @@ namespace SeleniumAutotest
                     {
                         if (token.IsCancellationRequested || !needToContinue)
                             break;
-                        needToContinue = substep.Run(driver, token, StateUpdated);
+                        needToContinue = substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
                         if (!needToContinue)
                         {
                             RunGotError = true;
