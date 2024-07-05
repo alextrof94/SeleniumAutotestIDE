@@ -37,6 +37,7 @@
             this.BuFileSave = new System.Windows.Forms.ToolStripMenuItem();
             this.BuFileImport = new System.Windows.Forms.ToolStripMenuItem();
             this.инфоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuTestParametersHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.BuCantDownloadDriverHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.LiTests = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -53,20 +54,25 @@
             this.BuTestAdd = new System.Windows.Forms.Button();
             this.BuTestRun = new System.Windows.Forms.Button();
             this.GrTestSteps = new System.Windows.Forms.GroupBox();
-            this.BuFontDecrease = new System.Windows.Forms.Button();
-            this.BuFontIncrease = new System.Windows.Forms.Button();
-            this.BuStepPaste = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.RiLog = new System.Windows.Forms.RichTextBox();
-            this.BuStepCopy = new System.Windows.Forms.Button();
-            this.BuStepReloadTree = new System.Windows.Forms.Button();
-            this.BuStepClearFocus = new System.Windows.Forms.Button();
-            this.BuStepUp = new System.Windows.Forms.Button();
-            this.BuStepDown = new System.Windows.Forms.Button();
-            this.BuStepClone = new System.Windows.Forms.Button();
+            this.PaMiddleDownMiddle = new System.Windows.Forms.Panel();
             this.BuStepDelete = new System.Windows.Forms.Button();
             this.BuStepAdd = new System.Windows.Forms.Button();
+            this.BuStepClone = new System.Windows.Forms.Button();
+            this.TrSteps = new System.Windows.Forms.TreeView();
+            this.ImTree = new System.Windows.Forms.ImageList(this.components);
+            this.BuFontDecrease = new System.Windows.Forms.Button();
+            this.BuFontIncrease = new System.Windows.Forms.Button();
+            this.BuStepDown = new System.Windows.Forms.Button();
+            this.BuStepReloadTree = new System.Windows.Forms.Button();
+            this.BuStepUp = new System.Windows.Forms.Button();
+            this.BuStepPaste = new System.Windows.Forms.Button();
+            this.BuStepClearFocus = new System.Windows.Forms.Button();
+            this.BuStepCopy = new System.Windows.Forms.Button();
+            this.PaMiddleDownDown = new System.Windows.Forms.Panel();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.RiLog = new System.Windows.Forms.RichTextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.CoStepTypeGroup = new System.Windows.Forms.ComboBox();
             this.ChStepIsEnabled = new System.Windows.Forms.CheckBox();
             this.TeStepParameter = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -81,8 +87,6 @@
             this.CoStepType = new System.Windows.Forms.ComboBox();
             this.TeStepName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.TrSteps = new System.Windows.Forms.TreeView();
-            this.ImTree = new System.Windows.Forms.ImageList(this.components);
             this.TeTestName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.GrTestParameters = new System.Windows.Forms.GroupBox();
@@ -102,22 +106,25 @@
             this.GrTestSettings = new System.Windows.Forms.GroupBox();
             this.ChTestRunAfterPrevious = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.splitter1 = new System.Windows.Forms.Splitter();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.BuTestParametersHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitter2 = new System.Windows.Forms.Splitter();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.splitter3 = new System.Windows.Forms.Splitter();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.splitter4 = new System.Windows.Forms.Splitter();
-            this.panel7 = new System.Windows.Forms.Panel();
-            this.CoStepTypeGroup = new System.Windows.Forms.ComboBox();
+            this.PaRight = new System.Windows.Forms.Panel();
+            this.PaMiddle = new System.Windows.Forms.Panel();
+            this.CoStepSelectorType = new System.Windows.Forms.ComboBox();
+            this.SpRight = new System.Windows.Forms.Splitter();
+            this.PaLeft = new System.Windows.Forms.Panel();
+            this.SpLeft = new System.Windows.Forms.Splitter();
+            this.PaRightDown = new System.Windows.Forms.Panel();
+            this.SpRightDown = new System.Windows.Forms.Splitter();
+            this.PaRightUp = new System.Windows.Forms.Panel();
+            this.PaMiddleUp = new System.Windows.Forms.Panel();
+            this.PaMIddleDown = new System.Windows.Forms.Panel();
+            this.PaMiddleDownDownRight = new System.Windows.Forms.Panel();
+            this.SpMiddleDownDownRight = new System.Windows.Forms.Splitter();
+            this.PaMiddleDownDownLeft = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
+            this.PaMiddleDownMiddle.SuspendLayout();
+            this.PaMiddleDownDown.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NuStepWait)).BeginInit();
@@ -126,13 +133,15 @@
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DaProjectParameters)).BeginInit();
             this.GrTestSettings.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel6.SuspendLayout();
-            this.panel7.SuspendLayout();
+            this.PaRight.SuspendLayout();
+            this.PaMiddle.SuspendLayout();
+            this.PaLeft.SuspendLayout();
+            this.PaRightDown.SuspendLayout();
+            this.PaRightUp.SuspendLayout();
+            this.PaMiddleUp.SuspendLayout();
+            this.PaMIddleDown.SuspendLayout();
+            this.PaMiddleDownDownRight.SuspendLayout();
+            this.PaMiddleDownDownLeft.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -194,6 +203,13 @@
             this.инфоToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.инфоToolStripMenuItem.Text = "Инфо";
             // 
+            // BuTestParametersHelp
+            // 
+            this.BuTestParametersHelp.Name = "BuTestParametersHelp";
+            this.BuTestParametersHelp.Size = new System.Drawing.Size(208, 22);
+            this.BuTestParametersHelp.Text = "Справка по параметрам";
+            this.BuTestParametersHelp.Click += new System.EventHandler(this.BuTestParametersHelp_Click);
+            // 
             // BuCantDownloadDriverHelp
             // 
             this.BuCantDownloadDriverHelp.Name = "BuCantDownloadDriverHelp";
@@ -209,15 +225,12 @@
             this.LiTests.FormattingEnabled = true;
             this.LiTests.Location = new System.Drawing.Point(6, 58);
             this.LiTests.Name = "LiTests";
-            this.LiTests.Size = new System.Drawing.Size(208, 407);
+            this.LiTests.Size = new System.Drawing.Size(226, 407);
             this.LiTests.TabIndex = 1;
             this.LiTests.SelectedIndexChanged += new System.EventHandler(this.LiTests_SelectedIndexChanged);
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.ChSelectFoundElements);
             this.groupBox1.Controls.Add(this.ChSlowMode);
             this.groupBox1.Controls.Add(this.LaRunTime);
@@ -230,10 +243,11 @@
             this.groupBox1.Controls.Add(this.BuTestAdd);
             this.groupBox1.Controls.Add(this.BuTestRun);
             this.groupBox1.Controls.Add(this.LiTests);
-            this.groupBox1.Location = new System.Drawing.Point(11, 3);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(220, 581);
-            this.groupBox1.TabIndex = 2;
+            this.groupBox1.Size = new System.Drawing.Size(238, 587);
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Автотесты";
             // 
@@ -241,7 +255,7 @@
             // 
             this.ChSelectFoundElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ChSelectFoundElements.AutoSize = true;
-            this.ChSelectFoundElements.Location = new System.Drawing.Point(6, 474);
+            this.ChSelectFoundElements.Location = new System.Drawing.Point(6, 480);
             this.ChSelectFoundElements.Name = "ChSelectFoundElements";
             this.ChSelectFoundElements.Size = new System.Drawing.Size(189, 17);
             this.ChSelectFoundElements.TabIndex = 13;
@@ -252,7 +266,7 @@
             // 
             this.ChSlowMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ChSlowMode.AutoSize = true;
-            this.ChSlowMode.Location = new System.Drawing.Point(6, 497);
+            this.ChSlowMode.Location = new System.Drawing.Point(6, 503);
             this.ChSlowMode.Name = "ChSlowMode";
             this.ChSlowMode.Size = new System.Drawing.Size(122, 17);
             this.ChSlowMode.TabIndex = 12;
@@ -263,7 +277,7 @@
             // 
             this.LaRunTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LaRunTime.AutoSize = true;
-            this.LaRunTime.Location = new System.Drawing.Point(7, 532);
+            this.LaRunTime.Location = new System.Drawing.Point(7, 538);
             this.LaRunTime.Name = "LaRunTime";
             this.LaRunTime.Size = new System.Drawing.Size(141, 13);
             this.LaRunTime.TabIndex = 11;
@@ -314,7 +328,7 @@
             // 
             this.LaTestTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LaTestTime.AutoSize = true;
-            this.LaTestTime.Location = new System.Drawing.Point(7, 517);
+            this.LaTestTime.Location = new System.Drawing.Point(7, 523);
             this.LaTestTime.Name = "LaTestTime";
             this.LaTestTime.Size = new System.Drawing.Size(136, 13);
             this.LaTestTime.TabIndex = 7;
@@ -324,7 +338,7 @@
             // 
             this.BuTestStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.BuTestStop.Enabled = false;
-            this.BuTestStop.Location = new System.Drawing.Point(91, 552);
+            this.BuTestStop.Location = new System.Drawing.Point(91, 558);
             this.BuTestStop.Name = "BuTestStop";
             this.BuTestStop.Size = new System.Drawing.Size(75, 23);
             this.BuTestStop.TabIndex = 6;
@@ -350,7 +364,7 @@
             this.BuTestDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BuTestDelete.ImageIndex = 9;
             this.BuTestDelete.ImageList = this.ImButtons;
-            this.BuTestDelete.Location = new System.Drawing.Point(181, 19);
+            this.BuTestDelete.Location = new System.Drawing.Point(199, 19);
             this.BuTestDelete.Name = "BuTestDelete";
             this.BuTestDelete.Size = new System.Drawing.Size(33, 33);
             this.BuTestDelete.TabIndex = 4;
@@ -372,7 +386,7 @@
             // BuTestRun
             // 
             this.BuTestRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BuTestRun.Location = new System.Drawing.Point(10, 552);
+            this.BuTestRun.Location = new System.Drawing.Point(10, 558);
             this.BuTestRun.Name = "BuTestRun";
             this.BuTestRun.Size = new System.Drawing.Size(75, 23);
             this.BuTestRun.TabIndex = 2;
@@ -382,160 +396,36 @@
             // 
             // GrTestSteps
             // 
-            this.GrTestSteps.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.GrTestSteps.Controls.Add(this.panel7);
-            this.GrTestSteps.Controls.Add(this.splitter4);
-            this.GrTestSteps.Controls.Add(this.panel4);
+            this.GrTestSteps.Controls.Add(this.PaMiddleDownMiddle);
+            this.GrTestSteps.Controls.Add(this.PaMiddleDownDown);
+            this.GrTestSteps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GrTestSteps.Enabled = false;
-            this.GrTestSteps.Location = new System.Drawing.Point(3, 58);
+            this.GrTestSteps.Location = new System.Drawing.Point(3, 0);
             this.GrTestSteps.Name = "GrTestSteps";
-            this.GrTestSteps.Size = new System.Drawing.Size(786, 526);
+            this.GrTestSteps.Size = new System.Drawing.Size(788, 541);
             this.GrTestSteps.TabIndex = 3;
             this.GrTestSteps.TabStop = false;
             this.GrTestSteps.Text = "Шаги";
             // 
-            // BuFontDecrease
+            // PaMiddleDownMiddle
             // 
-            this.BuFontDecrease.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuFontDecrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuFontDecrease.ImageIndex = 10;
-            this.BuFontDecrease.ImageList = this.ImButtons;
-            this.BuFontDecrease.Location = new System.Drawing.Point(744, 256);
-            this.BuFontDecrease.Name = "BuFontDecrease";
-            this.BuFontDecrease.Size = new System.Drawing.Size(33, 33);
-            this.BuFontDecrease.TabIndex = 14;
-            this.BuFontDecrease.UseVisualStyleBackColor = true;
-            this.BuFontDecrease.Click += new System.EventHandler(this.BuFontDecrease_Click);
-            // 
-            // BuFontIncrease
-            // 
-            this.BuFontIncrease.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuFontIncrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuFontIncrease.ImageIndex = 11;
-            this.BuFontIncrease.ImageList = this.ImButtons;
-            this.BuFontIncrease.Location = new System.Drawing.Point(705, 256);
-            this.BuFontIncrease.Name = "BuFontIncrease";
-            this.BuFontIncrease.Size = new System.Drawing.Size(33, 33);
-            this.BuFontIncrease.TabIndex = 13;
-            this.BuFontIncrease.UseVisualStyleBackColor = true;
-            this.BuFontIncrease.Click += new System.EventHandler(this.BuFontIncrease_Click);
-            // 
-            // BuStepPaste
-            // 
-            this.BuStepPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuStepPaste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuStepPaste.ImageIndex = 5;
-            this.BuStepPaste.ImageList = this.ImButtons;
-            this.BuStepPaste.Location = new System.Drawing.Point(744, 120);
-            this.BuStepPaste.Name = "BuStepPaste";
-            this.BuStepPaste.Size = new System.Drawing.Size(33, 33);
-            this.BuStepPaste.TabIndex = 12;
-            this.BuStepPaste.UseVisualStyleBackColor = true;
-            this.BuStepPaste.Click += new System.EventHandler(this.BuStepPaste_Click);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.RiLog);
-            this.groupBox4.Location = new System.Drawing.Point(3, 3);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(285, 202);
-            this.groupBox4.TabIndex = 4;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Лог шага";
-            // 
-            // RiLog
-            // 
-            this.RiLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.RiLog.Location = new System.Drawing.Point(6, 19);
-            this.RiLog.Name = "RiLog";
-            this.RiLog.Size = new System.Drawing.Size(273, 177);
-            this.RiLog.TabIndex = 0;
-            this.RiLog.Text = "";
-            // 
-            // BuStepCopy
-            // 
-            this.BuStepCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuStepCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuStepCopy.ImageIndex = 2;
-            this.BuStepCopy.ImageList = this.ImButtons;
-            this.BuStepCopy.Location = new System.Drawing.Point(705, 120);
-            this.BuStepCopy.Name = "BuStepCopy";
-            this.BuStepCopy.Size = new System.Drawing.Size(33, 33);
-            this.BuStepCopy.TabIndex = 11;
-            this.BuStepCopy.UseVisualStyleBackColor = true;
-            this.BuStepCopy.Click += new System.EventHandler(this.BuStepCopy_Click);
-            // 
-            // BuStepReloadTree
-            // 
-            this.BuStepReloadTree.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuStepReloadTree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuStepReloadTree.ImageIndex = 6;
-            this.BuStepReloadTree.ImageList = this.ImButtons;
-            this.BuStepReloadTree.Location = new System.Drawing.Point(705, 217);
-            this.BuStepReloadTree.Name = "BuStepReloadTree";
-            this.BuStepReloadTree.Size = new System.Drawing.Size(33, 33);
-            this.BuStepReloadTree.TabIndex = 10;
-            this.BuStepReloadTree.UseVisualStyleBackColor = true;
-            this.BuStepReloadTree.Click += new System.EventHandler(this.BuStepReloadTree_Click);
-            // 
-            // BuStepClearFocus
-            // 
-            this.BuStepClearFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuStepClearFocus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuStepClearFocus.ImageIndex = 1;
-            this.BuStepClearFocus.ImageList = this.ImButtons;
-            this.BuStepClearFocus.Location = new System.Drawing.Point(744, 81);
-            this.BuStepClearFocus.Name = "BuStepClearFocus";
-            this.BuStepClearFocus.Size = new System.Drawing.Size(33, 33);
-            this.BuStepClearFocus.TabIndex = 9;
-            this.BuStepClearFocus.UseVisualStyleBackColor = true;
-            this.BuStepClearFocus.Click += new System.EventHandler(this.BuStepClearFocus_Click);
-            // 
-            // BuStepUp
-            // 
-            this.BuStepUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuStepUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuStepUp.ImageIndex = 8;
-            this.BuStepUp.ImageList = this.ImButtons;
-            this.BuStepUp.Location = new System.Drawing.Point(705, 42);
-            this.BuStepUp.Name = "BuStepUp";
-            this.BuStepUp.Size = new System.Drawing.Size(33, 33);
-            this.BuStepUp.TabIndex = 8;
-            this.BuStepUp.UseVisualStyleBackColor = true;
-            this.BuStepUp.Click += new System.EventHandler(this.BuStepUp_Click);
-            // 
-            // BuStepDown
-            // 
-            this.BuStepDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuStepDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuStepDown.ImageIndex = 7;
-            this.BuStepDown.ImageList = this.ImButtons;
-            this.BuStepDown.Location = new System.Drawing.Point(705, 81);
-            this.BuStepDown.Name = "BuStepDown";
-            this.BuStepDown.Size = new System.Drawing.Size(33, 33);
-            this.BuStepDown.TabIndex = 7;
-            this.BuStepDown.UseVisualStyleBackColor = true;
-            this.BuStepDown.Click += new System.EventHandler(this.BuStepDown_Click);
-            // 
-            // BuStepClone
-            // 
-            this.BuStepClone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuStepClone.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BuStepClone.ImageIndex = 3;
-            this.BuStepClone.ImageList = this.ImButtons;
-            this.BuStepClone.Location = new System.Drawing.Point(744, 42);
-            this.BuStepClone.Name = "BuStepClone";
-            this.BuStepClone.Size = new System.Drawing.Size(33, 33);
-            this.BuStepClone.TabIndex = 6;
-            this.BuStepClone.UseVisualStyleBackColor = true;
-            this.BuStepClone.Click += new System.EventHandler(this.BuStepClone_Click);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepDelete);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepAdd);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepClone);
+            this.PaMiddleDownMiddle.Controls.Add(this.TrSteps);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuFontDecrease);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuFontIncrease);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepDown);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepReloadTree);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepUp);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepPaste);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepClearFocus);
+            this.PaMiddleDownMiddle.Controls.Add(this.BuStepCopy);
+            this.PaMiddleDownMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PaMiddleDownMiddle.Location = new System.Drawing.Point(3, 16);
+            this.PaMiddleDownMiddle.Name = "PaMiddleDownMiddle";
+            this.PaMiddleDownMiddle.Size = new System.Drawing.Size(782, 323);
+            this.PaMiddleDownMiddle.TabIndex = 17;
             // 
             // BuStepDelete
             // 
@@ -543,7 +433,7 @@
             this.BuStepDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BuStepDelete.ImageIndex = 9;
             this.BuStepDelete.ImageList = this.ImButtons;
-            this.BuStepDelete.Location = new System.Drawing.Point(744, 3);
+            this.BuStepDelete.Location = new System.Drawing.Point(746, 3);
             this.BuStepDelete.Name = "BuStepDelete";
             this.BuStepDelete.Size = new System.Drawing.Size(33, 33);
             this.BuStepDelete.TabIndex = 5;
@@ -556,18 +446,201 @@
             this.BuStepAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BuStepAdd.ImageIndex = 0;
             this.BuStepAdd.ImageList = this.ImButtons;
-            this.BuStepAdd.Location = new System.Drawing.Point(705, 3);
+            this.BuStepAdd.Location = new System.Drawing.Point(707, 3);
             this.BuStepAdd.Name = "BuStepAdd";
             this.BuStepAdd.Size = new System.Drawing.Size(33, 33);
             this.BuStepAdd.TabIndex = 4;
             this.BuStepAdd.UseVisualStyleBackColor = true;
             this.BuStepAdd.Click += new System.EventHandler(this.BuStepAdd_Click);
             // 
-            // groupBox3
+            // BuStepClone
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.BuStepClone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuStepClone.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuStepClone.ImageIndex = 3;
+            this.BuStepClone.ImageList = this.ImButtons;
+            this.BuStepClone.Location = new System.Drawing.Point(746, 42);
+            this.BuStepClone.Name = "BuStepClone";
+            this.BuStepClone.Size = new System.Drawing.Size(33, 33);
+            this.BuStepClone.TabIndex = 6;
+            this.BuStepClone.UseVisualStyleBackColor = true;
+            this.BuStepClone.Click += new System.EventHandler(this.BuStepClone_Click);
+            // 
+            // TrSteps
+            // 
+            this.TrSteps.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.TrSteps.HideSelection = false;
+            this.TrSteps.ImageIndex = 0;
+            this.TrSteps.ImageList = this.ImTree;
+            this.TrSteps.Location = new System.Drawing.Point(3, 3);
+            this.TrSteps.Name = "TrSteps";
+            this.TrSteps.SelectedImageIndex = 0;
+            this.TrSteps.Size = new System.Drawing.Size(698, 316);
+            this.TrSteps.TabIndex = 2;
+            this.TrSteps.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.TrSteps_ChangeExpanded);
+            this.TrSteps.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TrSteps_ChangeExpanded);
+            this.TrSteps.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TrSteps_NodeMouseClick);
+            this.TrSteps.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TrSteps_KeyDown);
+            this.TrSteps.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TrSteps_KeyUp);
+            // 
+            // ImTree
+            // 
+            this.ImTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ImTree.ImageStream")));
+            this.ImTree.TransparentColor = System.Drawing.Color.Transparent;
+            this.ImTree.Images.SetKeyName(0, "icons8-right-16.png");
+            this.ImTree.Images.SetKeyName(1, "icons8-folder-16.png");
+            this.ImTree.Images.SetKeyName(2, "icons8-find-16.png");
+            this.ImTree.Images.SetKeyName(3, "icons8-click-16.png");
+            this.ImTree.Images.SetKeyName(4, "icons8-edit-16.png");
+            this.ImTree.Images.SetKeyName(5, "icons8-check-16.png");
+            this.ImTree.Images.SetKeyName(6, "icons8-lightning-bolt-16.png");
+            this.ImTree.Images.SetKeyName(7, "icons8-save-16.png");
+            this.ImTree.Images.SetKeyName(8, "icons8-stopwatch-16.png");
+            this.ImTree.Images.SetKeyName(9, "icons8-open-16.png");
+            this.ImTree.Images.SetKeyName(10, "icons8-user-16.png");
+            // 
+            // BuFontDecrease
+            // 
+            this.BuFontDecrease.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuFontDecrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuFontDecrease.ImageIndex = 10;
+            this.BuFontDecrease.ImageList = this.ImButtons;
+            this.BuFontDecrease.Location = new System.Drawing.Point(746, 286);
+            this.BuFontDecrease.Name = "BuFontDecrease";
+            this.BuFontDecrease.Size = new System.Drawing.Size(33, 33);
+            this.BuFontDecrease.TabIndex = 14;
+            this.BuFontDecrease.UseVisualStyleBackColor = true;
+            this.BuFontDecrease.Click += new System.EventHandler(this.BuFontDecrease_Click);
+            // 
+            // BuFontIncrease
+            // 
+            this.BuFontIncrease.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuFontIncrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuFontIncrease.ImageIndex = 11;
+            this.BuFontIncrease.ImageList = this.ImButtons;
+            this.BuFontIncrease.Location = new System.Drawing.Point(707, 286);
+            this.BuFontIncrease.Name = "BuFontIncrease";
+            this.BuFontIncrease.Size = new System.Drawing.Size(33, 33);
+            this.BuFontIncrease.TabIndex = 13;
+            this.BuFontIncrease.UseVisualStyleBackColor = true;
+            this.BuFontIncrease.Click += new System.EventHandler(this.BuFontIncrease_Click);
+            // 
+            // BuStepDown
+            // 
+            this.BuStepDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuStepDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuStepDown.ImageIndex = 7;
+            this.BuStepDown.ImageList = this.ImButtons;
+            this.BuStepDown.Location = new System.Drawing.Point(707, 81);
+            this.BuStepDown.Name = "BuStepDown";
+            this.BuStepDown.Size = new System.Drawing.Size(33, 33);
+            this.BuStepDown.TabIndex = 7;
+            this.BuStepDown.UseVisualStyleBackColor = true;
+            this.BuStepDown.Click += new System.EventHandler(this.BuStepDown_Click);
+            // 
+            // BuStepReloadTree
+            // 
+            this.BuStepReloadTree.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuStepReloadTree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuStepReloadTree.ImageIndex = 6;
+            this.BuStepReloadTree.ImageList = this.ImButtons;
+            this.BuStepReloadTree.Location = new System.Drawing.Point(707, 247);
+            this.BuStepReloadTree.Name = "BuStepReloadTree";
+            this.BuStepReloadTree.Size = new System.Drawing.Size(33, 33);
+            this.BuStepReloadTree.TabIndex = 10;
+            this.BuStepReloadTree.UseVisualStyleBackColor = true;
+            this.BuStepReloadTree.Click += new System.EventHandler(this.BuStepReloadTree_Click);
+            // 
+            // BuStepUp
+            // 
+            this.BuStepUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuStepUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuStepUp.ImageIndex = 8;
+            this.BuStepUp.ImageList = this.ImButtons;
+            this.BuStepUp.Location = new System.Drawing.Point(707, 42);
+            this.BuStepUp.Name = "BuStepUp";
+            this.BuStepUp.Size = new System.Drawing.Size(33, 33);
+            this.BuStepUp.TabIndex = 8;
+            this.BuStepUp.UseVisualStyleBackColor = true;
+            this.BuStepUp.Click += new System.EventHandler(this.BuStepUp_Click);
+            // 
+            // BuStepPaste
+            // 
+            this.BuStepPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuStepPaste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuStepPaste.ImageIndex = 5;
+            this.BuStepPaste.ImageList = this.ImButtons;
+            this.BuStepPaste.Location = new System.Drawing.Point(746, 120);
+            this.BuStepPaste.Name = "BuStepPaste";
+            this.BuStepPaste.Size = new System.Drawing.Size(33, 33);
+            this.BuStepPaste.TabIndex = 12;
+            this.BuStepPaste.UseVisualStyleBackColor = true;
+            this.BuStepPaste.Click += new System.EventHandler(this.BuStepPaste_Click);
+            // 
+            // BuStepClearFocus
+            // 
+            this.BuStepClearFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuStepClearFocus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuStepClearFocus.ImageIndex = 1;
+            this.BuStepClearFocus.ImageList = this.ImButtons;
+            this.BuStepClearFocus.Location = new System.Drawing.Point(746, 81);
+            this.BuStepClearFocus.Name = "BuStepClearFocus";
+            this.BuStepClearFocus.Size = new System.Drawing.Size(33, 33);
+            this.BuStepClearFocus.TabIndex = 9;
+            this.BuStepClearFocus.UseVisualStyleBackColor = true;
+            this.BuStepClearFocus.Click += new System.EventHandler(this.BuStepClearFocus_Click);
+            // 
+            // BuStepCopy
+            // 
+            this.BuStepCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuStepCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BuStepCopy.ImageIndex = 2;
+            this.BuStepCopy.ImageList = this.ImButtons;
+            this.BuStepCopy.Location = new System.Drawing.Point(707, 120);
+            this.BuStepCopy.Name = "BuStepCopy";
+            this.BuStepCopy.Size = new System.Drawing.Size(33, 33);
+            this.BuStepCopy.TabIndex = 11;
+            this.BuStepCopy.UseVisualStyleBackColor = true;
+            this.BuStepCopy.Click += new System.EventHandler(this.BuStepCopy_Click);
+            // 
+            // PaMiddleDownDown
+            // 
+            this.PaMiddleDownDown.Controls.Add(this.PaMiddleDownDownLeft);
+            this.PaMiddleDownDown.Controls.Add(this.SpMiddleDownDownRight);
+            this.PaMiddleDownDown.Controls.Add(this.PaMiddleDownDownRight);
+            this.PaMiddleDownDown.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.PaMiddleDownDown.Location = new System.Drawing.Point(3, 339);
+            this.PaMiddleDownDown.Name = "PaMiddleDownDown";
+            this.PaMiddleDownDown.Size = new System.Drawing.Size(782, 199);
+            this.PaMiddleDownDown.TabIndex = 15;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.RiLog);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox4.Location = new System.Drawing.Point(0, 0);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(200, 199);
+            this.groupBox4.TabIndex = 4;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Лог шага";
+            // 
+            // RiLog
+            // 
+            this.RiLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.RiLog.Location = new System.Drawing.Point(6, 19);
+            this.RiLog.Name = "RiLog";
+            this.RiLog.Size = new System.Drawing.Size(188, 174);
+            this.RiLog.TabIndex = 0;
+            this.RiLog.Text = "";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.CoStepSelectorType);
             this.groupBox3.Controls.Add(this.CoStepTypeGroup);
             this.groupBox3.Controls.Add(this.ChStepIsEnabled);
             this.groupBox3.Controls.Add(this.TeStepParameter);
@@ -583,12 +656,31 @@
             this.groupBox3.Controls.Add(this.CoStepType);
             this.groupBox3.Controls.Add(this.TeStepName);
             this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Location = new System.Drawing.Point(3, 3);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(477, 202);
+            this.groupBox3.Size = new System.Drawing.Size(579, 199);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Параметры шага";
+            // 
+            // CoStepTypeGroup
+            // 
+            this.CoStepTypeGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.CoStepTypeGroup.FormattingEnabled = true;
+            this.CoStepTypeGroup.Items.AddRange(new object[] {
+            "Группа шагов",
+            "Ожидать нахождения элемента",
+            "Кликнуть",
+            "Проверить значение",
+            "Проверка нахождения элемента",
+            "Ждать время"});
+            this.CoStepTypeGroup.Location = new System.Drawing.Point(69, 42);
+            this.CoStepTypeGroup.Name = "CoStepTypeGroup";
+            this.CoStepTypeGroup.Size = new System.Drawing.Size(325, 21);
+            this.CoStepTypeGroup.TabIndex = 18;
+            this.CoStepTypeGroup.SelectedIndexChanged += new System.EventHandler(this.CoStepTypeGroup_SelectedIndexChanged);
             // 
             // ChStepIsEnabled
             // 
@@ -605,9 +697,9 @@
             // 
             this.TeStepParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TeStepParameter.Location = new System.Drawing.Point(132, 173);
+            this.TeStepParameter.Location = new System.Drawing.Point(141, 173);
             this.TeStepParameter.Name = "TeStepParameter";
-            this.TeStepParameter.Size = new System.Drawing.Size(339, 20);
+            this.TeStepParameter.Size = new System.Drawing.Size(429, 20);
             this.TeStepParameter.TabIndex = 16;
             this.TeStepParameter.Visible = false;
             this.TeStepParameter.TextChanged += new System.EventHandler(this.TeStepParameter_TextChanged);
@@ -637,9 +729,9 @@
             // 
             this.TeStepValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TeStepValue.Location = new System.Drawing.Point(132, 147);
+            this.TeStepValue.Location = new System.Drawing.Point(141, 147);
             this.TeStepValue.Name = "TeStepValue";
-            this.TeStepValue.Size = new System.Drawing.Size(339, 20);
+            this.TeStepValue.Size = new System.Drawing.Size(429, 20);
             this.TeStepValue.TabIndex = 11;
             this.TeStepValue.Visible = false;
             this.TeStepValue.TextChanged += new System.EventHandler(this.TeStepValue_TextChanged);
@@ -656,7 +748,7 @@
             // NuStepWait
             // 
             this.NuStepWait.DecimalPlaces = 3;
-            this.NuStepWait.Location = new System.Drawing.Point(132, 121);
+            this.NuStepWait.Location = new System.Drawing.Point(141, 121);
             this.NuStepWait.Maximum = new decimal(new int[] {
             600,
             0,
@@ -668,7 +760,7 @@
             0,
             196608});
             this.NuStepWait.Name = "NuStepWait";
-            this.NuStepWait.Size = new System.Drawing.Size(88, 20);
+            this.NuStepWait.Size = new System.Drawing.Size(79, 20);
             this.NuStepWait.TabIndex = 9;
             this.NuStepWait.Value = new decimal(new int[] {
             10,
@@ -691,9 +783,9 @@
             // 
             this.TeStepSelector.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TeStepSelector.Location = new System.Drawing.Point(132, 95);
+            this.TeStepSelector.Location = new System.Drawing.Point(141, 95);
             this.TeStepSelector.Name = "TeStepSelector";
-            this.TeStepSelector.Size = new System.Drawing.Size(339, 20);
+            this.TeStepSelector.Size = new System.Drawing.Size(429, 20);
             this.TeStepSelector.TabIndex = 7;
             this.TeStepSelector.Visible = false;
             this.TeStepSelector.TextChanged += new System.EventHandler(this.TeStepSelector_TextChanged);
@@ -718,6 +810,7 @@
             // 
             // CoStepType
             // 
+            this.CoStepType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CoStepType.FormattingEnabled = true;
             this.CoStepType.Items.AddRange(new object[] {
             "Группа шагов",
@@ -726,9 +819,9 @@
             "Проверить значение",
             "Проверка нахождения элемента",
             "Ждать время"});
-            this.CoStepType.Location = new System.Drawing.Point(298, 42);
+            this.CoStepType.Location = new System.Drawing.Point(400, 42);
             this.CoStepType.Name = "CoStepType";
-            this.CoStepType.Size = new System.Drawing.Size(173, 21);
+            this.CoStepType.Size = new System.Drawing.Size(170, 21);
             this.CoStepType.TabIndex = 4;
             this.CoStepType.SelectedIndexChanged += new System.EventHandler(this.CoStepType_SelectedIndexChanged);
             // 
@@ -738,7 +831,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TeStepName.Location = new System.Drawing.Point(69, 69);
             this.TeStepName.Name = "TeStepName";
-            this.TeStepName.Size = new System.Drawing.Size(402, 20);
+            this.TeStepName.Size = new System.Drawing.Size(501, 20);
             this.TeStepName.TabIndex = 3;
             this.TeStepName.TextChanged += new System.EventHandler(this.TeStepName_TextChanged);
             // 
@@ -751,47 +844,13 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Название";
             // 
-            // TrSteps
-            // 
-            this.TrSteps.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.TrSteps.HideSelection = false;
-            this.TrSteps.ImageIndex = 0;
-            this.TrSteps.ImageList = this.ImTree;
-            this.TrSteps.Location = new System.Drawing.Point(3, 3);
-            this.TrSteps.Name = "TrSteps";
-            this.TrSteps.SelectedImageIndex = 0;
-            this.TrSteps.Size = new System.Drawing.Size(696, 286);
-            this.TrSteps.TabIndex = 2;
-            this.TrSteps.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.TrSteps_ChangeExpanded);
-            this.TrSteps.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TrSteps_ChangeExpanded);
-            this.TrSteps.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TrSteps_NodeMouseClick);
-            this.TrSteps.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TrSteps_KeyDown);
-            this.TrSteps.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TrSteps_KeyUp);
-            // 
-            // ImTree
-            // 
-            this.ImTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ImTree.ImageStream")));
-            this.ImTree.TransparentColor = System.Drawing.Color.Transparent;
-            this.ImTree.Images.SetKeyName(0, "icons8-right-16.png");
-            this.ImTree.Images.SetKeyName(1, "icons8-folder-16.png");
-            this.ImTree.Images.SetKeyName(2, "icons8-find-16.png");
-            this.ImTree.Images.SetKeyName(3, "icons8-click-16.png");
-            this.ImTree.Images.SetKeyName(4, "icons8-edit-16.png");
-            this.ImTree.Images.SetKeyName(5, "icons8-check-16.png");
-            this.ImTree.Images.SetKeyName(6, "icons8-lightning-bolt-16.png");
-            this.ImTree.Images.SetKeyName(7, "icons8-save-16.png");
-            this.ImTree.Images.SetKeyName(8, "icons8-stopwatch-16.png");
-            this.ImTree.Images.SetKeyName(9, "icons8-open-16.png");
-            // 
             // TeTestName
             // 
             this.TeTestName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TeTestName.Location = new System.Drawing.Point(69, 19);
             this.TeTestName.Name = "TeTestName";
-            this.TeTestName.Size = new System.Drawing.Size(521, 20);
+            this.TeTestName.Size = new System.Drawing.Size(523, 20);
             this.TeTestName.TabIndex = 1;
             this.TeTestName.TextChanged += new System.EventHandler(this.TeTestName_TextChanged);
             // 
@@ -806,15 +865,14 @@
             // 
             // GrTestParameters
             // 
-            this.GrTestParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.GrTestParameters.Controls.Add(this.ChTestRegenerateParameters);
             this.GrTestParameters.Controls.Add(this.BuTestGenerateParameters);
             this.GrTestParameters.Controls.Add(this.DaTestParameters);
+            this.GrTestParameters.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GrTestParameters.Enabled = false;
-            this.GrTestParameters.Location = new System.Drawing.Point(6, 287);
+            this.GrTestParameters.Location = new System.Drawing.Point(0, 0);
             this.GrTestParameters.Name = "GrTestParameters";
-            this.GrTestParameters.Size = new System.Drawing.Size(360, 297);
+            this.GrTestParameters.Size = new System.Drawing.Size(372, 192);
             this.GrTestParameters.TabIndex = 13;
             this.GrTestParameters.TabStop = false;
             this.GrTestParameters.Text = "Параметры теста";
@@ -823,7 +881,7 @@
             // 
             this.ChTestRegenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ChTestRegenerateParameters.AutoSize = true;
-            this.ChTestRegenerateParameters.Location = new System.Drawing.Point(6, 247);
+            this.ChTestRegenerateParameters.Location = new System.Drawing.Point(6, 142);
             this.ChTestRegenerateParameters.Name = "ChTestRegenerateParameters";
             this.ChTestRegenerateParameters.Size = new System.Drawing.Size(356, 17);
             this.ChTestRegenerateParameters.TabIndex = 6;
@@ -835,9 +893,9 @@
             // 
             this.BuTestGenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuTestGenerateParameters.Location = new System.Drawing.Point(6, 268);
+            this.BuTestGenerateParameters.Location = new System.Drawing.Point(6, 163);
             this.BuTestGenerateParameters.Name = "BuTestGenerateParameters";
-            this.BuTestGenerateParameters.Size = new System.Drawing.Size(348, 23);
+            this.BuTestGenerateParameters.Size = new System.Drawing.Size(360, 23);
             this.BuTestGenerateParameters.TabIndex = 5;
             this.BuTestGenerateParameters.Text = "Сгенерировать";
             this.BuTestGenerateParameters.UseVisualStyleBackColor = true;
@@ -861,7 +919,7 @@
             this.DaTestParameters.Name = "DaTestParameters";
             this.DaTestParameters.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.DaTestParameters.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
-            this.DaTestParameters.Size = new System.Drawing.Size(348, 225);
+            this.DaTestParameters.Size = new System.Drawing.Size(360, 120);
             this.DaTestParameters.TabIndex = 0;
             this.DaTestParameters.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DaTestParameters_CellEndEdit);
             // 
@@ -886,15 +944,13 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.Controls.Add(this.ChProjectRegenerateParameters);
             this.groupBox5.Controls.Add(this.BuProjectGenerateParameters);
             this.groupBox5.Controls.Add(this.DaProjectParameters);
-            this.groupBox5.Location = new System.Drawing.Point(6, 3);
+            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox5.Location = new System.Drawing.Point(0, 0);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(360, 280);
+            this.groupBox5.Size = new System.Drawing.Size(372, 392);
             this.groupBox5.TabIndex = 14;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Параметры проекта";
@@ -903,7 +959,7 @@
             // 
             this.ChProjectRegenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ChProjectRegenerateParameters.AutoSize = true;
-            this.ChProjectRegenerateParameters.Location = new System.Drawing.Point(6, 230);
+            this.ChProjectRegenerateParameters.Location = new System.Drawing.Point(6, 342);
             this.ChProjectRegenerateParameters.Name = "ChProjectRegenerateParameters";
             this.ChProjectRegenerateParameters.Size = new System.Drawing.Size(356, 17);
             this.ChProjectRegenerateParameters.TabIndex = 6;
@@ -915,9 +971,9 @@
             // 
             this.BuProjectGenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuProjectGenerateParameters.Location = new System.Drawing.Point(6, 251);
+            this.BuProjectGenerateParameters.Location = new System.Drawing.Point(6, 363);
             this.BuProjectGenerateParameters.Name = "BuProjectGenerateParameters";
-            this.BuProjectGenerateParameters.Size = new System.Drawing.Size(348, 23);
+            this.BuProjectGenerateParameters.Size = new System.Drawing.Size(360, 23);
             this.BuProjectGenerateParameters.TabIndex = 5;
             this.BuProjectGenerateParameters.Text = "Сгенерировать";
             this.BuProjectGenerateParameters.UseVisualStyleBackColor = true;
@@ -941,7 +997,7 @@
             this.DaProjectParameters.Name = "DaProjectParameters";
             this.DaProjectParameters.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.DaProjectParameters.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
-            this.DaProjectParameters.Size = new System.Drawing.Size(348, 208);
+            this.DaProjectParameters.Size = new System.Drawing.Size(360, 320);
             this.DaProjectParameters.TabIndex = 0;
             this.DaProjectParameters.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DaProjectParameters_CellEndEdit);
             // 
@@ -966,15 +1022,14 @@
             // 
             // GrTestSettings
             // 
-            this.GrTestSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.GrTestSettings.Controls.Add(this.ChTestRunAfterPrevious);
             this.GrTestSettings.Controls.Add(this.TeTestName);
             this.GrTestSettings.Controls.Add(this.label1);
+            this.GrTestSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GrTestSettings.Enabled = false;
-            this.GrTestSettings.Location = new System.Drawing.Point(3, 3);
+            this.GrTestSettings.Location = new System.Drawing.Point(3, 0);
             this.GrTestSettings.Name = "GrTestSettings";
-            this.GrTestSettings.Size = new System.Drawing.Size(786, 52);
+            this.GrTestSettings.Size = new System.Drawing.Size(788, 46);
             this.GrTestSettings.TabIndex = 15;
             this.GrTestSettings.TabStop = false;
             this.GrTestSettings.Text = "Настройки теста";
@@ -983,7 +1038,7 @@
             // 
             this.ChTestRunAfterPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ChTestRunAfterPrevious.AutoSize = true;
-            this.ChTestRunAfterPrevious.Location = new System.Drawing.Point(596, 21);
+            this.ChTestRunAfterPrevious.Location = new System.Drawing.Point(598, 21);
             this.ChTestRunAfterPrevious.Name = "ChTestRunAfterPrevious";
             this.ChTestRunAfterPrevious.Size = new System.Drawing.Size(184, 17);
             this.ChTestRunAfterPrevious.TabIndex = 2;
@@ -991,162 +1046,160 @@
             this.ChTestRunAfterPrevious.UseVisualStyleBackColor = true;
             this.ChTestRunAfterPrevious.CheckedChanged += new System.EventHandler(this.ChTestRunAfterPrevious_CheckedChanged);
             // 
-            // panel1
+            // PaRight
             // 
-            this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(234, 587);
-            this.panel1.TabIndex = 3;
+            this.PaRight.Controls.Add(this.PaRightUp);
+            this.PaRight.Controls.Add(this.SpRightDown);
+            this.PaRight.Controls.Add(this.PaRightDown);
+            this.PaRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.PaRight.Location = new System.Drawing.Point(1032, 24);
+            this.PaRight.Name = "PaRight";
+            this.PaRight.Size = new System.Drawing.Size(372, 587);
+            this.PaRight.TabIndex = 17;
             // 
-            // splitter1
+            // PaMiddle
             // 
-            this.splitter1.Location = new System.Drawing.Point(234, 24);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 587);
-            this.splitter1.TabIndex = 16;
-            this.splitter1.TabStop = false;
+            this.PaMiddle.Controls.Add(this.PaMIddleDown);
+            this.PaMiddle.Controls.Add(this.PaMiddleUp);
+            this.PaMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PaMiddle.Location = new System.Drawing.Point(238, 24);
+            this.PaMiddle.Name = "PaMiddle";
+            this.PaMiddle.Size = new System.Drawing.Size(791, 587);
+            this.PaMiddle.TabIndex = 2;
             // 
-            // panel2
+            // CoStepSelectorType
             // 
-            this.panel2.Controls.Add(this.groupBox5);
-            this.panel2.Controls.Add(this.GrTestParameters);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(1032, 24);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(372, 587);
-            this.panel2.TabIndex = 17;
+            this.CoStepSelectorType.FormattingEnabled = true;
+            this.CoStepSelectorType.Location = new System.Drawing.Point(69, 95);
+            this.CoStepSelectorType.Name = "CoStepSelectorType";
+            this.CoStepSelectorType.Size = new System.Drawing.Size(66, 21);
+            this.CoStepSelectorType.TabIndex = 19;
+            this.CoStepSelectorType.Text = "id";
+            this.CoStepSelectorType.Visible = false;
+            this.CoStepSelectorType.SelectedIndexChanged += new System.EventHandler(this.CoStepSelectorType_SelectedIndexChanged);
             // 
-            // BuTestParametersHelp
+            // SpRight
             // 
-            this.BuTestParametersHelp.Name = "BuTestParametersHelp";
-            this.BuTestParametersHelp.Size = new System.Drawing.Size(208, 22);
-            this.BuTestParametersHelp.Text = "Справка по параметрам";
-            this.BuTestParametersHelp.Click += new System.EventHandler(this.BuTestParametersHelp_Click);
+            this.SpRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.SpRight.Location = new System.Drawing.Point(1029, 24);
+            this.SpRight.Name = "SpRight";
+            this.SpRight.Size = new System.Drawing.Size(3, 587);
+            this.SpRight.TabIndex = 21;
+            this.SpRight.TabStop = false;
             // 
-            // splitter2
+            // PaLeft
             // 
-            this.splitter2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter2.Location = new System.Drawing.Point(1029, 24);
-            this.splitter2.Name = "splitter2";
-            this.splitter2.Size = new System.Drawing.Size(3, 587);
-            this.splitter2.TabIndex = 18;
-            this.splitter2.TabStop = false;
+            this.PaLeft.Controls.Add(this.groupBox1);
+            this.PaLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.PaLeft.Location = new System.Drawing.Point(0, 24);
+            this.PaLeft.Name = "PaLeft";
+            this.PaLeft.Size = new System.Drawing.Size(238, 587);
+            this.PaLeft.TabIndex = 22;
             // 
-            // panel3
+            // SpLeft
             // 
-            this.panel3.Controls.Add(this.GrTestSettings);
-            this.panel3.Controls.Add(this.GrTestSteps);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(237, 24);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(792, 587);
-            this.panel3.TabIndex = 19;
+            this.SpLeft.Location = new System.Drawing.Point(238, 24);
+            this.SpLeft.Name = "SpLeft";
+            this.SpLeft.Size = new System.Drawing.Size(3, 587);
+            this.SpLeft.TabIndex = 23;
+            this.SpLeft.TabStop = false;
             // 
-            // panel4
+            // PaRightDown
             // 
-            this.panel4.Controls.Add(this.panel6);
-            this.panel4.Controls.Add(this.splitter3);
-            this.panel4.Controls.Add(this.panel5);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(3, 312);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(780, 211);
-            this.panel4.TabIndex = 15;
+            this.PaRightDown.Controls.Add(this.GrTestParameters);
+            this.PaRightDown.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.PaRightDown.Location = new System.Drawing.Point(0, 395);
+            this.PaRightDown.Name = "PaRightDown";
+            this.PaRightDown.Size = new System.Drawing.Size(372, 192);
+            this.PaRightDown.TabIndex = 15;
             // 
-            // panel5
+            // SpRightDown
             // 
-            this.panel5.Controls.Add(this.groupBox3);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel5.Location = new System.Drawing.Point(0, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(483, 211);
-            this.panel5.TabIndex = 0;
+            this.SpRightDown.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.SpRightDown.Location = new System.Drawing.Point(0, 392);
+            this.SpRightDown.Name = "SpRightDown";
+            this.SpRightDown.Size = new System.Drawing.Size(372, 3);
+            this.SpRightDown.TabIndex = 16;
+            this.SpRightDown.TabStop = false;
             // 
-            // splitter3
+            // PaRightUp
             // 
-            this.splitter3.Location = new System.Drawing.Point(483, 0);
-            this.splitter3.Name = "splitter3";
-            this.splitter3.Size = new System.Drawing.Size(3, 211);
-            this.splitter3.TabIndex = 1;
-            this.splitter3.TabStop = false;
+            this.PaRightUp.Controls.Add(this.groupBox5);
+            this.PaRightUp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PaRightUp.Location = new System.Drawing.Point(0, 0);
+            this.PaRightUp.Name = "PaRightUp";
+            this.PaRightUp.Size = new System.Drawing.Size(372, 392);
+            this.PaRightUp.TabIndex = 17;
             // 
-            // panel6
+            // PaMiddleUp
             // 
-            this.panel6.Controls.Add(this.groupBox4);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(486, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(294, 211);
-            this.panel6.TabIndex = 2;
+            this.PaMiddleUp.Controls.Add(this.GrTestSettings);
+            this.PaMiddleUp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.PaMiddleUp.Location = new System.Drawing.Point(0, 0);
+            this.PaMiddleUp.Name = "PaMiddleUp";
+            this.PaMiddleUp.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.PaMiddleUp.Size = new System.Drawing.Size(791, 46);
+            this.PaMiddleUp.TabIndex = 16;
             // 
-            // splitter4
+            // PaMIddleDown
             // 
-            this.splitter4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter4.Location = new System.Drawing.Point(3, 309);
-            this.splitter4.Name = "splitter4";
-            this.splitter4.Size = new System.Drawing.Size(780, 3);
-            this.splitter4.TabIndex = 16;
-            this.splitter4.TabStop = false;
+            this.PaMIddleDown.Controls.Add(this.GrTestSteps);
+            this.PaMIddleDown.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PaMIddleDown.Location = new System.Drawing.Point(0, 46);
+            this.PaMIddleDown.Name = "PaMIddleDown";
+            this.PaMIddleDown.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.PaMIddleDown.Size = new System.Drawing.Size(791, 541);
+            this.PaMIddleDown.TabIndex = 17;
             // 
-            // panel7
+            // PaMiddleDownDownRight
             // 
-            this.panel7.Controls.Add(this.BuStepDelete);
-            this.panel7.Controls.Add(this.BuStepAdd);
-            this.panel7.Controls.Add(this.BuStepClone);
-            this.panel7.Controls.Add(this.TrSteps);
-            this.panel7.Controls.Add(this.BuFontDecrease);
-            this.panel7.Controls.Add(this.BuFontIncrease);
-            this.panel7.Controls.Add(this.BuStepDown);
-            this.panel7.Controls.Add(this.BuStepReloadTree);
-            this.panel7.Controls.Add(this.BuStepUp);
-            this.panel7.Controls.Add(this.BuStepPaste);
-            this.panel7.Controls.Add(this.BuStepClearFocus);
-            this.panel7.Controls.Add(this.BuStepCopy);
-            this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel7.Location = new System.Drawing.Point(3, 16);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(780, 293);
-            this.panel7.TabIndex = 17;
+            this.PaMiddleDownDownRight.Controls.Add(this.groupBox4);
+            this.PaMiddleDownDownRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.PaMiddleDownDownRight.Location = new System.Drawing.Point(582, 0);
+            this.PaMiddleDownDownRight.Name = "PaMiddleDownDownRight";
+            this.PaMiddleDownDownRight.Size = new System.Drawing.Size(200, 199);
+            this.PaMiddleDownDownRight.TabIndex = 5;
             // 
-            // CoStepTypeGroup
+            // SpMiddleDownDownRight
             // 
-            this.CoStepTypeGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.CoStepTypeGroup.FormattingEnabled = true;
-            this.CoStepTypeGroup.Items.AddRange(new object[] {
-            "Группа шагов",
-            "Ожидать нахождения элемента",
-            "Кликнуть",
-            "Проверить значение",
-            "Проверка нахождения элемента",
-            "Ждать время"});
-            this.CoStepTypeGroup.Location = new System.Drawing.Point(69, 42);
-            this.CoStepTypeGroup.Name = "CoStepTypeGroup";
-            this.CoStepTypeGroup.Size = new System.Drawing.Size(223, 21);
-            this.CoStepTypeGroup.TabIndex = 18;
-            this.CoStepTypeGroup.SelectedIndexChanged += new System.EventHandler(this.CoStepTypeGroup_SelectedIndexChanged);
+            this.SpMiddleDownDownRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.SpMiddleDownDownRight.Location = new System.Drawing.Point(579, 0);
+            this.SpMiddleDownDownRight.Name = "SpMiddleDownDownRight";
+            this.SpMiddleDownDownRight.Size = new System.Drawing.Size(3, 199);
+            this.SpMiddleDownDownRight.TabIndex = 6;
+            this.SpMiddleDownDownRight.TabStop = false;
+            // 
+            // PaMiddleDownDownLeft
+            // 
+            this.PaMiddleDownDownLeft.Controls.Add(this.groupBox3);
+            this.PaMiddleDownDownLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PaMiddleDownDownLeft.Location = new System.Drawing.Point(0, 0);
+            this.PaMiddleDownDownLeft.Name = "PaMiddleDownDownLeft";
+            this.PaMiddleDownDownLeft.Size = new System.Drawing.Size(579, 199);
+            this.PaMiddleDownDownLeft.TabIndex = 7;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1404, 611);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.splitter2);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.SpLeft);
+            this.Controls.Add(this.PaMiddle);
+            this.Controls.Add(this.PaLeft);
+            this.Controls.Add(this.SpRight);
+            this.Controls.Add(this.PaRight);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Selenium Autotest IDE by alextrof94";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.GrTestSteps.ResumeLayout(false);
+            this.PaMiddleDownMiddle.ResumeLayout(false);
+            this.PaMiddleDownDown.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -1159,13 +1212,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.DaProjectParameters)).EndInit();
             this.GrTestSettings.ResumeLayout(false);
             this.GrTestSettings.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
-            this.panel7.ResumeLayout(false);
+            this.PaRight.ResumeLayout(false);
+            this.PaMiddle.ResumeLayout(false);
+            this.PaLeft.ResumeLayout(false);
+            this.PaRightDown.ResumeLayout(false);
+            this.PaRightUp.ResumeLayout(false);
+            this.PaMiddleUp.ResumeLayout(false);
+            this.PaMIddleDown.ResumeLayout(false);
+            this.PaMiddleDownDownRight.ResumeLayout(false);
+            this.PaMiddleDownDownLeft.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1245,19 +1300,24 @@
         private System.Windows.Forms.CheckBox ChStepIsEnabled;
         private System.Windows.Forms.CheckBox ChSlowMode;
         private System.Windows.Forms.CheckBox ChSelectFoundElements;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.ToolStripMenuItem BuTestParametersHelp;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Splitter splitter2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Panel panel6;
-        private System.Windows.Forms.Splitter splitter3;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Panel panel7;
-        private System.Windows.Forms.Splitter splitter4;
+        private System.Windows.Forms.Panel PaRight;
+        private System.Windows.Forms.Panel PaMiddle;
+        private System.Windows.Forms.Panel PaMiddleDownDown;
+        private System.Windows.Forms.Panel PaMiddleDownMiddle;
         private System.Windows.Forms.ComboBox CoStepTypeGroup;
+        private System.Windows.Forms.ComboBox CoStepSelectorType;
+        private System.Windows.Forms.Splitter SpRight;
+        private System.Windows.Forms.Panel PaLeft;
+        private System.Windows.Forms.Panel PaRightUp;
+        private System.Windows.Forms.Splitter SpRightDown;
+        private System.Windows.Forms.Panel PaRightDown;
+        private System.Windows.Forms.Panel PaMiddleUp;
+        private System.Windows.Forms.Splitter SpLeft;
+        private System.Windows.Forms.Panel PaMIddleDown;
+        private System.Windows.Forms.Panel PaMiddleDownDownLeft;
+        private System.Windows.Forms.Splitter SpMiddleDownDownRight;
+        private System.Windows.Forms.Panel PaMiddleDownDownRight;
     }
 }
 

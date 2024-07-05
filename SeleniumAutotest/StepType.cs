@@ -8,7 +8,11 @@ namespace SeleniumAutotest
 {
     internal enum StepTypes
     {
-        Group, Open, FindElement, Click, CheckText, EnterText, CheckElement, WaitTime, CheckClassExists, DoubleClick, CheckAttribute, ReadAttributeToParameter, ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser
+        Group, Open, FindElement, Click, CheckText, EnterText, CheckElement, 
+        WaitTime, CheckClassExists, DoubleClick, CheckAttribute, ReadAttributeToParameter, 
+        ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, 
+        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage
+        // Add new to tail
     }
     // TODO: Предусмотреть прямое нажатие клавиш клавиатуры (например, для сочетаний)
 
@@ -59,7 +63,7 @@ namespace SeleniumAutotest
                 Index = 6,
                 Name = "Сохранить в параметр",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
-                Types = new List<StepTypes>(){ StepTypes.ReadTextToParameter, StepTypes.ReadAttributeToParameter, StepTypes.ReadAddressToParameter, StepTypes.InputToParameterByUser } },
+                Types = new List<StepTypes>(){ StepTypes.ReadTextToParameter, StepTypes.ReadAttributeToParameter, StepTypes.ReadAddressToParameter } },
             new StepTypesGroup(){
                 Index = 7,
                 Name = "Ждать время",
@@ -69,20 +73,27 @@ namespace SeleniumAutotest
                 Index = 8,
                 Name = "Открыть сайт",
                 Parents = new List<StepTypes?>(){ StepTypes.Group },
-                Types = new List<StepTypes>(){ StepTypes.Open } },
+                Types = new List<StepTypes>(){ StepTypes.Open, StepTypes.RefreshPage } },
             new StepTypesGroup(){
                 Index = 5,
-                Name = "Вызвать JS действие",  
-                Parents = new List<StepTypes?>(){ StepTypes.FindElement }, 
+                Name = "Вызвать JS действие",
+                Parents = new List<StepTypes?>(){ StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.JsEvent } },
+            new StepTypesGroup(){
+                Index = 9,
+                Name = "Ввод пользователя",
+                Parents = new List<StepTypes?>(){ StepTypes.Group, },
+                Types = new List<StepTypes>(){ StepTypes.InputToParameterByUser } },
         };
 
         public static Dictionary<StepTypes, string> Descriptions { get; } = new Dictionary<StepTypes, string>{
             { StepTypes.Group, "Группа шагов" },
-            { StepTypes.Open, "Открыть сайт" },
             { StepTypes.FindElement, "Найти элемент" },
             { StepTypes.WaitTime, "Ждать время" },
             { StepTypes.JsEvent, "Вызвать событие" },
+
+            { StepTypes.Open, "Открыть сайт" },
+            { StepTypes.RefreshPage, "Обновить страницу" },
 
             { StepTypes.Click, "Просто" },
             { StepTypes.AltClick, "Альтернативно" },
@@ -102,7 +113,8 @@ namespace SeleniumAutotest
             { StepTypes.ReadTextToParameter, "Текст" },
             { StepTypes.ReadAttributeToParameter, "Атрибут" },
             { StepTypes.ReadAddressToParameter, "URL" },
-            { StepTypes.InputToParameterByUser, "Ввод пользователя" },
+
+            { StepTypes.InputToParameterByUser, "В параметр" },
         };
 
         public static int GetIndexOfGroupByType(StepTypes stepType)

@@ -57,6 +57,11 @@ namespace SeleniumAutotest
             toolTip1.SetToolTip(BuStepPaste, "Вставить шаг [CTRL+V]");
             toolTip1.SetToolTip(BuStepClearFocus, "Сбросить фокус с шага [Escape]");
             toolTip1.SetToolTip(BuStepReloadTree, "Обновить дерево [CTRL+R]");
+            var selectorTypes = Enum.GetValues(typeof(SelectorType)).Cast<SelectorType>().Select(v => v.ToString()).ToList();
+            foreach (var item in selectorTypes)
+            {
+                CoStepSelectorType.Items.Add(item);
+            }
         }
 
         #region Buttons
@@ -120,18 +125,7 @@ namespace SeleniumAutotest
 
         private void BuFileSave_Click(object sender, EventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog
-            {
-                Filter = "*.autotest|*.autotest"
-            };
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                Project.Name = Path.GetFileNameWithoutExtension(sfd.FileName);
-                Text = $"{AppName} - {Project.Name}";
-                string str = JsonConvert.SerializeObject(Project);
-                File.WriteAllText(sfd.FileName, str);
-                File.WriteAllText("./LastFilePath.txt", sfd.FileName);
-            }
+            SaveProject();
         }
 
         private void BuTestAdd_Click(object sender, EventArgs e)
@@ -287,6 +281,7 @@ namespace SeleniumAutotest
         {
             LaStepValue.Text = "Значение";
             TeStepSelector.Visible = false;
+            CoStepSelectorType.Visible = false;
             TeStepValue.Visible = false;
             NuStepWait.Visible = false;
             ChStepIgnoreError.Visible = false;
@@ -294,16 +289,19 @@ namespace SeleniumAutotest
             switch (type)
             {
                 case StepTypes.Group:
+                case StepTypes.RefreshPage:
                 case StepTypes.Click:
                 case StepTypes.AltClick:
                 case StepTypes.JsClick:
                 case StepTypes.DoubleClick:
                     break;
                 case StepTypes.FindElement:
+                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     NuStepWait.Visible = true;
                     break;
                 case StepTypes.CheckElement:
+                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     NuStepWait.Visible = true;
                     ChStepIgnoreError.Visible = true;
@@ -323,6 +321,7 @@ namespace SeleniumAutotest
                     NuStepWait.Visible = true;
                     break;
                 case StepTypes.CheckAttribute:
+                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     TeStepValue.Visible = true;
                     ChStepIgnoreError.Visible = true;
@@ -333,10 +332,12 @@ namespace SeleniumAutotest
                     ChStepIgnoreError.Visible = true;
                     break;
                 case StepTypes.SetAttribute:
-                    TeStepValue.Visible = true;
+                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
+                    TeStepValue.Visible = true;
                     break;
                 case StepTypes.ReadAttributeToParameter:
+                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     TeStepParameter.Visible = true;
                     break;
@@ -391,6 +392,10 @@ namespace SeleniumAutotest
             selectedStep.Substeps.Clear();
             UpdateStepField(nameof(TestStep.Type), StepType.GetTypeByName(CoStepType.SelectedItem.ToString()));
             SetStepFieldsVisible(selectedStep.Type);
+        }
+        private void CoStepSelectorType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateStepField(nameof(TestStep.SelectorType), CoStepSelectorType.SelectedIndex);
         }
 
         private void TeStepSelector_TextChanged(object sender, EventArgs e)
@@ -837,8 +842,23 @@ namespace SeleniumAutotest
 
             NeedUpdateTestFields = false;
 
+            CoStepTypeGroup.Items.Clear();
+            foreach (var group in StepType.StepTypesGroups.Where(x => x.Parents.Contains(selectedStep.Parent?.Type)))
+            {
+                CoStepTypeGroup.Items.Add(group);
+            }
+            CoStepTypeGroup.SelectedItem = StepType.StepTypesGroups.First(x => x.Types.Contains(selectedStep.Type));
+
+            CoStepType.Items.Clear();
+            foreach (var type in ((StepTypesGroup)CoStepTypeGroup.SelectedItem).Types)
+            {
+                CoStepType.Items.Add(StepType.Descriptions[type]);
+            }
+            CoStepType.SelectedItem = StepType.Descriptions[selectedStep.Type];
+
             TeStepName.Text = selectedStep.Name;
             TeStepSelector.Text = selectedStep.Selector;
+            CoStepSelectorType.SelectedIndex = (int)selectedStep.SelectorType;
             TeStepValue.Text = selectedStep.Value;
             TeStepParameter.Text = selectedStep.Parameter;
             ChStepIgnoreError.Checked = selectedStep.IgnoreError;
@@ -853,19 +873,7 @@ namespace SeleniumAutotest
             }
             RiLog.Text = selectedStep.Error;
 
-            CoStepTypeGroup.Items.Clear();
-            foreach (var group in StepType.StepTypesGroups.Where(x => x.Parents.Contains(selectedStep.Parent?.Type)))
-            {
-                CoStepTypeGroup.Items.Add(group);
-            }
-            CoStepTypeGroup.SelectedItem = StepType.StepTypesGroups.First(x => x.Types.Contains(selectedStep.Type));
 
-            CoStepType.Items.Clear();
-            foreach (var type in ((StepTypesGroup)CoStepTypeGroup.SelectedItem).Types)
-            {
-                CoStepType.Items.Add(StepType.Descriptions[type]);
-            }
-            CoStepType.SelectedItem = StepType.Descriptions[selectedStep.Type];
             SetStepFieldsVisible(selectedStep.Type);
             NeedUpdateTestFields = true;
         }
@@ -959,6 +967,36 @@ namespace SeleniumAutotest
             }
             CoStepType.SelectedIndex = 0;
             TeStepName.Text = CoStepTypeGroup.Text;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var res = MessageBox.Show("Желаете сохранить проект перед выходом?", "Выход", MessageBoxButtons.YesNoCancel);
+            if (res == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+                return;
+            }
+            if (res == DialogResult.Yes)
+            {
+                SaveProject();
+            }
+        }
+
+        private void SaveProject()
+        {
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "*.autotest|*.autotest"
+            };
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                Project.Name = Path.GetFileNameWithoutExtension(sfd.FileName);
+                Text = $"{AppName} - {Project.Name}";
+                string str = JsonConvert.SerializeObject(Project);
+                File.WriteAllText(sfd.FileName, str);
+                File.WriteAllText("./LastFilePath.txt", sfd.FileName);
+            }
         }
     }
 }
