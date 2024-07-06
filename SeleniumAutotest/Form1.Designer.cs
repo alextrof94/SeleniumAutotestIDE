@@ -121,6 +121,7 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
+            this.BuTestStepModePrev = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -235,6 +236,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.BuTestStepModePrev);
             this.groupBox1.Controls.Add(this.BuTestRunStepMode);
             this.groupBox1.Controls.Add(this.ChSelectFoundElements);
             this.groupBox1.Controls.Add(this.ChSlowMode);
@@ -291,6 +293,7 @@
             this.ImButtons.Images.SetKeyName(12, "icons8-play-32.png");
             this.ImButtons.Images.SetKeyName(13, "icons8-stop-32.png");
             this.ImButtons.Images.SetKeyName(14, "icons8-end-32.png");
+            this.ImButtons.Images.SetKeyName(15, "icons8-back-32.png");
             // 
             // ChSelectFoundElements
             // 
@@ -1286,6 +1289,21 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
+            // BuTestStepModePrev
+            // 
+            this.BuTestStepModePrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuTestStepModePrev.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BuTestStepModePrev.Enabled = false;
+            this.BuTestStepModePrev.ImageIndex = 15;
+            this.BuTestStepModePrev.ImageList = this.ImButtons;
+            this.BuTestStepModePrev.Location = new System.Drawing.Point(181, 611);
+            this.BuTestStepModePrev.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuTestStepModePrev.Name = "BuTestStepModePrev";
+            this.BuTestStepModePrev.Size = new System.Drawing.Size(41, 40);
+            this.BuTestStepModePrev.TabIndex = 15;
+            this.BuTestStepModePrev.UseVisualStyleBackColor = true;
+            this.BuTestStepModePrev.Click += new System.EventHandler(this.BuTestStepModePrev_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1431,6 +1449,7 @@
         private System.Windows.Forms.Splitter SpMiddleDownDownRight;
         private System.Windows.Forms.Panel PaMiddleDownDownRight;
         private System.Windows.Forms.Button BuTestRunStepMode;
+        private System.Windows.Forms.Button BuTestStepModePrev;
     }
 }
 

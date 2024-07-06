@@ -55,6 +55,8 @@ namespace SeleniumAutotest
         public StepStates StepState;
         [JsonIgnore]
         public string Error;
+        [JsonIgnore]
+        public TestStep PrevStep;
 
         public TestStep()
         {
@@ -120,12 +122,6 @@ namespace SeleniumAutotest
                 default:
                     return "!!! " + Name;
             }
-        }
-
-        public string GetValue(string str)
-        {
-            string res = ValuesFromParameters.ProcessInput(str, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-            return res;
         }
 
         private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, bool selectFoundElements, bool canIgnoreErrorIfStepIgnoringThem = true)
@@ -544,13 +540,13 @@ namespace SeleniumAutotest
             }
         }
 
-        bool IsMatchMask(string input, string pattern)
+        private bool IsMatchMask(string input, string pattern)
         {
             string regexPattern = "^" + Regex.Escape(pattern).Replace(@"\?", ".").Replace(@"\*", ".*") + "$";
             return Regex.IsMatch(input, regexPattern);
         }
 
-        internal void ClearState()
+        public void ClearState()
         {
             this.StepState = StepStates.NotStarted;
             this.Error = "";
@@ -587,7 +583,7 @@ namespace SeleniumAutotest
             }
         }
 
-        public void Run(IWebDriver driver, CancellationToken token, Action StateUpdated, bool slowMode, bool selectFoundElements)
+        public void AutoModeRun(IWebDriver driver, CancellationToken token, Action StateUpdated, bool slowMode, bool selectFoundElements)
         {
             StepWork(driver, StateUpdated, slowMode, selectFoundElements);
 
@@ -595,11 +591,11 @@ namespace SeleniumAutotest
             {
                 if (token.IsCancellationRequested)
                     break;
-                substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
+                substep.AutoModeRun(driver, token, StateUpdated, slowMode, selectFoundElements);
             }
         }
 
-        public void RunStepInStepMode(IWebDriver driver, Action StateUpdated, bool selectFoundElements)
+        public void StepModeRun(IWebDriver driver, Action StateUpdated, bool selectFoundElements)
         {
             StepWork(driver, StateUpdated, false, selectFoundElements, false);
         }

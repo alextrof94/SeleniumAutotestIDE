@@ -125,7 +125,7 @@ namespace SeleniumAutotest
             }
         }
 
-        public void Run(CancellationToken token, bool slowMode, bool selectFoundElements)
+        public void AutoModeRun(CancellationToken token, bool slowMode, bool selectFoundElements)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace SeleniumAutotest
                     {
                         if (token.IsCancellationRequested)
                             break;
-                        substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
+                        substep.AutoModeRun(driver, token, StateUpdated, slowMode, selectFoundElements);
                     }
                     Thread.Sleep(3000);
                 }
@@ -171,7 +171,7 @@ namespace SeleniumAutotest
         TestStep CurrentStep = null;
         IWebDriver WebDriver = null;
 
-        public TestStep GetNextStep(TestStep step)
+        private TestStep GetNextStep(TestStep step)
         {
             if (step.Substeps.Where(x => x.StepState == StepStates.NotStarted).Count() > 0)
             {
@@ -193,7 +193,7 @@ namespace SeleniumAutotest
             }
         }
 
-        public bool RunStepMode(Form1 form, bool selectFoundElements)
+        public bool StepModeRun(bool selectFoundElements)
         {
             if (Root.Substeps.Count == 0) { return false; }
 
@@ -209,32 +209,42 @@ namespace SeleniumAutotest
                 substep.ClearState();
             }
             CurrentStep = Root.Substeps[0];
-            ContinueStepMode(form, selectFoundElements);
+            StepModeContinue(selectFoundElements);
 
-            form.Activate();
             return true;
         }
 
-        public void ContinueStepMode(Form1 form, bool selectFoundElements)
+        public void StepModeContinue(bool selectFoundElements)
         {
-            form.Opacity = 0;
             try
             {
-                CurrentStep.RunStepInStepMode(WebDriver, StateUpdated, selectFoundElements);
+                CurrentStep.StepModeRun(WebDriver, StateUpdated, selectFoundElements);
+                TestStep prevStep = CurrentStep;
                 CurrentStep = GetNextStep(CurrentStep);
                 if (CurrentStep == null)
                 {
-                    StopStepMode();
+                    StepModeStop();
                     RunFinished?.Invoke();
+                    return;
                 }
+                CurrentStep.PrevStep = prevStep;
+                StateUpdated?.Invoke();
             }
             catch { }
-            form.Opacity = 1;
         }
 
-        public void StopStepMode()
+        public void StepModeStop()
         {
             WebDriver.Quit();
+        }
+
+        public void StepModeStepBack()
+        {
+            if (CurrentStep.PrevStep == null) { return; }
+            CurrentStep.StepState = StepStates.NotStarted;
+            CurrentStep = CurrentStep.PrevStep;
+            CurrentStep.StepState = StepStates.NotStarted;
+            StateUpdated?.Invoke();
         }
     }
 }

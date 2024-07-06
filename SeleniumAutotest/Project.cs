@@ -276,7 +276,7 @@ namespace SeleniumAutotest
             }
             TestStopwatch.Restart();
             CancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => SelectedAutotest.Run(CancellationTokenSource.Token, slowMode, selectFoundElements), CancellationTokenSource.Token);
+            Task.Run(() => SelectedAutotest.AutoModeRun(CancellationTokenSource.Token, slowMode, selectFoundElements), CancellationTokenSource.Token);
             return;
         }
 
@@ -285,24 +285,29 @@ namespace SeleniumAutotest
             CancellationTokenSource?.Cancel();
         }
 
-        public bool RunStepMode(Form1 form, bool selectFoundElements)
+        public bool StepModeRun(bool selectFoundElements)
         {
             if (SelectedAutotest == null) { return false; }
             if (RegenerateParametersOnRun)
             {
                 GenerateParameters();
             }
-            return SelectedAutotest.RunStepMode(form, selectFoundElements);
+            return SelectedAutotest.StepModeRun(selectFoundElements);
         }
 
-        public void NextStep(Form1 form, bool selectFoundElements)
+        public void StepModeContinue(bool selectFoundElements)
         {
-            SelectedAutotest.ContinueStepMode(form, selectFoundElements);
+            SelectedAutotest.StepModeContinue(selectFoundElements);
         }
 
-        internal void StopStepMode()
+        internal void StepModeStop()
         {
-            SelectedAutotest.StopStepMode();
+            SelectedAutotest.StepModeStop();
+        }
+
+        public void StepModeStepBack()
+        {
+            SelectedAutotest.StepModeStepBack();
         }
     }
 }

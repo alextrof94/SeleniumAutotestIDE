@@ -1024,7 +1024,7 @@ namespace SeleniumAutotest
             BuTestStop.Enabled = false;
             if (StepMode)
             {
-                Project.StopStepMode();
+                Project.StepModeStop();
                 StepMode = false;
             }
             if (AutoMode)
@@ -1034,7 +1034,9 @@ namespace SeleniumAutotest
             }
             BuTestRun.Enabled = true;
             BuTestRunStepMode.Enabled = true;
+            BuTestStepModePrev.Enabled = false;
             LiTests.Enabled = true;
+            Opacity = 1;
             ReloadTree();
         }
 
@@ -1042,17 +1044,26 @@ namespace SeleniumAutotest
         {
             if (!StepMode)
             {
-                if (Project.RunStepMode(this, ChSelectFoundElements.Checked))
+                if (Project.StepModeRun(ChSelectFoundElements.Checked))
                 {
                     StepMode = true;
                     BuTestStop.Enabled = true;
+                    BuTestStepModePrev.Enabled = true;
                     BuTestRun.Enabled = false;
                 }
+                Activate();
                 return;
             }
 
-            Project.NextStep(this, ChSelectFoundElements.Checked);
+            Opacity = 0;
+            Project.StepModeContinue(ChSelectFoundElements.Checked);
             ReloadTree();
+            Opacity = 1;
+        }
+
+        private void BuTestStepModePrev_Click(object sender, EventArgs e)
+        {
+            Project.StepModeStepBack();
         }
     }
 }
