@@ -52,6 +52,7 @@ namespace SeleniumAutotest
             toolTip1.SetToolTip(BuTestRun, "Запустить автотест");
             toolTip1.SetToolTip(BuTestStop, "Остановить автотест");
             toolTip1.SetToolTip(BuTestRunStepMode, "Запустить в режиме пошагового выполнения");
+            toolTip1.SetToolTip(BuTestStepModePrev, "На шаг назад в режиме пошагового выполнения");
 
             toolTip1.SetToolTip(BuStepAdd, "Добавить шаг [CTRL+A]");
             toolTip1.SetToolTip(BuStepDelete, "Удалить выделенный шаг [CTRL+Delete]");
@@ -61,7 +62,10 @@ namespace SeleniumAutotest
             toolTip1.SetToolTip(BuStepCopy, "Скопировать шаг [CTRL+C]");
             toolTip1.SetToolTip(BuStepPaste, "Вставить шаг [CTRL+V]");
             toolTip1.SetToolTip(BuStepClearFocus, "Сбросить фокус с шага [Escape]");
+
             toolTip1.SetToolTip(BuStepReloadTree, "Обновить дерево [CTRL+R]");
+            toolTip1.SetToolTip(BuFontIncrease, "Увеличить размер текста в дереве");
+            toolTip1.SetToolTip(BuFontDecrease, "Уменьшить размер текста в дереве");
             var selectorTypes = Enum.GetValues(typeof(SelectorType)).Cast<SelectorType>().Select(v => v.ToString()).ToList();
             foreach (var item in selectorTypes)
             {
@@ -496,6 +500,7 @@ namespace SeleniumAutotest
                 AutoMode = false;
                 BuTestRun.Enabled = true;
                 BuTestRunStepMode.Enabled = true;
+                BuTestStepModePrev.Enabled = false;
             }));
         }
 
