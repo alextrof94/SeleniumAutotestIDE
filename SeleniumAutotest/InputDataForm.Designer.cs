@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputDataForm));
             this.BuOk = new System.Windows.Forms.Button();
             this.TeValue = new System.Windows.Forms.TextBox();
             this.Label1 = new System.Windows.Forms.Label();
+            this.Label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // BuOk
@@ -38,7 +40,7 @@
             this.BuOk.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.BuOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.BuOk.Location = new System.Drawing.Point(12, 64);
+            this.BuOk.Location = new System.Drawing.Point(12, 79);
             this.BuOk.Name = "BuOk";
             this.BuOk.Size = new System.Drawing.Size(609, 23);
             this.BuOk.TabIndex = 0;
@@ -50,7 +52,7 @@
             // 
             this.TeValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TeValue.Location = new System.Drawing.Point(12, 34);
+            this.TeValue.Location = new System.Drawing.Point(12, 47);
             this.TeValue.Name = "TeValue";
             this.TeValue.Size = new System.Drawing.Size(609, 20);
             this.TeValue.TabIndex = 1;
@@ -64,15 +66,26 @@
             this.Label1.TabIndex = 2;
             this.Label1.Text = "label1";
             // 
+            // Label2
+            // 
+            this.Label2.AutoSize = true;
+            this.Label2.Location = new System.Drawing.Point(12, 27);
+            this.Label2.Name = "Label2";
+            this.Label2.Size = new System.Drawing.Size(35, 13);
+            this.Label2.TabIndex = 3;
+            this.Label2.Text = "label1";
+            // 
             // InputDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(633, 99);
+            this.ClientSize = new System.Drawing.Size(633, 114);
+            this.Controls.Add(this.Label2);
             this.Controls.Add(this.Label1);
             this.Controls.Add(this.TeValue);
             this.Controls.Add(this.BuOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InputDataForm";
             this.Text = "Введите данные";
             this.ResumeLayout(false);
@@ -85,5 +98,6 @@
         private System.Windows.Forms.Button BuOk;
         private System.Windows.Forms.TextBox TeValue;
         private System.Windows.Forms.Label Label1;
+        private System.Windows.Forms.Label Label2;
     }
 }

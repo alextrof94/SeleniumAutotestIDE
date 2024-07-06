@@ -408,7 +408,7 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.InputToParameterByUser:
                             {
-                                InputDataForm inputDataForm = new InputDataForm(this.Parameter);
+                                InputDataForm inputDataForm = new InputDataForm(this.Parameter, this.Name);
                                 if (inputDataForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                                 {
                                     throw new Exception($"Не введён параметр");

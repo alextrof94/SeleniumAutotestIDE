@@ -41,8 +41,9 @@
             this.BuCantDownloadDriverHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.LiTests = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.BuTestRunStepMode = new System.Windows.Forms.Button();
+            this.BuTestStepModePrev = new System.Windows.Forms.Button();
             this.ImButtons = new System.Windows.Forms.ImageList(this.components);
+            this.BuTestRunStepMode = new System.Windows.Forms.Button();
             this.ChSelectFoundElements = new System.Windows.Forms.CheckBox();
             this.ChSlowMode = new System.Windows.Forms.CheckBox();
             this.LaRunTime = new System.Windows.Forms.Label();
@@ -121,7 +122,6 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
-            this.BuTestStepModePrev = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -260,19 +260,20 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Автотесты";
             // 
-            // BuTestRunStepMode
+            // BuTestStepModePrev
             // 
-            this.BuTestRunStepMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuTestRunStepMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.BuTestRunStepMode.ImageIndex = 14;
-            this.BuTestRunStepMode.ImageList = this.ImButtons;
-            this.BuTestRunStepMode.Location = new System.Drawing.Point(230, 611);
-            this.BuTestRunStepMode.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.BuTestRunStepMode.Name = "BuTestRunStepMode";
-            this.BuTestRunStepMode.Size = new System.Drawing.Size(41, 40);
-            this.BuTestRunStepMode.TabIndex = 14;
-            this.BuTestRunStepMode.UseVisualStyleBackColor = true;
-            this.BuTestRunStepMode.Click += new System.EventHandler(this.BuTestRunStepMode_Click);
+            this.BuTestStepModePrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuTestStepModePrev.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BuTestStepModePrev.Enabled = false;
+            this.BuTestStepModePrev.ImageIndex = 15;
+            this.BuTestStepModePrev.ImageList = this.ImButtons;
+            this.BuTestStepModePrev.Location = new System.Drawing.Point(181, 611);
+            this.BuTestStepModePrev.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuTestStepModePrev.Name = "BuTestStepModePrev";
+            this.BuTestStepModePrev.Size = new System.Drawing.Size(41, 40);
+            this.BuTestStepModePrev.TabIndex = 15;
+            this.BuTestStepModePrev.UseVisualStyleBackColor = true;
+            this.BuTestStepModePrev.Click += new System.EventHandler(this.BuTestStepModePrev_Click);
             // 
             // ImButtons
             // 
@@ -294,6 +295,20 @@
             this.ImButtons.Images.SetKeyName(13, "icons8-stop-32.png");
             this.ImButtons.Images.SetKeyName(14, "icons8-end-32.png");
             this.ImButtons.Images.SetKeyName(15, "icons8-back-32.png");
+            // 
+            // BuTestRunStepMode
+            // 
+            this.BuTestRunStepMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuTestRunStepMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BuTestRunStepMode.ImageIndex = 14;
+            this.BuTestRunStepMode.ImageList = this.ImButtons;
+            this.BuTestRunStepMode.Location = new System.Drawing.Point(230, 611);
+            this.BuTestRunStepMode.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuTestRunStepMode.Name = "BuTestRunStepMode";
+            this.BuTestRunStepMode.Size = new System.Drawing.Size(41, 40);
+            this.BuTestRunStepMode.TabIndex = 14;
+            this.BuTestRunStepMode.UseVisualStyleBackColor = true;
+            this.BuTestRunStepMode.Click += new System.EventHandler(this.BuTestRunStepMode_Click);
             // 
             // ChSelectFoundElements
             // 
@@ -1289,21 +1304,6 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
-            // BuTestStepModePrev
-            // 
-            this.BuTestStepModePrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuTestStepModePrev.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.BuTestStepModePrev.Enabled = false;
-            this.BuTestStepModePrev.ImageIndex = 15;
-            this.BuTestStepModePrev.ImageList = this.ImButtons;
-            this.BuTestStepModePrev.Location = new System.Drawing.Point(181, 611);
-            this.BuTestStepModePrev.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.BuTestStepModePrev.Name = "BuTestStepModePrev";
-            this.BuTestStepModePrev.Size = new System.Drawing.Size(41, 40);
-            this.BuTestStepModePrev.TabIndex = 15;
-            this.BuTestStepModePrev.UseVisualStyleBackColor = true;
-            this.BuTestStepModePrev.Click += new System.EventHandler(this.BuTestStepModePrev_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1317,6 +1317,7 @@
             this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MinimumSize = new System.Drawing.Size(1280, 720);

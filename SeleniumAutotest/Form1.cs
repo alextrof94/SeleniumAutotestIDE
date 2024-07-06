@@ -238,16 +238,20 @@ namespace SeleniumAutotest
             str += "Param0 = 11 => \"11\"\r\n";
             str += "PARAM1 = A127B => \"A127B\"\r\n";
             str += "Param2 = Test2%PARAM1%Test2 => \"Test2A127BTest2\"\r\n";
-            str += "Param3 = Test3%Param2%/randomD2/Test3 => \"Test3Test2A127BTest274Test3\"\r\n\r\n";
+            str += "Param3 = Test3%Param2%/randomD2/Test3 => Test3Test2A127BTest2/randomD2/Test3 => \"Test3Test2A127BTest274Test3\"\r\n\r\n";
 
             str += "ParamNull = TestN%PARAM1%/randomD2//null/TestN => null\r\n\r\n";
 
             str += "TODAY = ^DateTime.Now.ToShortDateString()^ => текущая дата в формате dd.mm.yyyy (для RU-локали)\r\n";
-            str += "TODAY = ^(10+int.Parse(%Param0%)).ToString()^ => \"21\"\r\n\r\n";
+            str += "TODAY = ^(10+int.Parse(%Param0%)).ToString()^ => ^(10+int.Parse(10)).ToString()^ => \"21\"\r\n\r\n";
 
             str += "Не используйте одинаковые именя для параметров проекта и параметров теста\r\n\r\n";
 
             str += "Для параметров, которые будут заполнены во время выполнения автотестов оставьте пустой шаблон\r\n\r\n";
+
+            str += "Параметры, автогенерацию и скриптинг можно использовать в полях Значение и Селектор\r\n\r\n";
+
+            str += "Поле Значение для сравнивающих шагов поддерживает маскирование (\\? - 1 символ, \\* - несколько символов), т.е. проверку на \"a\\?c\\*\" пройдёт, например, строка \"abcdefg\" \r\n\r\n";
             MessageBox.Show(str, "Справка по параметрам");
         }
 

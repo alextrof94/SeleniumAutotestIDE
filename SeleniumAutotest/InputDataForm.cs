@@ -14,10 +14,11 @@ namespace SeleniumAutotest
     {
         public string Result {  get; set; }
 
-        public InputDataForm(string parameterName)
+        public InputDataForm(string parameterName, string name)
         {
             InitializeComponent();
-            Label1.Text = "Введите значение для параметра " + parameterName;
+            Label1.Text = name;
+            Label2.Text = "Введите значение для параметра " + parameterName;
         }
 
         private void BuOk_Click(object sender, EventArgs e)
