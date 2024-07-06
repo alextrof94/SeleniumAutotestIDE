@@ -49,6 +49,7 @@ namespace SeleniumAutotest
             Autotests.Add(test);
             if (Autotests.Count == 1)
             {
+                Autotests[0].Parameters.Add(new Parameter() { Name = "Search", Pattern = "Википедия" });
                 Autotests[0].Name = "Открыть википедию через гугл";
                 Autotests[0].Root.Substeps = new List<TestStep>() {
                     new TestStep() {
@@ -62,23 +63,23 @@ namespace SeleniumAutotest
                                 Value = "https://www.google.com/"
                             },
                             new TestStep() {
-                                Name = "Ждать появления поиска",
+                                Name = "Ждать появления поиска по XPATH",
                                 Type = StepTypes.FindElement,
-                                SecondsToWait = 10,
+                                SecondsToWait = 30,
                                 Selector = "//textarea[@title='Поиск']",
                                 Substeps = new List<TestStep>
                                 {
                                     new TestStep {
-                                        Name = "Ввести Википедия",
+                                        Name = "Ввести Википедия из параметра",
                                         Type = StepTypes.EnterText,
-                                        Value = "Википедия"
+                                        Value = "%Search%"
                                     }
                                 }
                             },
                             new TestStep() {
-                                Name = "Ждать кнопку поиска",
+                                Name = "Ждать кнопку поиска по XPATH",
                                 Type = StepTypes.FindElement,
-                                SecondsToWait = 1,
+                                SecondsToWait = 30,
                                 Selector = "//input[@name='btnK' and @value='Поиск в Google']",
                                 Substeps = new List<TestStep>
                                 {
@@ -97,23 +98,25 @@ namespace SeleniumAutotest
                         Substeps = new List<TestStep>
                         {
                             new TestStep() {
-                                Name = "Ждать появления элемента результатов",
+                                Name = "Ждать появления элемента результатов по ID",
                                 Type = StepTypes.FindElement,
-                                SecondsToWait = 10,
-                                Selector = "//div[@id='rso']",
+                                SecondsToWait = 30,
+                                SelectorType = SelectorType.ID,
+                                Selector = "rso",
                                 Substeps = new List<TestStep>
                                 {
                                     new TestStep() {
-                                        Name = "Найти первый дочерний элемент a",
+                                        Name = "Найти первый дочерний элемент a по Tag",
                                         Type = StepTypes.FindElement,
-                                        SecondsToWait = 1,
-                                        Selector = "//a",
+                                        SecondsToWait = 30,
+                                        SelectorType = SelectorType.Tag,
+                                        Selector = "a",
                                         Substeps = new List<TestStep>
                                         {
                                             new TestStep() {
-                                                Name = "Найти первый дочерний элемент h3",
+                                                Name = "Найти первый дочерний элемент h3 по XPATH",
                                                 Type = StepTypes.FindElement,
-                                                SecondsToWait = 1,
+                                                SecondsToWait = 30,
                                                 Selector = "//h3",
                                                 Substeps = new List<TestStep>
                                                 {
@@ -136,14 +139,17 @@ namespace SeleniumAutotest
                         Substeps = new List<TestStep>
                         {
                             new TestStep() {
-                                Name = "Ждать появления элемента с лого",
+                                Name = "Ждать появления элемента с лого по Классу",
                                 Type = StepTypes.FindElement,
                                 SecondsToWait = 30,
-                                Selector = "//a[@class='mw-wiki-logo']"
+                                SelectorType = SelectorType.Class,
+                                Selector = "mw-wiki-logo"
                             }
                         }
                     }
                 };
+                GenerateParameters();
+                Autotests[0].ResetGuid();
                 Autotests[0].ResetAllParentsForSteps();
             }
             ResetAllParentsForAutotests();
@@ -233,27 +239,6 @@ namespace SeleniumAutotest
             }
         }
 
-        public bool RunAutotest(bool slowMode, bool selectFoundElements)
-        {
-            if (SelectedAutotest == null) { return false; }
-            SlowMode = slowMode;
-            SelectFoundElements = selectFoundElements;
-            RunStopwatch.Restart();
-            if (RegenerateParametersOnRun)
-            {
-                GenerateParameters();
-            }
-            TestStopwatch.Restart();
-            CancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => SelectedAutotest.Run(CancellationTokenSource.Token, slowMode, selectFoundElements), CancellationTokenSource.Token);
-            return true;
-        }
-
-        public void StopAutotest()
-        {
-            CancellationTokenSource?.Cancel();
-        }
-
         public bool TestMoveUp()
         {
             if (SelectedAutotest == null) { return false; }
@@ -277,6 +262,47 @@ namespace SeleniumAutotest
             (Autotests[ind + 1], Autotests[ind]) = (Autotests[ind], Autotests[ind + 1]);
             SelectAutotest(Autotests[ind + 1]);
             return true;
+        }
+
+        public void RunAutotest(bool slowMode, bool selectFoundElements)
+        {
+            if (SelectedAutotest == null) { return; }
+            SlowMode = slowMode;
+            SelectFoundElements = selectFoundElements;
+            RunStopwatch.Restart();
+            if (RegenerateParametersOnRun)
+            {
+                GenerateParameters();
+            }
+            TestStopwatch.Restart();
+            CancellationTokenSource = new CancellationTokenSource();
+            Task.Run(() => SelectedAutotest.Run(CancellationTokenSource.Token, slowMode, selectFoundElements), CancellationTokenSource.Token);
+            return;
+        }
+
+        public void StopAutotest()
+        {
+            CancellationTokenSource?.Cancel();
+        }
+
+        public bool RunStepMode(Form1 form, bool selectFoundElements)
+        {
+            if (SelectedAutotest == null) { return false; }
+            if (RegenerateParametersOnRun)
+            {
+                GenerateParameters();
+            }
+            return SelectedAutotest.RunStepMode(form, selectFoundElements);
+        }
+
+        public void NextStep(Form1 form, bool selectFoundElements)
+        {
+            SelectedAutotest.ContinueStepMode(form, selectFoundElements);
+        }
+
+        internal void StopStepMode()
+        {
+            SelectedAutotest.StopStepMode();
         }
     }
 }

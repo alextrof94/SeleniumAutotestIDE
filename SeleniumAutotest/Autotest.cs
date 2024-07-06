@@ -8,6 +8,8 @@ using WebDriverManager.DriverConfigs.Impl;
 using Newtonsoft.Json;
 using System.Threading;
 using System.IO;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace SeleniumAutotest
 {
@@ -15,7 +17,7 @@ namespace SeleniumAutotest
     internal class Autotest
     {
         public string Name { get; set; }
-        public TestStep Root {  get; set; }
+        public TestStep Root { get; set; }
         public List<Parameter> Parameters { get; set; }
         public bool RunAfterPrevious { get; set; } = false;
         public bool RegenerateParametersOnRun { get; set; } = true;
@@ -40,7 +42,8 @@ namespace SeleniumAutotest
             Parameters = new List<Parameter>();
         }
 
-        public override string ToString() { 
+        public override string ToString()
+        {
             return Name;
         }
 
@@ -59,7 +62,7 @@ namespace SeleniumAutotest
             }
         }
 
-        public TestStep FindStepById(Guid id) 
+        public TestStep FindStepById(Guid id)
         {
             return FindStepByIdInSubsteps(Root, id);
         }
@@ -75,54 +78,10 @@ namespace SeleniumAutotest
                 var res = FindStepByIdInSubsteps(substep, id);
                 if (res != null)
                 {
-                    return res; 
+                    return res;
                 }
             }
             return null;
-        }
-
-        public void Run(CancellationToken token, bool slowMode, bool selectFoundElements)
-        {
-            try
-            {
-                RunGotError = false;
-                ErrorStep = null;
-                if (RegenerateParametersOnRun)
-                {
-                    GenerateParameters();
-                }
-                string driverPath = TryToDownloadDriver();
-                IWebDriver driver = new ChromeDriver(driverPath);
-                driver.Manage().Window.Maximize();
-                try
-                {
-                    foreach (var substep in Root.Substeps)
-                    {
-                        substep.ClearState();
-                    }
-                    bool needToContinue = true;
-                    foreach (var substep in Root.Substeps)
-                    {
-                        if (token.IsCancellationRequested || !needToContinue)
-                            break;
-                        needToContinue = substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
-                        if (!needToContinue)
-                        {
-                            RunGotError = true;
-                        }
-                    }
-                    Thread.Sleep(3000);
-                }
-                finally
-                {
-                    driver.Quit();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            RunFinished?.Invoke();
         }
 
         public void GenerateParameters()
@@ -164,6 +123,118 @@ namespace SeleniumAutotest
             {
                 substep.ResetGuid();
             }
+        }
+
+        public void Run(CancellationToken token, bool slowMode, bool selectFoundElements)
+        {
+            try
+            {
+                RunGotError = false;
+                ErrorStep = null;
+                if (RegenerateParametersOnRun)
+                {
+                    GenerateParameters();
+                }
+                string driverPath = TryToDownloadDriver();
+                IWebDriver driver = new ChromeDriver(driverPath);
+                driver.Manage().Window.Maximize();
+                try
+                {
+                    foreach (var substep in Root.Substeps)
+                    {
+                        substep.ClearState();
+                    }
+                    foreach (var substep in Root.Substeps)
+                    {
+                        if (token.IsCancellationRequested)
+                            break;
+                        substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
+                    }
+                    Thread.Sleep(3000);
+                }
+                catch
+                {
+                    RunGotError = true;
+                }
+                finally
+                {
+                    driver.Quit();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            RunFinished?.Invoke();
+        }
+
+        TestStep CurrentStep = null;
+        IWebDriver WebDriver = null;
+
+        public TestStep GetNextStep(TestStep step)
+        {
+            if (step.Substeps.Where(x => x.StepState == StepStates.NotStarted).Count() > 0)
+            {
+                return step.Substeps[0];
+            }
+            else
+            {
+                if (step.Parent == null)
+                    return null;
+                var indexNow = step.Parent.Substeps.IndexOf(step);
+                if (indexNow < step.Parent.Substeps.Count - 1)
+                {
+                    return step.Parent.Substeps[indexNow + 1];
+                }
+                else
+                {
+                    return GetNextStep(step.Parent);
+                }
+            }
+        }
+
+        public bool RunStepMode(Form1 form, bool selectFoundElements)
+        {
+            if (Root.Substeps.Count == 0) { return false; }
+
+            if (RegenerateParametersOnRun)
+            {
+                GenerateParameters();
+            }
+            string driverPath = TryToDownloadDriver();
+            WebDriver = new ChromeDriver(driverPath);
+            WebDriver.Manage().Window.Maximize();
+            foreach (var substep in Root.Substeps)
+            {
+                substep.ClearState();
+            }
+            CurrentStep = Root.Substeps[0];
+            ContinueStepMode(form, selectFoundElements);
+
+            form.Activate();
+            return true;
+        }
+
+        public void ContinueStepMode(Form1 form, bool selectFoundElements)
+        {
+            form.Opacity = 0;
+            try
+            {
+                CurrentStep.RunStepInStepMode(WebDriver, StateUpdated, selectFoundElements);
+                CurrentStep = GetNextStep(CurrentStep);
+                if (CurrentStep == null)
+                {
+                    StopStepMode();
+                    RunFinished?.Invoke();
+                }
+            }
+            catch { }
+            form.Opacity = 1;
+        }
+
+        public void StopStepMode()
+        {
+            WebDriver.Quit();
         }
     }
 }

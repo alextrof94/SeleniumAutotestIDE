@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using AngleSharp.Dom;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 namespace SeleniumAutotest
 {
@@ -22,7 +23,7 @@ namespace SeleniumAutotest
 
     public enum SelectorType
     {
-        ID, Class, XPath
+        ID, Class, XPath, Tag, PartLink
     }
 
     [Serializable]
@@ -68,6 +69,7 @@ namespace SeleniumAutotest
             IgnoreError = false;
             Expanded = true;
             Enabled = true;
+            Parent = null;
         }
 
         public override string ToString()
@@ -126,277 +128,295 @@ namespace SeleniumAutotest
             return res;
         }
 
-        /// <returns>need to continue</returns>
-        public bool Run(IWebDriver driver, CancellationToken token, Action StateUpdated, bool slowMode, bool selectFoundElements)
+        private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, bool selectFoundElements, bool canIgnoreErrorIfStepIgnoringThem = true)
         {
-            bool needToContinue = true;
             try
             {
-                bool needToSlow = true;
-                if (this.Selector == null)
+                try
                 {
-                    this.Selector = "";
-                }
-                if (this.Value == null)
-                {
-                    this.Value = "";
-                }
-                if (!Enabled)
-                {
-                    this.StepState = StepStates.Skipped;
-                    return true;
-                }
-                switch (Type)
-                {
-                    case StepTypes.Open:
-                        driver.Navigate().GoToUrl(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters));
-                        this.StepState = StepStates.Passed;
-                        break;
-                    case StepTypes.RefreshPage:
-                        driver.Navigate().Refresh();
-                        this.StepState = StepStates.Passed;
-                        break;
-                    case StepTypes.FindElement:
-                        {
-                            var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(this.SecondsToWait));
-                            IWebElement el = null;
-                            if (this.Parent.FoundElement != null)
-                            {
-                                switch (SelectorType)
-                                {
-                                    case SelectorType.ID:
-                                        el = wait.Until(d => this.Parent.FoundElement.FindElement(By.Id(selector)));
-                                        break;
-                                    case SelectorType.Class:
-                                        el = wait.Until(d => this.Parent.FoundElement.FindElement(By.ClassName(selector)));
-                                        break;
-                                    case SelectorType.XPath:
-                                        el = wait.Until(d => this.Parent.FoundElement.FindElement(By.XPath(selector)));
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                switch (SelectorType)
-                                {
-                                    case SelectorType.ID:
-                                        el = wait.Until(d => driver.FindElement(By.Id(selector)));
-                                        break;
-                                    case SelectorType.Class:
-                                        el = wait.Until(d => driver.FindElement(By.ClassName(selector)));
-                                        break;
-                                    case SelectorType.XPath:
-                                        el = wait.Until(d => driver.FindElement(By.XPath(selector)));
-                                        break;
-                                }
-                            }
-                            //wait.Until(d => el.Displayed);
-                            FoundElement = el;
-                            if (selectFoundElements)
-                            {
-                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                                js.ExecuteScript("arguments[0].style.border='2px solid red';", el);
-                            }
+                    if (!Enabled)
+                    {
+                        this.StepState = StepStates.Skipped;
+                        return;
+                    }
 
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.EnterText:
-                        {
-                            string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            var el = this.Parent.FoundElement;
-                            //el.Clear();
-                            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                            js.ExecuteScript("arguments[0].value = '';", el);
-                            el.SendKeys(value);
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.SetAttribute:
-                        {
-                            string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            var el = this.Parent.FoundElement;
-                            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                            js.ExecuteScript("arguments[0].setAttribute(arguments[1], arguments[2]);", el, this.Selector, value);
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.Click:
-                        {
-                            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-                            var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
-                            el.Click();
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.JsClick:
-                        {
-                            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-                            var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
-                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", el);
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.AltClick:
-                        {
-                            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-                            var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
-                            Actions action = new Actions(driver);
-                            action.Click(el).Build().Perform();
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.DoubleClick:
-                        {
-                            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-                            var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
-                            Actions action = new Actions(driver);
-                            action.DoubleClick(el).Build().Perform();
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.JsEvent:
-                        {
-                            var el = this.Parent.FoundElement;
-                            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                            js.ExecuteScript($"arguments[0].dispatchEvent(new Event('{Value}'));", el);
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.CheckText:
-                        {
-                            var el = this.Parent.FoundElement;
-                            if (IsMatchMask(el.Text, ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                    if (this.Selector == null) { this.Selector = ""; }
+                    if (this.Value == null) { this.Value = ""; }
+
+                    bool needToSlow = false;
+                    switch (Type)
+                    {
+                        case StepTypes.Open:
+                            driver.Navigate().GoToUrl(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters));
+                            break;
+                        case StepTypes.RefreshPage:
+                            driver.Navigate().Refresh();
+                            break;
+                        case StepTypes.FindElement:
                             {
-                                this.StepState = StepStates.Passed;
-                            }
-                            else
-                            {
-                                this.StepState = StepStates.Error;
-                                this.Error = $"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{el.Text}]";
-                            }
-                        }
-                        break;
-                    case StepTypes.CheckAttribute:
-                        {
-                            var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            var el = this.Parent.FoundElement;
-                            if (el != null && el.GetAttribute(selector) != null && IsMatchMask(el.GetAttribute(selector), ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
-                            {
-                                this.StepState = StepStates.Passed;
-                            }
-                            else
-                            {
-                                this.StepState = StepStates.Error;
-                                string errValue = $"Атрибут {selector} не найден";
-                                if (el.GetAttribute(selector) != null)
+                                needToSlow = true;
+                                var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(this.SecondsToWait));
+                                IWebElement el = null;
+                                if (this.Parent.FoundElement != null)
                                 {
-                                    errValue = el.GetAttribute(selector);
+                                    IReadOnlyCollection<IWebElement> tempElementsBySelector = null;
+                                    switch (SelectorType)
+                                    {
+                                        case SelectorType.ID:
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.Id(selector)));
+                                            break;
+                                        case SelectorType.Class:
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.ClassName(selector)));
+                                            break;
+                                        case SelectorType.XPath:
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.XPath(selector)));
+                                            break;
+                                        case SelectorType.Tag:
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.TagName(selector)));
+                                            break;
+                                        case SelectorType.PartLink:
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.PartialLinkText(selector)));
+                                            break;
+                                    }
+                                    el = tempElementsBySelector.FirstOrDefault(element => IsChildOf(driver, element, this.Parent.FoundElement));
+                                    if (el == null)
+                                    {
+                                        var selectorParent = ValuesFromParameters.ProcessInput(this.Parent.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                        string fullXPath = GetElementXPath(driver, this.Parent.FoundElement);
+                                        throw new Exception($"Дочерний элемент {SelectorType}=\"{selector}\" не найден в родителе: {this.Parent.SelectorType}=\"{selectorParent}\"\r\nПолный путь родителя:\r\n{fullXPath}\r\n");
+                                    }
                                 }
-                                this.Error = $"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{errValue}]";
+                                else
+                                {
+                                    switch (SelectorType)
+                                    {
+                                        case SelectorType.ID:
+                                            el = wait.Until(d => driver.FindElement(By.Id(selector)));
+                                            break;
+                                        case SelectorType.Class:
+                                            el = wait.Until(d => driver.FindElement(By.ClassName(selector)));
+                                            break;
+                                        case SelectorType.XPath:
+                                            el = wait.Until(d => driver.FindElement(By.XPath(selector)));
+                                            break;
+                                        case SelectorType.Tag:
+                                            el = wait.Until(d => driver.FindElement(By.TagName(selector)));
+                                            break;
+                                        case SelectorType.PartLink:
+                                            el = wait.Until(d => driver.FindElement(By.PartialLinkText(selector)));
+                                            break;
+                                    }
+                                }
+                                //wait.Until(d => el.Displayed);
+                                FoundElement = el;
+                                if (selectFoundElements)
+                                {
+                                    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                    js.ExecuteScript("arguments[0].style.border='2px solid red';", el);
+                                }
                             }
-                        }
-                        break;
-                    case StepTypes.CheckElement:
-                        {
-                            IReadOnlyCollection<IWebElement> elements = null;
-                            var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            if (this.Parent.FoundElement != null)
+                            break;
+                        case StepTypes.CheckElement:
                             {
-                                elements = this.Parent.FoundElement.FindElements(By.XPath(selector));
+                                var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                IWebElement el = null;
+                                if (this.Parent.FoundElement != null)
+                                {
+                                    IReadOnlyCollection<IWebElement> tempElementsBySelector = null;
+                                    switch (SelectorType)
+                                    {
+                                        case SelectorType.ID:
+                                            tempElementsBySelector = this.Parent.FoundElement.FindElements(By.Id(selector));
+                                            break;
+                                        case SelectorType.Class:
+                                            tempElementsBySelector = this.Parent.FoundElement.FindElements(By.ClassName(selector));
+                                            break;
+                                        case SelectorType.XPath:
+                                            tempElementsBySelector = this.Parent.FoundElement.FindElements(By.XPath(selector));
+                                            break;
+                                        case SelectorType.Tag:
+                                            tempElementsBySelector = this.Parent.FoundElement.FindElements(By.TagName(selector));
+                                            break;
+                                        case SelectorType.PartLink:
+                                            tempElementsBySelector = this.Parent.FoundElement.FindElements(By.PartialLinkText(selector));
+                                            break;
+                                    }
+                                    el = tempElementsBySelector.FirstOrDefault(element => IsChildOf(driver, element, this.Parent.FoundElement));
+                                    if (el == null)
+                                    {
+                                        var selectorParent = ValuesFromParameters.ProcessInput(this.Parent.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                        string fullXPath = GetElementXPath(driver, this.Parent.FoundElement);
+                                        throw new Exception($"Дочерний элемент {SelectorType}=\"{selector}\" не найден в родителе: {this.Parent.SelectorType}=\"{selectorParent}\"\r\nПолный путь родителя:\r\n{fullXPath}\r\n");
+                                    }
+                                }
+                                else
+                                {
+                                    switch (SelectorType)
+                                    {
+                                        case SelectorType.ID:
+                                            el = driver.FindElement(By.Id(selector));
+                                            break;
+                                        case SelectorType.Class:
+                                            el = driver.FindElement(By.ClassName(selector));
+                                            break;
+                                        case SelectorType.XPath:
+                                            el = driver.FindElement(By.XPath(selector));
+                                            break;
+                                        case SelectorType.Tag:
+                                            el = driver.FindElement(By.TagName(selector));
+                                            break;
+                                        case SelectorType.PartLink:
+                                            el = driver.FindElement(By.PartialLinkText(selector));
+                                            break;
+                                    }
+                                }
                             }
-                            else
+                            break;
+                        case StepTypes.EnterText:
                             {
-                                elements = driver.FindElements(By.XPath(selector));
+                                needToSlow = true;
+                                string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var el = this.Parent.FoundElement;
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                js.ExecuteScript("arguments[0].value = '';", el);
+                                el.SendKeys(value);
                             }
-                            if (elements.Count > 0)
+                            break;
+                        case StepTypes.SetAttribute:
                             {
-                                this.StepState = StepStates.Passed;
+                                needToSlow = true;
+                                string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var el = this.Parent.FoundElement;
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                js.ExecuteScript("arguments[0].setAttribute(arguments[1], arguments[2]);", el, this.Selector, value);
                             }
-                            else
+                            break;
+                        case StepTypes.Click:
                             {
-                                this.StepState = StepStates.Error;
-                                this.Error = $"Элемент {selector} не найден";
+                                needToSlow = true;
+                                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                                var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
+                                el.Click();
                             }
-                        }
-                        break;
-                    case StepTypes.CheckClassExists:
-                        {
-                            if (this.Parent.FoundElement.GetAttribute("class").Contains(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                            break;
+                        case StepTypes.JsClick:
                             {
-                                this.StepState = StepStates.Passed;
+                                needToSlow = true;
+                                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                                var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
+                                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", el);
                             }
-                            else
+                            break;
+                        case StepTypes.AltClick:
                             {
-                                this.StepState = StepStates.Error;
-                                this.Error = $"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе";
+                                needToSlow = true;
+                                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                                var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
+                                Actions action = new Actions(driver);
+                                action.Click(el).Build().Perform();
                             }
-                        }
-                        break;
-                    case StepTypes.CheckClassNotExists:
-                        {
-                            if (!this.Parent.FoundElement.GetAttribute("class").Contains(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                            break;
+                        case StepTypes.DoubleClick:
                             {
-                                this.StepState = StepStates.Passed;
+                                needToSlow = true;
+                                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                                var el = wait.Until(ExpectedConditions.ElementToBeClickable(this.Parent.FoundElement));
+                                Actions action = new Actions(driver);
+                                action.DoubleClick(el).Build().Perform();
                             }
-                            else
+                            break;
+                        case StepTypes.JsEvent:
                             {
-                                this.StepState = StepStates.Error;
-                                this.Error = $"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе";
+                                needToSlow = true;
+                                var el = this.Parent.FoundElement;
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                js.ExecuteScript($"arguments[0].dispatchEvent(new Event('{Value}'));", el);
                             }
-                        }
-                        break;
-                    case StepTypes.WaitTime:
-                        {
-                            Thread.Sleep((int)(this.SecondsToWait * 1000f));
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.ReadAttributeToParameter:
-                        {
-                            var el = this.Parent.FoundElement;
-                            var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            var value = el.GetAttribute(selector) ?? "";
-                            SetParameter(value, this.Parameter);
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.ReadTextToParameter:
-                        {
-                            var el = this.Parent.FoundElement;
-                            var value = el.Text;
-                            SetParameter(value, this.Parameter);
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.ReadAddressToParameter:
-                        {
-                            var value = driver.Url;
-                            SetParameter(value, this.Parameter);
-                            this.StepState = StepStates.Passed;
-                        }
-                        break;
-                    case StepTypes.CompareParameters:
-                        {
-                            var value1 = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            var value2 = ValuesFromParameters.ProcessInput(this.Parameter, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                            if (value1 == value2)
+                            break;
+                        case StepTypes.CheckText:
                             {
-                                this.StepState = StepStates.Passed;
+                                var el = this.Parent.FoundElement;
+                                if (!IsMatchMask(el.Text, ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                                {
+                                    throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{el.Text}]");
+                                }
                             }
-                            else
+                            break;
+                        case StepTypes.CheckAttribute:
                             {
-                                this.Error = $"Param1 [{value1}] ({value1.GetType()})\r\nParam2 [{value2}] ({value2.GetType()})";
-                                this.StepState = StepStates.Error;
+                                var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var el = this.Parent.FoundElement;
+                                if (el.GetAttribute(selector) == null)
+                                {
+                                    throw new Exception($"Атрибут {selector} не найден");
+                                }
+                                if (!IsMatchMask(el.GetAttribute(selector), ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                                {
+                                    var errValue = el.GetAttribute(selector);
+                                    throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{errValue}]");
+                                }
                             }
-                        }
-                        break;
-                    case StepTypes.InputToParameterByUser:
-                        {
-                            InputDataForm inputDataForm = new InputDataForm(this.Parameter);
-                            if (inputDataForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            break;
+                        case StepTypes.CheckClassExists:
                             {
+                                if (!this.Parent.FoundElement.GetAttribute("class").Contains(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                                {
+                                    throw new Exception($"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе");
+                                }
+                            }
+                            break;
+                        case StepTypes.CheckClassNotExists:
+                            {
+                                if (this.Parent.FoundElement.GetAttribute("class").Contains(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                                {
+                                    throw new Exception($"Класс [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}] не найден в элементе");
+                                }
+                            }
+                            break;
+                        case StepTypes.WaitTime:
+                            {
+                                Thread.Sleep((int)(this.SecondsToWait * 1000f));
+                            }
+                            break;
+                        case StepTypes.ReadAttributeToParameter:
+                            {
+                                var el = this.Parent.FoundElement;
+                                var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var value = el.GetAttribute(selector) ?? "";
+                                SetParameter(value, this.Parameter);
+                            }
+                            break;
+                        case StepTypes.ReadTextToParameter:
+                            {
+                                var el = this.Parent.FoundElement;
+                                var value = el.Text;
+                                SetParameter(value, this.Parameter);
+                            }
+                            break;
+                        case StepTypes.ReadAddressToParameter:
+                            {
+                                var value = driver.Url;
+                                SetParameter(value, this.Parameter);
+                            }
+                            break;
+                        case StepTypes.CompareParameters:
+                            {
+                                var value1 = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var value2 = ValuesFromParameters.ProcessInput(this.Parameter, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                if (value1 != value2)
+                                {
+                                    throw new Exception($"Param1 [{value1}] ({value1.GetType()})\r\nParam2 [{value2}] ({value2.GetType()})");
+                                }
+                            }
+                            break;
+                        case StepTypes.InputToParameterByUser:
+                            {
+                                InputDataForm inputDataForm = new InputDataForm(this.Parameter);
+                                if (inputDataForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                                {
+                                    throw new Exception($"Не введён параметр");
+                                }
                                 foreach (var param in ParentAutotest.ParentProject.Parameters)
                                 {
                                     if (param.Name == this.Parameter)
@@ -413,59 +433,95 @@ namespace SeleniumAutotest
                                         ParentAutotest.InvokeParametersUpdated();
                                     }
                                 }
-                                this.StepState = StepStates.Passed;
                             }
-                            else
-                            {
-                                this.Error = $"Не введён параметр";
-                                this.StepState = StepStates.Error;
-                            }
-                        }
-                        break;
-                    default:
-                        this.StepState = StepStates.Passed;
-                        needToSlow = false;
-                        break;
+                            break;
+                        default:
+                            needToSlow = false;
+                            break;
+                    }
+                    StateUpdated?.Invoke();
+                    if (needToSlow && slowMode)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    Error = "";
+                    this.StepState = StepStates.Passed;
                 }
+                catch (NoSuchElementException ex)
+                {
+                    var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    this.Error = $"Элемент {SelectorType}=\"{selector}\" не найден\r\n\r\n" + ex.ToString();
+                    throw;
+                }
+                catch (InvalidSelectorException ex)
+                {
+                    var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    this.Error = $"Селектор имеет ошибку {SelectorType}=\"{selector}\"\r\n\r\n" + ex.ToString();
+                    throw;
+                }
+                catch (WebDriverTimeoutException ex)
+                {
+                    var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                    this.Error = $"Элемент {SelectorType}=\"{selector}\" не найден за отведённое время\r\n\r\n" + ex.ToString();
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    this.Error = ex.ToString();
+                    throw;
+                }
+            }
+            catch
+            {
+                this.StepState = (this.IgnoreError && canIgnoreErrorIfStepIgnoringThem) ? StepStates.IgnoredError : StepStates.Error;
                 if (this.StepState == StepStates.Error)
                 {
-                    if (this.IgnoreError)
-                    {
-                        this.StepState = StepStates.IgnoredError;
-                    }
-                    else
-                    {
-                        needToContinue = false;
-                        ParentAutotest.ErrorStep = this;
-                    }
-                }
-                StateUpdated?.Invoke();
-                if (needToSlow && slowMode)
-                {
-                    Thread.Sleep(1000);
-                }
-                foreach (var substep in Substeps)
-                {
-                    if (token.IsCancellationRequested || !needToContinue)
-                        break;
-                    needToContinue = substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (this.IgnoreError)
-                {
-                    this.StepState = StepStates.IgnoredError;
-                }
-                else
-                {
-                    this.StepState = StepStates.Error;
-                    needToContinue = false;
                     ParentAutotest.ErrorStep = this;
                 }
-                Error = ex.ToString();
+                throw;
             }
-            return needToContinue;
+        }
+
+        private string GetElementXPath(IWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            return (string)js.ExecuteScript(
+                "function getElementXPath(element) {" +
+                "   if (element.id !== '') {" +
+                "       return 'id(\"' + element.id + '\")';" +
+                "   }" +
+                "   if (element === document.body) {" +
+                "       return element.tagName;" +
+                "   }" +
+                "   var ix = 0;" +
+                "   var siblings = element.parentNode.childNodes;" +
+                "   for (var i = 0; i < siblings.length; i++) {" +
+                "       var sibling = siblings[i];" +
+                "       if (sibling === element) {" +
+                "           return getElementXPath(element.parentNode) + '/' + element.tagName + '[' + (ix + 1) + ']';" +
+                "       }" +
+                "       if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {" +
+                "           ix++;" +
+                "       }" +
+                "   }" +
+                "}" +
+                "return getElementXPath(arguments[0]);", element);
+        }
+
+        private bool IsChildOf(IWebDriver driver, IWebElement child, IWebElement parent)
+        {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            return (bool)js.ExecuteScript(
+                "var child = arguments[0];" +
+                "var parent = arguments[1];" +
+                "while (child.parentNode) {" +
+                "    if (child.parentNode === parent) {" +
+                "        return true;" +
+                "    }" +
+                "    child = child.parentNode;" +
+                "}" +
+                "return false;",
+                child, parent);
         }
 
         private void SetParameter(string value, string paramName)
@@ -529,6 +585,23 @@ namespace SeleniumAutotest
             {
                 substep.ResetGuid();
             }
+        }
+
+        public void Run(IWebDriver driver, CancellationToken token, Action StateUpdated, bool slowMode, bool selectFoundElements)
+        {
+            StepWork(driver, StateUpdated, slowMode, selectFoundElements);
+
+            foreach (var substep in Substeps)
+            {
+                if (token.IsCancellationRequested)
+                    break;
+                substep.Run(driver, token, StateUpdated, slowMode, selectFoundElements);
+            }
+        }
+
+        public void RunStepInStepMode(IWebDriver driver, Action StateUpdated, bool selectFoundElements)
+        {
+            StepWork(driver, StateUpdated, false, selectFoundElements, false);
         }
     }
 }

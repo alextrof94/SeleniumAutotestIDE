@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Windows.Input;
 using OpenQA.Selenium.DevTools.V124.Debugger;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SeleniumAutotest
 {
@@ -35,11 +36,11 @@ namespace SeleniumAutotest
 
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent(); 
             Project = new Project();
             Project.ParametersUpdated += Project_ParametersGenerated;
             Project.RunAutotestFinished += Project_RunAutotestFinished;
-            Project.SelectedAutotestChanged += Project_SelectedAutotestChanged; ;
+            Project.SelectedAutotestChanged += Project_SelectedAutotestChanged;
             ChProjectRegenerateParameters.Checked = Project.RegenerateParametersOnRun;
             LiTests.DataSource = Project.Autotests;
             toolTip1.SetToolTip(BuTestAdd, "Добавить автотест");
@@ -47,6 +48,10 @@ namespace SeleniumAutotest
             toolTip1.SetToolTip(BuTestClone, "Дублировать автотест");
             toolTip1.SetToolTip(BuTestUp, "Переместить автотест выше");
             toolTip1.SetToolTip(BuTestDown, "Переместить автотест ниже");
+
+            toolTip1.SetToolTip(BuTestRun, "Запустить автотест");
+            toolTip1.SetToolTip(BuTestStop, "Остановить автотест");
+            toolTip1.SetToolTip(BuTestRunStepMode, "Запустить в режиме пошагового выполнения");
 
             toolTip1.SetToolTip(BuStepAdd, "Добавить шаг [CTRL+A]");
             toolTip1.SetToolTip(BuStepDelete, "Удалить выделенный шаг [CTRL+Delete]");
@@ -157,22 +162,6 @@ namespace SeleniumAutotest
             LiTests.SelectedItem = Project.SelectedAutotest;
         }
 
-        private void BuTestRun_Click(object sender, EventArgs e)
-        {
-            if (Project.RunAutotest(ChSlowMode.Checked, ChSelectFoundElements.Checked))
-            {
-                BuTestRun.Enabled = false;
-                BuTestStop.Enabled = true;
-            }
-        }
-
-        private void BuTestStop_Click(object sender, EventArgs e)
-        {
-            BuTestStop.Enabled = false;
-            Project.StopAutotest();
-            BuTestRun.Enabled = true;
-            ReloadTree();
-        }
 
         private void BuStepAdd_Click(object sender, EventArgs e)
         {
@@ -228,7 +217,7 @@ namespace SeleniumAutotest
 
         private void BuFontDecrease_Click(object sender, EventArgs e)
         {
-            if (TrSteps.Font.Size < 6) { return; }
+            if (TrSteps.Font.Size < 9) { return; }
             TrSteps.Font = new Font(TrSteps.Font.FontFamily, TrSteps.Font.Size - 1, TrSteps.Font.Style);
         }
 
@@ -392,6 +381,7 @@ namespace SeleniumAutotest
             selectedStep.Substeps.Clear();
             UpdateStepField(nameof(TestStep.Type), StepType.GetTypeByName(CoStepType.SelectedItem.ToString()));
             SetStepFieldsVisible(selectedStep.Type);
+            ReloadTree();
         }
         private void CoStepSelectorType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -421,11 +411,13 @@ namespace SeleniumAutotest
         private void ChStepIgnoreError_CheckedChanged(object sender, EventArgs e)
         {
             UpdateStepField(nameof(TestStep.IgnoreError), ChStepIgnoreError.Checked);
+            ReloadTree();
         }
 
         private void ChStepIsEnabled_CheckedChanged(object sender, EventArgs e)
         {
             UpdateStepField(nameof(TestStep.Enabled), ChStepIsEnabled.Checked);
+            ReloadTree();
         }
 
         #endregion StepFields
@@ -487,12 +479,11 @@ namespace SeleniumAutotest
         {
             this.Invoke(new Action(() =>
             {
-                BuTestRun.Enabled = true;
                 BuTestStop.Enabled = false;
                 LaTestTime.Text = "Время выполнения теста: " + Project.SelectedAutotest.CompleteTime;
                 LaRunTime.Text = "Время выполнения общее: " + Project.RunTime;
                 ReloadTree();
-                if (errorMsg != null)
+                if (errorMsg != null && !StepMode)
                 {
                     TreeNode nodeToBeSelected = FindNodeByGuid(TrSteps.Nodes, (Guid)Project.SelectedAutotest.ErrorStep.Id);
                     if (nodeToBeSelected != null)
@@ -501,6 +492,10 @@ namespace SeleniumAutotest
                     }
                     MessageBox.Show(errorMsg, "Произошла ошибка во время выполнения", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                StepMode = false;
+                AutoMode = false;
+                BuTestRun.Enabled = true;
+                BuTestRunStepMode.Enabled = true;
             }));
         }
 
@@ -533,7 +528,6 @@ namespace SeleniumAutotest
         private void ReloadTree()
         {
             if (Project.SelectedAutotest == null) { return; }
-
             var selectedNode = TrSteps.SelectedNode;
 
             TrSteps.Nodes.Clear();
@@ -604,6 +598,7 @@ namespace SeleniumAutotest
                         node.ForeColor = Color.LightGray;
                     }
                 }
+                node.Checked = step.Enabled;
 
                 AddTestStepsToNodes(node.Nodes, step.Substeps);
                 if (step.Expanded)
@@ -878,10 +873,6 @@ namespace SeleniumAutotest
             NeedUpdateTestFields = true;
         }
 
-        private void TrSteps_KeyDown(object sender, KeyEventArgs e)
-        {
-        }
-
         private void TrSteps_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.R)
@@ -960,6 +951,9 @@ namespace SeleniumAutotest
 
         private void CoStepTypeGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (NeedUpdateTestFields == false) { return; }
+            if (Project.SelectedAutotest == null) { return; }
+            if (TrSteps.SelectedNode == null) { return; }
             CoStepType.Items.Clear();
             foreach (var type in ((StepTypesGroup)CoStepTypeGroup.SelectedItem).Types)
             {
@@ -967,10 +961,12 @@ namespace SeleniumAutotest
             }
             CoStepType.SelectedIndex = 0;
             TeStepName.Text = CoStepTypeGroup.Text;
+            ReloadTree();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            StopTests();
             var res = MessageBox.Show("Желаете сохранить проект перед выходом?", "Выход", MessageBoxButtons.YesNoCancel);
             if (res == DialogResult.Cancel)
             {
@@ -997,6 +993,66 @@ namespace SeleniumAutotest
                 File.WriteAllText(sfd.FileName, str);
                 File.WriteAllText("./LastFilePath.txt", sfd.FileName);
             }
+        }
+
+        private void Control_FocusLeave(object sender, EventArgs e)
+        {
+            ReloadTree();
+        }
+
+
+        bool StepMode = false;
+        bool AutoMode = false;
+
+        private void BuTestRun_Click(object sender, EventArgs e)
+        {
+            AutoMode = true;
+            Project.RunAutotest(ChSlowMode.Checked, ChSelectFoundElements.Checked);
+            BuTestRun.Enabled = false;
+            BuTestStop.Enabled = true;
+            BuTestRunStepMode.Enabled = false;
+            LiTests.Enabled = false;
+        }
+
+        private void BuTestStop_Click(object sender, EventArgs e)
+        {
+            StopTests();
+        }
+
+        private void StopTests()
+        {
+            BuTestStop.Enabled = false;
+            if (StepMode)
+            {
+                Project.StopStepMode();
+                StepMode = false;
+            }
+            if (AutoMode)
+            {
+                Project.StopAutotest();
+                AutoMode = false;
+            }
+            BuTestRun.Enabled = true;
+            BuTestRunStepMode.Enabled = true;
+            LiTests.Enabled = true;
+            ReloadTree();
+        }
+
+        private void BuTestRunStepMode_Click(object sender, EventArgs e)
+        {
+            if (!StepMode)
+            {
+                if (Project.RunStepMode(this, ChSelectFoundElements.Checked))
+                {
+                    StepMode = true;
+                    BuTestStop.Enabled = true;
+                    BuTestRun.Enabled = false;
+                }
+                return;
+            }
+
+            Project.NextStep(this, ChSelectFoundElements.Checked);
+            ReloadTree();
         }
     }
 }
