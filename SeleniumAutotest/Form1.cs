@@ -25,7 +25,7 @@ namespace SeleniumAutotest
     public partial class Form1 : Form
     {
         // TODO:
-        // StepByStep mode
+        // refactoring
         private const string Version = "v1.2";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
@@ -244,7 +244,7 @@ namespace SeleniumAutotest
             str += "ParamNull = TestN%PARAM1%/randomD2//null/TestN => null\r\n\r\n";
 
             str += "TODAY = ^DateTime.Now.ToShortDateString()^ => текущая дата в формате dd.mm.yyyy (для RU-локали)\r\n";
-            str += "SUMM = ^(10+int.Parse(%Param0%)).ToString()^ => ^(10+int.Parse(11)).ToString()^ => \"21\"\r\n\r\n";
+            str += "SUMM = ^(10+%Param0%).ToString()^ => ^(10+11).ToString()^ => \"21\"\r\n\r\n";
 
             str += "Не используйте одинаковые имена для параметров проекта и параметров теста\r\n\r\n";
 
@@ -426,7 +426,6 @@ namespace SeleniumAutotest
 
         #endregion StepFields
 
-        // TODO: Rework: move to project
         private void LiTests_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((Autotest)LiTests.SelectedItem == null)
