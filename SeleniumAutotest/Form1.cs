@@ -503,6 +503,7 @@ namespace SeleniumAutotest
                 StepMode = false;
                 AutoMode = false;
                 BuTestRun.Enabled = true;
+                LiTests.Enabled = true;
                 BuTestRunStepMode.Enabled = true;
                 BuTestStepModePrev.Enabled = false;
             }));
