@@ -150,7 +150,7 @@ namespace SeleniumAutotest
                 };
                 GenerateParameters();
                 Autotests[0].ResetGuid();
-                Autotests[0].ResetAllParentsForSteps();
+                Autotests[0].ResetAllParentsForSteps(this);
             }
             ResetAllParentsForAutotests();
         }
@@ -166,6 +166,7 @@ namespace SeleniumAutotest
             if (SelectedAutotest == null) { return; }
             var autotest = SelectedAutotest.Clone();
             autotest.ResetGuid();
+            autotest.ResetAllParentsForSteps(this);
             Autotests.Add(autotest);
         }
 
@@ -201,12 +202,12 @@ namespace SeleniumAutotest
                 SelectAutotest(Autotests[ind + 1]);
                 SelectedAutotestChanged?.Invoke();
                 Thread.Sleep(3000);
-                RunAutotest(SlowMode, SelectFoundElements);
+                RunAutotest(SlowMode, SelectFoundElements, false);
             }
             else
             {
                 RunStopwatch.Stop();
-                RunTime = TestStopwatch.Elapsed;
+                RunTime = RunStopwatch.Elapsed;
                 RunAutotestFinished?.Invoke(SelectedAutotest.ErrorStep?.Error);
             }
         }
@@ -264,12 +265,15 @@ namespace SeleniumAutotest
             return true;
         }
 
-        public void RunAutotest(bool slowMode, bool selectFoundElements)
+        public void RunAutotest(bool slowMode, bool selectFoundElements, bool needResetTimer = true)
         {
             if (SelectedAutotest == null) { return; }
             SlowMode = slowMode;
             SelectFoundElements = selectFoundElements;
-            RunStopwatch.Restart();
+            if (needResetTimer)
+            {
+                RunStopwatch.Restart();
+            }
             if (RegenerateParametersOnRun)
             {
                 GenerateParameters();

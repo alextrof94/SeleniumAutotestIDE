@@ -47,8 +47,9 @@ namespace SeleniumAutotest
             return Name;
         }
 
-        public void ResetAllParentsForSteps()
+        public void ResetAllParentsForSteps(Project parent)
         {
+            ParentProject = parent;
             ResetParentsForStep(Root);
         }
 
@@ -209,28 +210,35 @@ namespace SeleniumAutotest
                 substep.ClearState();
             }
             CurrentStep = Root.Substeps[0];
-            StepModeContinue(selectFoundElements);
+            StepModeContinue(selectFoundElements, true);
 
             return true;
         }
 
-        public void StepModeContinue(bool selectFoundElements)
+        public void StepModeContinue(bool selectFoundElements, bool firstStep = false)
         {
             try
             {
-                CurrentStep.StepModeRun(WebDriver, StateUpdated, selectFoundElements);
-                TestStep prevStep = CurrentStep;
-                CurrentStep = GetNextStep(CurrentStep);
-                if (CurrentStep == null)
+                if (!firstStep)
                 {
-                    StepModeStop();
-                    RunFinished?.Invoke();
-                    return;
+                    TestStep prevStep = CurrentStep;
+                    CurrentStep = GetNextStep(CurrentStep);
+                    if (CurrentStep == null)
+                    {
+                        StepModeStop();
+                        RunFinished?.Invoke();
+                        return;
+                    }
+                    CurrentStep.PrevStep = prevStep;
                 }
-                CurrentStep.PrevStep = prevStep;
+                CurrentStep.StepModeRun(WebDriver, StateUpdated, selectFoundElements);
                 StateUpdated?.Invoke();
             }
-            catch { }
+            catch 
+            {
+                CurrentStep = CurrentStep.PrevStep;
+                StateUpdated?.Invoke();
+            }
         }
 
         public void StepModeStop()
@@ -243,7 +251,6 @@ namespace SeleniumAutotest
             if (CurrentStep.PrevStep == null) { return; }
             CurrentStep.StepState = StepStates.NotStarted;
             CurrentStep = CurrentStep.PrevStep;
-            CurrentStep.StepState = StepStates.NotStarted;
             StateUpdated?.Invoke();
         }
     }

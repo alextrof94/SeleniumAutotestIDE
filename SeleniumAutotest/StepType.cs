@@ -122,11 +122,15 @@ namespace SeleniumAutotest
             return StepTypesGroups.First(x => x.Types.Contains(stepType)).Index;
         }
 
-        public static StepTypes GetTypeByName(string name)
+        public static StepTypes GetTypeByNameAndGroup(string name, string groupName)
         {
-            if (Descriptions.ContainsValue(name))
+            var group = StepTypesGroups.FirstOrDefault(x => x.Name == groupName);
+            var listOfTypes = Descriptions.Where(x => x.Value == name).Select(x => x.Key);
+
+            foreach (var type in listOfTypes)
             {
-                return Descriptions.FirstOrDefault(x => x.Value == name).Key;
+                if (group.Types.Contains(type))
+                    return type;
             }
             return StepTypes.Group;
         }

@@ -124,7 +124,7 @@ namespace SeleniumAutotest
             }
         }
 
-        private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, bool selectFoundElements, bool canIgnoreErrorIfStepIgnoringThem = true)
+        private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, bool selectFoundElements, bool canIgnoreErrorIfStepIgnoringThem = true, int staleErrorCount = 0)
         {
             try
             {
@@ -443,6 +443,21 @@ namespace SeleniumAutotest
                     Error = "";
                     this.StepState = StepStates.Passed;
                 }
+                catch (StaleElementReferenceException ex)
+                {
+                    staleErrorCount++;
+                    if (staleErrorCount < 10)
+                    {
+                        Thread.Sleep(1000);
+                        StepWork(driver, StateUpdated, slowMode, selectFoundElements, canIgnoreErrorIfStepIgnoringThem, staleErrorCount);
+                    }
+                    else
+                    {
+                        var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                        this.Error = $"Элемент {SelectorType}=\"{selector}\" невалиден по неизвестной причине после 10 секунд ожидания \r\n\r\n" + ex.ToString();
+                        throw;
+                    }
+                }
                 catch (NoSuchElementException ex)
                 {
                     var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
@@ -473,8 +488,8 @@ namespace SeleniumAutotest
                 if (this.StepState == StepStates.Error)
                 {
                     ParentAutotest.ErrorStep = this;
+                    throw;
                 }
-                throw;
             }
         }
 
@@ -542,7 +557,8 @@ namespace SeleniumAutotest
 
         private bool IsMatchMask(string input, string pattern)
         {
-            string regexPattern = "^" + Regex.Escape(pattern).Replace(@"\?", ".").Replace(@"\*", ".*") + "$";
+            pattern = pattern.Replace("\\?", ".").Replace("\\*", ".*");
+            string regexPattern = "^" + pattern + "$";
             return Regex.IsMatch(input, regexPattern);
         }
 

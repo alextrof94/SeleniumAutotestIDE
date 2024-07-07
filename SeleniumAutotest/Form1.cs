@@ -243,9 +243,9 @@ namespace SeleniumAutotest
             str += "ParamNull = TestN%PARAM1%/randomD2//null/TestN => null\r\n\r\n";
 
             str += "TODAY = ^DateTime.Now.ToShortDateString()^ => текущая дата в формате dd.mm.yyyy (для RU-локали)\r\n";
-            str += "TODAY = ^(10+int.Parse(%Param0%)).ToString()^ => ^(10+int.Parse(10)).ToString()^ => \"21\"\r\n\r\n";
+            str += "SUMM = ^(10+int.Parse(%Param0%)).ToString()^ => ^(10+int.Parse(11)).ToString()^ => \"21\"\r\n\r\n";
 
-            str += "Не используйте одинаковые именя для параметров проекта и параметров теста\r\n\r\n";
+            str += "Не используйте одинаковые имена для параметров проекта и параметров теста\r\n\r\n";
 
             str += "Для параметров, которые будут заполнены во время выполнения автотестов оставьте пустой шаблон\r\n\r\n";
 
@@ -318,7 +318,6 @@ namespace SeleniumAutotest
                     NuStepWait.Visible = true;
                     break;
                 case StepTypes.CheckAttribute:
-                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     TeStepValue.Visible = true;
                     ChStepIgnoreError.Visible = true;
@@ -329,12 +328,10 @@ namespace SeleniumAutotest
                     ChStepIgnoreError.Visible = true;
                     break;
                 case StepTypes.SetAttribute:
-                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     TeStepValue.Visible = true;
                     break;
                 case StepTypes.ReadAttributeToParameter:
-                    CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     TeStepParameter.Visible = true;
                     break;
@@ -387,9 +384,9 @@ namespace SeleniumAutotest
                 return;
             }
             selectedStep.Substeps.Clear();
-            UpdateStepField(nameof(TestStep.Type), StepType.GetTypeByName(CoStepType.SelectedItem.ToString()));
+            UpdateStepField(nameof(TestStep.Type), StepType.GetTypeByNameAndGroup(CoStepType.SelectedItem.ToString(), CoStepTypeGroup.SelectedItem.ToString()));
             SetStepFieldsVisible(selectedStep.Type);
-            ReloadTree();
+            //ReloadTree();
         }
         private void CoStepSelectorType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -419,13 +416,11 @@ namespace SeleniumAutotest
         private void ChStepIgnoreError_CheckedChanged(object sender, EventArgs e)
         {
             UpdateStepField(nameof(TestStep.IgnoreError), ChStepIgnoreError.Checked);
-            ReloadTree();
         }
 
         private void ChStepIsEnabled_CheckedChanged(object sender, EventArgs e)
         {
             UpdateStepField(nameof(TestStep.Enabled), ChStepIsEnabled.Checked);
-            ReloadTree();
         }
 
         #endregion StepFields
@@ -462,7 +457,7 @@ namespace SeleniumAutotest
             Project.SelectedAutotest.StateUpdated += AutotestUpdated;
             Project.SelectedAutotest.ParametersUpdated += SelectedAutotest_ParametersGenerated;
 
-            Project.SelectedAutotest.ResetAllParentsForSteps();
+            Project.SelectedAutotest.ResetAllParentsForSteps(Project);
             ReloadTree();
             SelectedAutotest_ParametersGenerated();
         }
@@ -707,38 +702,42 @@ namespace SeleniumAutotest
         {
             if (Project.SelectedAutotest == null) { return; }
 
-            if (TrSteps.SelectedNode != null)
+            try
             {
-                var parentStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
+                if (TrSteps.SelectedNode != null)
+                {
+                    var parentStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
 
-                var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Contains(parentStep.Type)).Types;
-                if (appliableTypes.Count == 0)
-                {
-                    return;
+                    var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Contains(parentStep.Type)).Types;
+                    if (appliableTypes.Count == 0)
+                    {
+                        return;
+                    }
+                    var type = appliableTypes.First();
+                    parentStep.Substeps.Add(new TestStep()
+                    {
+                        Type = type,
+                        Name = StepType.Descriptions[type]
+                    });
                 }
-                var type = appliableTypes.First();
-                parentStep.Substeps.Add(new TestStep()
+                else
                 {
-                    Type = type,
-                    Name = StepType.Descriptions[type]
-                });
-            }
-            else
-            {
-                var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Count == 0 || x.Parents.Contains(StepTypes.Group)).Types;
-                if (appliableTypes.Count == 0)
-                {
-                    return;
+                    var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Count == 0 || x.Parents.Contains(StepTypes.Group)).Types;
+                    if (appliableTypes.Count == 0)
+                    {
+                        return;
+                    }
+                    var type = appliableTypes.First();
+                    Project.SelectedAutotest.Root.Substeps.Add(new TestStep()
+                    {
+                        Type = type,
+                        Name = StepType.Descriptions[type]
+                    });
                 }
-                var type = appliableTypes.First();
-                Project.SelectedAutotest.Root.Substeps.Add(new TestStep()
-                {
-                    Type = type,
-                    Name = StepType.Descriptions[type]
-                });
+                Project.SelectedAutotest.ResetAllParentsForSteps(Project);
+                ReloadTree();
             }
-            Project.SelectedAutotest.ResetAllParentsForSteps();
-            ReloadTree();
+            catch { }
         }
 
         private void StepDelete()
@@ -749,7 +748,7 @@ namespace SeleniumAutotest
             var selectedStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
 
             selectedStep.Parent.Substeps.Remove(selectedStep);
-            Project.SelectedAutotest.ResetAllParentsForSteps();
+            Project.SelectedAutotest.ResetAllParentsForSteps(Project);
             ReloadTree();
         }
 
@@ -763,7 +762,7 @@ namespace SeleniumAutotest
             var step = selectedStep.Clone();
             step.ResetGuid();
             selectedStep.Parent.Substeps.Add(step);
-            Project.SelectedAutotest.ResetAllParentsForSteps();
+            Project.SelectedAutotest.ResetAllParentsForSteps(Project);
             ReloadTree();
         }
 
@@ -776,7 +775,7 @@ namespace SeleniumAutotest
 
             selectedStep.MoveUp();
 
-            Project.SelectedAutotest.ResetAllParentsForSteps();
+            Project.SelectedAutotest.ResetAllParentsForSteps(Project);
             ReloadTree();
         }
 
@@ -789,7 +788,7 @@ namespace SeleniumAutotest
 
             selectedStep.MoveDown();
 
-            Project.SelectedAutotest.ResetAllParentsForSteps();
+            Project.SelectedAutotest.ResetAllParentsForSteps(Project);
             ReloadTree();
         }
 
@@ -830,7 +829,7 @@ namespace SeleniumAutotest
                 catch { }
             }
 
-            Project.SelectedAutotest.ResetAllParentsForSteps();
+            Project.SelectedAutotest.ResetAllParentsForSteps(Project);
             ReloadTree();
         }
 
