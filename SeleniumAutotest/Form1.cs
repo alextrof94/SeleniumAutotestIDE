@@ -26,7 +26,7 @@ namespace SeleniumAutotest
     {
         // TODO:
         // StepByStep mode
-        private const string Version = "v1.1";
+        private const string Version = "v1.2";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
         private Project Project { get; set; }
@@ -36,7 +36,8 @@ namespace SeleniumAutotest
 
         public Form1()
         {
-            InitializeComponent(); 
+            InitializeComponent();
+            Text = AppName + " - Новый проект";
             Project = new Project();
             Project.ParametersUpdated += Project_ParametersGenerated;
             Project.RunAutotestFinished += Project_RunAutotestFinished;
