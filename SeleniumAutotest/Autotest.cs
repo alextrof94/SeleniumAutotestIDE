@@ -174,7 +174,7 @@ namespace SeleniumAutotest
 
         private TestStep GetNextStep(TestStep step)
         {
-            if (step.Substeps.Where(x => x.StepState == StepStates.NotStarted).Count() > 0)
+            if (step.Substeps.Where(x => x.StepState != StepStates.Passed && x.StepState != StepStates.IgnoredError).Count() > 0)
             {
                 return step.Substeps[0];
             }

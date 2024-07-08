@@ -1061,7 +1061,6 @@
             this.DaTestParameters.EnableHeadersVisualStyles = false;
             this.DaTestParameters.Location = new System.Drawing.Point(7, 18);
             this.DaTestParameters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.DaTestParameters.MultiSelect = false;
             this.DaTestParameters.Name = "DaTestParameters";
             this.DaTestParameters.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.DaTestParameters.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
@@ -1144,7 +1143,6 @@
             this.DaProjectParameters.EnableHeadersVisualStyles = false;
             this.DaProjectParameters.Location = new System.Drawing.Point(7, 18);
             this.DaProjectParameters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.DaProjectParameters.MultiSelect = false;
             this.DaProjectParameters.Name = "DaProjectParameters";
             this.DaProjectParameters.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.DaProjectParameters.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;

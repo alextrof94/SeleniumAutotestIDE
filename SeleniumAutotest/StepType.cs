@@ -11,14 +11,14 @@ namespace SeleniumAutotest
         Group, Open, FindElement, Click, CheckText, EnterText, CheckElement, 
         WaitTime, CheckClassExists, DoubleClick, CheckAttribute, ReadAttributeToParameter, 
         ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, 
-        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage
+        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage, ScrollTo, ScrollByPixels, JsCode
         // Add new to tail
     }
     // TODO: Предусмотреть прямое нажатие клавиш клавиатуры (например, для сочетаний)
 
     internal class StepTypesGroup
     {
-        public int Index { get; set; }
+        public int ImageIndex { get; set; }
         public string Name { get; set; }
         public List<StepTypes> Types { get; set; }
 
@@ -35,62 +35,72 @@ namespace SeleniumAutotest
         public static List<StepTypesGroup> StepTypesGroups { get; set; } = new List<StepTypesGroup>()
         {
             new StepTypesGroup(){ 
-                Index = 0,
+                ImageIndex = 0,
                 Name = "Группа шагов",
                 Parents = new List<StepTypes?>(){ StepTypes.Group, null },
                 Types = new List<StepTypes>(){ StepTypes.Group } },
             new StepTypesGroup(){
-                Index = 1,
+                ImageIndex = 1,
                 Name = "Поиск",                
                 Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },       
                 Types = new List<StepTypes>(){ StepTypes.FindElement } },
             new StepTypesGroup(){
-                Index = 2,
+                ImageIndex = 2,
                 Name = "Кликнуть",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.Click, StepTypes.AltClick, StepTypes.JsClick, StepTypes.DoubleClick } },
             new StepTypesGroup(){
-                Index = 3,
+                ImageIndex = 3,
                 Name = "Изменить",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.EnterText, StepTypes.SetAttribute } },
             new StepTypesGroup(){
-                Index = 4,
+                ImageIndex = 4,
                 Name = "Проверить",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.CheckText, StepTypes.CheckClassExists, StepTypes.CheckClassNotExists, StepTypes.CheckAttribute, StepTypes.CheckElement, StepTypes.CompareParameters } },
             new StepTypesGroup(){
-                Index = 6,
+                ImageIndex = 6,
                 Name = "Сохранить в параметр",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.ReadTextToParameter, StepTypes.ReadAttributeToParameter, StepTypes.ReadAddressToParameter } },
             new StepTypesGroup(){
-                Index = 7,
+                ImageIndex = 7,
                 Name = "Ждать время",
                 Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.WaitTime } },
             new StepTypesGroup(){
-                Index = 8,
+                ImageIndex = 8,
                 Name = "Открыть сайт",
                 Parents = new List<StepTypes?>(){ StepTypes.Group },
                 Types = new List<StepTypes>(){ StepTypes.Open, StepTypes.RefreshPage } },
             new StepTypesGroup(){
-                Index = 5,
-                Name = "Вызвать JS действие",
+                ImageIndex = 5,
+                Name = "JS действие для элемента",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
-                Types = new List<StepTypes>(){ StepTypes.JsEvent } },
+                Types = new List<StepTypes>(){ StepTypes.JsEvent, StepTypes.ScrollTo } },
             new StepTypesGroup(){
-                Index = 9,
+                ImageIndex = 9,
                 Name = "Ввод пользователя",
                 Parents = new List<StepTypes?>(){ StepTypes.Group, },
                 Types = new List<StepTypes>(){ StepTypes.InputToParameterByUser } },
+            new StepTypesGroup(){
+                ImageIndex = 5,
+                Name = "JS действие",
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
+                Types = new List<StepTypes>(){ StepTypes.ScrollByPixels, StepTypes.JsCode } },
         };
 
         public static Dictionary<StepTypes, string> Descriptions { get; } = new Dictionary<StepTypes, string>{
             { StepTypes.Group, "Группа шагов" },
             { StepTypes.FindElement, "Найти элемент" },
             { StepTypes.WaitTime, "Ждать время" },
+
             { StepTypes.JsEvent, "Вызвать событие" },
+            { StepTypes.ScrollTo, "Прокрутить страницу к элементу" },
+
+            { StepTypes.ScrollByPixels, "Прокрутить на пиксели" },
+            { StepTypes.JsCode, "Вызвать код" },
 
             { StepTypes.Open, "Открыть сайт" },
             { StepTypes.RefreshPage, "Обновить страницу" },
@@ -119,7 +129,7 @@ namespace SeleniumAutotest
 
         public static int GetIndexOfGroupByType(StepTypes stepType)
         {
-            return StepTypesGroups.First(x => x.Types.Contains(stepType)).Index;
+            return StepTypesGroups.First(x => x.Types.Contains(stepType)).ImageIndex;
         }
 
         public static StepTypes GetTypeByNameAndGroup(string name, string groupName)
@@ -133,16 +143,6 @@ namespace SeleniumAutotest
                     return type;
             }
             return StepTypes.Group;
-        }
-
-        public static string GetNamesByList(List<StepTypes> types)
-        {
-            List<string> res = new List<string>();
-            foreach (StepTypes type in types)
-            {
-                res.Add(Descriptions[type]);
-            }
-            return string.Join("\r\n", res.ToArray());
         }
     }
 }

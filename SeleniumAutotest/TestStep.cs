@@ -119,6 +119,12 @@ namespace SeleniumAutotest
                     return $"{Name} [USER => {Parameter}]";
                 case StepTypes.JsEvent:
                     return $"{Name} [EVENT={Value}]";
+                case StepTypes.JsCode:
+                    return $"{Name} [{Value}]";
+                case StepTypes.ScrollTo:
+                    return $"{Name}";
+                case StepTypes.ScrollByPixels:
+                    return $"{Name} [{Value}px]";
                 default:
                     return "!!! " + Name;
             }
@@ -205,10 +211,11 @@ namespace SeleniumAutotest
                                     }
                                 }
                                 //wait.Until(d => el.Displayed);
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                js.ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", el);
                                 FoundElement = el;
                                 if (selectFoundElements)
                                 {
-                                    IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
                                     js.ExecuteScript("arguments[0].style.border='2px solid red';", el);
                                 }
                             }
@@ -429,6 +436,33 @@ namespace SeleniumAutotest
                                         ParentAutotest.InvokeParametersUpdated();
                                     }
                                 }
+                            }
+                            break;
+                        case StepTypes.ScrollTo:
+                            {
+                                var el = this.Parent.FoundElement; 
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                js.ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", el);
+                                Thread.Sleep(500);
+                            }
+                            break;
+                        case StepTypes.ScrollByPixels:
+                            {
+                                var value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                if (string.IsNullOrEmpty(value))
+                                {
+                                    value = "0";
+                                }
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                js.ExecuteScript($"window.scrollBy(0, {value});");
+                                Thread.Sleep(500);
+                            }
+                            break;
+                        case StepTypes.JsCode:
+                            {
+                                var value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                js.ExecuteScript(value);
                             }
                             break;
                         default:

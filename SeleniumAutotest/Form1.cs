@@ -25,6 +25,7 @@ namespace SeleniumAutotest
     public partial class Form1 : Form
     {
         // TODO:
+        // run js code (scroll to element/top and other)
         // refactoring
         private const string Version = "v1.2";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
@@ -292,6 +293,7 @@ namespace SeleniumAutotest
                 case StepTypes.AltClick:
                 case StepTypes.JsClick:
                 case StepTypes.DoubleClick:
+                case StepTypes.ScrollTo:
                     break;
                 case StepTypes.FindElement:
                     CoStepSelectorType.Visible = true;
@@ -347,6 +349,12 @@ namespace SeleniumAutotest
                     TeStepParameter.Visible = true;
                     ChStepIgnoreError.Visible = true;
                     break;
+                case StepTypes.ScrollByPixels:
+                    TeStepValue.Visible = true;
+                    break;
+                case StepTypes.JsCode:
+                    TeStepValue.Visible = true;
+                    break;
             }
         }
 
@@ -384,7 +392,10 @@ namespace SeleniumAutotest
                 NeedUpdateTestFields = true;
                 return;
             }
+
             selectedStep.Substeps.Clear();
+
+            TeStepName.Text = CoStepTypeGroup.Text + " " + CoStepType.Text;
             UpdateStepField(nameof(TestStep.Type), StepType.GetTypeByNameAndGroup(CoStepType.SelectedItem.ToString(), CoStepTypeGroup.SelectedItem.ToString()));
             SetStepFieldsVisible(selectedStep.Type);
             //ReloadTree();
@@ -840,6 +851,7 @@ namespace SeleniumAutotest
 
         private void ChangeSelectedStep(TreeNode node)
         {
+            if (node == null) { return; }
             if (Project.SelectedAutotest == null) { return; }
 
             var selectedStep = Project.SelectedAutotest.FindStepById((Guid)node.Tag);
@@ -963,13 +975,26 @@ namespace SeleniumAutotest
             if (NeedUpdateTestFields == false) { return; }
             if (Project.SelectedAutotest == null) { return; }
             if (TrSteps.SelectedNode == null) { return; }
+
+            var selectedStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
+
+            if (selectedStep.Substeps.Count > 0 && MessageBox.Show("Продолжить?", "Изменение типа приведёт к удалению дочерних элементов", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                NeedUpdateTestFields = false;
+                CoStepTypeGroup.SelectedItem = StepType.StepTypesGroups.FirstOrDefault(x => x.Types.Contains(selectedStep.Type));
+                NeedUpdateTestFields = true;
+                return;
+            }
+
+            selectedStep.Substeps.Clear();
+
             CoStepType.Items.Clear();
             foreach (var type in ((StepTypesGroup)CoStepTypeGroup.SelectedItem).Types)
             {
                 CoStepType.Items.Add(StepType.Descriptions[type]);
             }
             CoStepType.SelectedIndex = 0;
-            TeStepName.Text = CoStepTypeGroup.Text;
+            TeStepName.Text = CoStepTypeGroup.Text + " " + CoStepType.Text;
             ReloadTree();
         }
 
