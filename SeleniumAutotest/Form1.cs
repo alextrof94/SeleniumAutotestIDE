@@ -25,9 +25,8 @@ namespace SeleniumAutotest
     public partial class Form1 : Form
     {
         // TODO:
-        // run js code (scroll to element/top and other)
         // refactoring
-        private const string Version = "v1.2";
+        private const string Version = "v1.3";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
         private Project Project { get; set; }
