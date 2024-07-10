@@ -174,24 +174,33 @@ namespace SeleniumAutotest
 
         private TestStep GetNextStep(TestStep step)
         {
-            if (step.Substeps.Where(x => x.StepState != StepStates.Passed && x.StepState != StepStates.IgnoredError).Count() > 0)
+            // root
+            // L step 0 started/finished/error/ignore
+            //   L substep 0-0
+            //   L substep 0-1
+            //   L substep 0-2
+            // L step 1
+            //   L substep 1-0
+
+            // get first substep if have not started substeps (step 0 -> substep 0-0)
+            if (step.Substeps.Where(x => x.StepState == StepStates.NotStarted || x.StepState == StepStates.Error).Count() > 0)
             {
                 return step.Substeps[0];
             }
-            else
+
+            // if parent is not exists - root finished, complete (root -> null)
+            if (step.Parent == null)
+                return null;
+
+            // get next substep (substep 0-1 -> substep 0-2)
+            var indexNow = step.Parent.Substeps.IndexOf(step);
+            if (indexNow < step.Parent.Substeps.Count - 1)
             {
-                if (step.Parent == null)
-                    return null;
-                var indexNow = step.Parent.Substeps.IndexOf(step);
-                if (indexNow < step.Parent.Substeps.Count - 1)
-                {
-                    return step.Parent.Substeps[indexNow + 1];
-                }
-                else
-                {
-                    return GetNextStep(step.Parent);
-                }
+                return step.Parent.Substeps[indexNow + 1];
             }
+
+            // return next step for parent (substep 0-2 -> step 1)
+            return GetNextStep(step.Parent);
         }
 
         public bool StepModeRun(bool selectFoundElements)

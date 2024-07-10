@@ -117,7 +117,7 @@ namespace SeleniumAutotest
                                                 Name = "Найти первый дочерний элемент h3 по XPATH",
                                                 Type = StepTypes.FindElement,
                                                 SecondsToWait = 30,
-                                                Selector = "//h3",
+                                                Selector = ".//h3",
                                                 Substeps = new List<TestStep>
                                                 {
                                                     new TestStep {
@@ -190,7 +190,7 @@ namespace SeleniumAutotest
             {
                 RunStopwatch.Stop();
                 RunTime = TestStopwatch.Elapsed;
-                RunAutotestFinished?.Invoke(SelectedAutotest.ErrorStep?.Error);
+                RunAutotestFinished?.Invoke(SelectedAutotest.ErrorStep?.Log);
                 return; 
             }
 
@@ -208,7 +208,7 @@ namespace SeleniumAutotest
             {
                 RunStopwatch.Stop();
                 RunTime = RunStopwatch.Elapsed;
-                RunAutotestFinished?.Invoke(SelectedAutotest.ErrorStep?.Error);
+                RunAutotestFinished?.Invoke(SelectedAutotest.ErrorStep?.Log);
             }
         }
 

@@ -122,6 +122,7 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
+            this.BuXpathHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -201,7 +202,8 @@
             // 
             this.инфоToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.BuTestParametersHelp,
-            this.BuCantDownloadDriverHelp});
+            this.BuCantDownloadDriverHelp,
+            this.BuXpathHelp});
             this.инфоToolStripMenuItem.Name = "инфоToolStripMenuItem";
             this.инфоToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.инфоToolStripMenuItem.Text = "Инфо";
@@ -1302,6 +1304,13 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
+            // BuXpathHelp
+            // 
+            this.BuXpathHelp.Name = "BuXpathHelp";
+            this.BuXpathHelp.Size = new System.Drawing.Size(208, 22);
+            this.BuXpathHelp.Text = "Справка по XPATH";
+            this.BuXpathHelp.Click += new System.EventHandler(this.BuXpathHelp_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1449,6 +1458,7 @@
         private System.Windows.Forms.Panel PaMiddleDownDownRight;
         private System.Windows.Forms.Button BuTestRunStepMode;
         private System.Windows.Forms.Button BuTestStepModePrev;
+        private System.Windows.Forms.ToolStripMenuItem BuXpathHelp;
     }
 }
 

@@ -600,6 +600,9 @@ namespace SeleniumAutotest
                     case StepStates.Skipped:
                         node.BackColor = Color.GreenYellow;
                         break;
+                    case StepStates.Started:
+                        node.BackColor = Color.LightGray;
+                        break;
                 }
                 node.ForeColor = Color.Black;
                 if (step.IgnoreError || !step.Enabled)
@@ -714,36 +717,35 @@ namespace SeleniumAutotest
 
             try
             {
+                StepTypesGroup group;
+                List<TestStep> stepsToAdd;
+                List<StepTypes> appliableTypes;
                 if (TrSteps.SelectedNode != null)
                 {
                     var parentStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
 
-                    var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Contains(parentStep.Type)).Types;
-                    if (appliableTypes.Count == 0)
-                    {
-                        return;
-                    }
-                    var type = appliableTypes.First();
-                    parentStep.Substeps.Add(new TestStep()
-                    {
-                        Type = type,
-                        Name = StepType.Descriptions[type]
-                    });
+                    group = StepType.StepTypesGroups.First(x => x.Parents.Contains(parentStep.Type));
+                    appliableTypes = group.Types;
+                    stepsToAdd = parentStep.Substeps;
                 }
                 else
                 {
-                    var appliableTypes = StepType.StepTypesGroups.First(x => x.Parents.Count == 0 || x.Parents.Contains(StepTypes.Group)).Types;
-                    if (appliableTypes.Count == 0)
-                    {
-                        return;
-                    }
-                    var type = appliableTypes.First();
-                    Project.SelectedAutotest.Root.Substeps.Add(new TestStep()
-                    {
-                        Type = type,
-                        Name = StepType.Descriptions[type]
-                    });
+                    group = StepType.StepTypesGroups.First(x => x.Parents.Count == 0 || x.Parents.Contains(StepTypes.Group));
+                    appliableTypes = group.Types;
+                    stepsToAdd = Project.SelectedAutotest.Root.Substeps;
                 }
+
+                if (appliableTypes.Count == 0)
+                {
+                    return;
+                }
+                var type = appliableTypes.First();
+                stepsToAdd.Add(new TestStep()
+                {
+                    Type = type,
+                    Name = group.Name + " " + StepType.Descriptions[type]
+                });
+
                 Project.SelectedAutotest.ResetAllParentsForSteps(Project);
                 ReloadTree();
             }
@@ -886,7 +888,7 @@ namespace SeleniumAutotest
             {
                 NuStepWait.Value = (decimal)0.001f;
             }
-            RiLog.Text = selectedStep.Error;
+            RiLog.Text = selectedStep.Log;
 
 
             SetStepFieldsVisible(selectedStep.Type);
@@ -1083,6 +1085,7 @@ namespace SeleniumAutotest
                     BuTestStop.Enabled = true;
                     BuTestStepModePrev.Enabled = true;
                     BuTestRun.Enabled = false;
+                    LiTests.Enabled = false;
                 }
                 Activate();
                 return;
@@ -1097,6 +1100,35 @@ namespace SeleniumAutotest
         private void BuTestStepModePrev_Click(object sender, EventArgs e)
         {
             Project.StepModeStepBack();
+        }
+
+        private void BuXpathHelp_Click(object sender, EventArgs e)
+        {
+            string msg = "XPATH - адрес элемента на странице\r\n";
+            msg += "/ - поиск среди дочерних элементов первого уровня, // - поиск среди всех дочерних элементов\r\n";
+            msg += "После идёт имя тега (div, span, li и т.п.), либо * - любой элемент\r\n";
+            msg += "Затем можно описать условия по атрибутам или тексту в []\r\n";
+            msg += "Для проверки текста - text()\r\n";
+            msg += "Имена атрибутов надо начинать с @ (@class, @id, @data)\r\n\r\n";
+
+            msg += "//div - первый div на странице\r\n";
+            msg += "//*[@id='asd'] - любой элемент на странице, у которого id = asd\r\n";
+            msg += "//*[text()='asd'] - любой элемент на странице, у которого текст = asd\r\n";
+            msg += "//*[contains(@class, 'asd')] - любой элемент на странице, у которого есть класс asd\r\n";
+            msg += "В условиях [] поддерживаются логические операнды and/or\r\n\r\n";
+
+            msg += "//div[contains(@class, 'asd') and @data-item-marker='qwe'] - первый div на странице, у которого есть класс asd и атрибут data-item-marker = qwe\r\n\r\n";
+
+            msg += "Для поиска дочерних элементов в подшагах надо использовать точку вначале\r\n";
+            msg += ".//div - поиск первого дочернего элемента div в родителе\r\n\r\n";
+
+            msg += "Можно сразу искать нужные дочерние элементы по структуре\r\n";
+            msg += "//div[contains(@class, 'asd') and @data-item-marker='qwe']//span[text()='zxc'] - сначала ищется первый div на странице, у которого есть класс asd и атрибут data-item-marker = qwe, затем в нём ищется span с текстом zxc\r\n\r\n";
+            msg += "//div[@id='asd']/span - сначала ищется первый div с id = asd, затем в нём выбирается первый span\r\n\r\n";
+
+            msg += "В поиске элемента можно переходить в родителя с помощью /..\r\n";
+            msg += "//div/..//span - сначала находим первый span, затем переходим в родителя и ищем в родителе span\r\n\r\n";
+            MessageBox.Show(msg, "Справка по XPATH");
         }
     }
 }

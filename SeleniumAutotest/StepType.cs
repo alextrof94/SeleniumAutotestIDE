@@ -58,7 +58,7 @@ namespace SeleniumAutotest
                 ImageIndex = 4,
                 Name = "Проверить",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
-                Types = new List<StepTypes>(){ StepTypes.CheckText, StepTypes.CheckClassExists, StepTypes.CheckClassNotExists, StepTypes.CheckAttribute, StepTypes.CheckElement, StepTypes.CompareParameters } },
+                Types = new List<StepTypes>(){ StepTypes.CheckText, StepTypes.CheckClassExists, StepTypes.CheckClassNotExists, StepTypes.CheckAttribute, StepTypes.CompareParameters } },
             new StepTypesGroup(){
                 ImageIndex = 6,
                 Name = "Сохранить в параметр",
@@ -89,12 +89,18 @@ namespace SeleniumAutotest
                 Name = "JS действие",
                 Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.ScrollByPixels, StepTypes.JsCode } },
+            new StepTypesGroup(){
+                ImageIndex = 4,
+                Name = "Проверить существование",
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
+                Types = new List<StepTypes>(){ StepTypes.CheckElement } },
         };
 
         public static Dictionary<StepTypes, string> Descriptions { get; } = new Dictionary<StepTypes, string>{
             { StepTypes.Group, "Группа шагов" },
             { StepTypes.FindElement, "Найти элемент" },
             { StepTypes.WaitTime, "Ждать время" },
+            { StepTypes.CheckElement, "Элемента" },
 
             { StepTypes.JsEvent, "Вызвать событие" },
             { StepTypes.ScrollTo, "Прокрутить страницу к элементу" },
@@ -114,7 +120,6 @@ namespace SeleniumAutotest
             { StepTypes.CheckAttribute, "Атрибут" },
             { StepTypes.CheckClassExists, "Наличие класса" },
             { StepTypes.CheckClassNotExists, "Отсутствие класса" },
-            { StepTypes.CheckElement, "Существования элемента" },
             { StepTypes.CompareParameters, "Сравнить 2 параметра" },
 
             { StepTypes.EnterText, "Ввести значение" },

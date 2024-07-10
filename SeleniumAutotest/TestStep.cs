@@ -18,7 +18,7 @@ namespace SeleniumAutotest
 {
     public enum StepStates
     {
-        NotStarted, Passed, Error, IgnoredError, Skipped
+        NotStarted, Passed, Error, IgnoredError, Skipped, Started
     }
 
     public enum SelectorType
@@ -54,7 +54,7 @@ namespace SeleniumAutotest
         [JsonIgnore]
         public StepStates StepState;
         [JsonIgnore]
-        public string Error;
+        public string Log;
         [JsonIgnore]
         public TestStep PrevStep;
 
@@ -76,61 +76,94 @@ namespace SeleniumAutotest
 
         public override string ToString()
         {
+            string str;
             switch (this.Type)
             {
                 case StepTypes.Click:
                 case StepTypes.JsClick:
                 case StepTypes.AltClick:
                 case StepTypes.DoubleClick:
-                    return $"{Name} [{StepType.Descriptions[Type]}]";
+                    str = $"{Name}";
+                    break;
                 case StepTypes.Group:
-                    return Name;
+                    str = Name;
+                    break;
                 case StepTypes.EnterText:
-                    return $"{Name} [{Value}]";
+                    str = $"{Name} [{Value}]";
+                    break;
                 case StepTypes.SetAttribute:
-                    return $"{Name} [{Selector}={Value}]";
+                    str = $"{Name} [{Selector}={Value}]";
+                    break;
                 case StepTypes.CheckElement:
-                    return $"{Name} | {SelectorType}={Selector}" + ((IgnoreError) ? " | IgnoreError" : "");
+                    str = $"{Name} | {SelectorType}={Selector}";
+                    break;
                 case StepTypes.WaitTime:
-                    return $"{Name} ({SecondsToWait})";
+                    str = $"{Name} ({SecondsToWait})";
+                    break;
                 case StepTypes.FindElement:
-                    return $"{Name} | {SelectorType}={Selector} ({SecondsToWait})";
+                    str = $"{Name} | {SelectorType}={Selector} ({SecondsToWait})";
+                    break;
                 case StepTypes.CheckClassExists:
-                    return $"{Name} [class={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
+                    str = $"{Name} [class={Value}]";
+                    break;
                 case StepTypes.CheckClassNotExists:
-                    return $"{Name} [class={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
+                    str = $"{Name} [class={Value}]";
+                    break;
                 case StepTypes.CheckText:
-                    return $"{Name} [TEXT={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
+                    str = $"{Name} [TEXT={Value}]";
+                    break;
                 case StepTypes.CompareParameters:
-                    return $"{Name} [{Value} = {Parameter}]";
+                    str = $"{Name} [{Value} = {Parameter}]";
+                    break;
                 case StepTypes.Open:
-                    return $"{Name} | {Value}";
+                    str = $"{Name} | {Value}";
+                    break;
                 case StepTypes.RefreshPage:
-                    return $"{Name}";
+                    str = $"{Name}";
+                    break;
                 case StepTypes.CheckAttribute:
-                    return $"{Name} [{Selector}={Value}]" + ((IgnoreError) ? " | IgnoreError" : "");
+                    str = $"{Name} [{Selector}={Value}]";
+                    break;
                 case StepTypes.ReadAttributeToParameter:
-                    return $"{Name} [{Selector} => {Parameter}]";
+                    str = $"{Name} [{Selector} => {Parameter}]";
+                    break;
                 case StepTypes.ReadTextToParameter:
-                    return $"{Name} [TEXT => {Parameter}]";
+                    str = $"{Name} [TEXT => {Parameter}]";
+                    break;
                 case StepTypes.ReadAddressToParameter:
-                    return $"{Name} [URL => {Parameter}]";
+                    str = $"{Name} [URL => {Parameter}]";
+                    break;
                 case StepTypes.InputToParameterByUser:
-                    return $"{Name} [USER => {Parameter}]";
+                    str = $"{Name} [USER => {Parameter}]";
+                    break;
                 case StepTypes.JsEvent:
-                    return $"{Name} [EVENT={Value}]";
+                    str = $"{Name} [EVENT={Value}]";
+                    break;
                 case StepTypes.JsCode:
-                    return $"{Name} [{Value}]";
+                    str = $"{Name} [{Value}]";
+                    break;
                 case StepTypes.ScrollTo:
-                    return $"{Name}";
+                    str = $"{Name}";
+                    break;
                 case StepTypes.ScrollByPixels:
-                    return $"{Name} [{Value}px]";
+                    str = $"{Name} [{Value}px]";
+                    break;
                 default:
-                    return "!!! " + Name;
+                    str = "!!! " + Name;
+                    break;
             }
+            if (IgnoreError)
+            {
+                str += " | IgnoreError";
+            }
+            if (!Enabled)
+            {
+                str += " | SKIP";
+            }
+            return str;
         }
 
-        private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, bool selectFoundElements, bool canIgnoreErrorIfStepIgnoringThem = true, int staleErrorCount = 0)
+        private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, bool selectFoundElements, int staleErrorCount = 0)
         {
             try
             {
@@ -139,13 +172,17 @@ namespace SeleniumAutotest
                     if (!Enabled)
                     {
                         this.StepState = StepStates.Skipped;
+                        SetParentStatus(this);
                         return;
                     }
+                    this.StepState = StepStates.Started;
+                    StateUpdated?.Invoke();
 
                     if (this.Selector == null) { this.Selector = ""; }
                     if (this.Value == null) { this.Value = ""; }
 
                     bool needToSlow = false;
+                    Log = "";
                     switch (Type)
                     {
                         case StepTypes.Open:
@@ -344,6 +381,7 @@ namespace SeleniumAutotest
                                 {
                                     throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{el.Text}]");
                                 }
+                                Log = $"Значение = [{el.Text}]";
                             }
                             break;
                         case StepTypes.CheckAttribute:
@@ -359,6 +397,7 @@ namespace SeleniumAutotest
                                     var errValue = el.GetAttribute(selector);
                                     throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{errValue}]");
                                 }
+                                Log = $"Значение = [{el.GetAttribute(selector)}]";
                             }
                             break;
                         case StepTypes.CheckClassExists:
@@ -388,6 +427,7 @@ namespace SeleniumAutotest
                                 var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 var value = el.GetAttribute(selector) ?? "";
                                 SetParameter(value, this.Parameter);
+                                Log = $"Значение = [{value}]";
                             }
                             break;
                         case StepTypes.ReadTextToParameter:
@@ -395,12 +435,14 @@ namespace SeleniumAutotest
                                 var el = this.Parent.FoundElement;
                                 var value = el.Text;
                                 SetParameter(value, this.Parameter);
+                                Log = $"Значение = [{value}]";
                             }
                             break;
                         case StepTypes.ReadAddressToParameter:
                             {
                                 var value = driver.Url;
                                 SetParameter(value, this.Parameter);
+                                Log = $"Значение = [{value}]";
                             }
                             break;
                         case StepTypes.CompareParameters:
@@ -411,6 +453,7 @@ namespace SeleniumAutotest
                                 {
                                     throw new Exception($"Param1 [{value1}] ({value1.GetType()})\r\nParam2 [{value2}] ({value2.GetType()})");
                                 }
+                                Log = $"[{value1}] = [{value2}]";
                             }
                             break;
                         case StepTypes.InputToParameterByUser:
@@ -436,6 +479,7 @@ namespace SeleniumAutotest
                                         ParentAutotest.InvokeParametersUpdated();
                                     }
                                 }
+                                Log = $"Значение = [{inputDataForm.Result}]";
                             }
                             break;
                         case StepTypes.ScrollTo:
@@ -460,22 +504,24 @@ namespace SeleniumAutotest
                             break;
                         case StepTypes.JsCode:
                             {
-                                var value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var code = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                                js.ExecuteScript(value);
+                                js.ExecuteScript(code);
                             }
                             break;
                         default:
                             needToSlow = false;
                             break;
                     }
-                    StateUpdated?.Invoke();
+                    if (this.Substeps.Count == 0)
+                    {
+                        this.StepState = StepStates.Passed;
+                        SetParentStatus(this);
+                    }
                     if (needToSlow && slowMode)
                     {
                         Thread.Sleep(1000);
                     }
-                    Error = "";
-                    this.StepState = StepStates.Passed;
                 }
                 catch (StaleElementReferenceException ex)
                 {
@@ -483,48 +529,67 @@ namespace SeleniumAutotest
                     if (staleErrorCount < 10)
                     {
                         Thread.Sleep(1000);
-                        StepWork(driver, StateUpdated, slowMode, selectFoundElements, canIgnoreErrorIfStepIgnoringThem, staleErrorCount);
+                        StepWork(driver, StateUpdated, slowMode, selectFoundElements, staleErrorCount);
                     }
                     else
                     {
                         var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                        this.Error = $"Элемент {SelectorType}=\"{selector}\" невалиден по неизвестной причине после 10 секунд ожидания \r\n\r\n" + ex.ToString();
+                        this.Log = $"Элемент {SelectorType}=\"{selector}\" невалиден по неизвестной причине после 10 секунд ожидания \r\n\r\n" + ex.ToString();
                         throw;
                     }
                 }
                 catch (NoSuchElementException ex)
                 {
                     var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                    this.Error = $"Элемент {SelectorType}=\"{selector}\" не найден\r\n\r\n" + ex.ToString();
+                    this.Log = $"Элемент {SelectorType}=\"{selector}\" не найден\r\n\r\n" + ex.ToString();
                     throw;
                 }
                 catch (InvalidSelectorException ex)
                 {
                     var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                    this.Error = $"Селектор имеет ошибку {SelectorType}=\"{selector}\"\r\n\r\n" + ex.ToString();
+                    this.Log = $"Селектор имеет ошибку {SelectorType}=\"{selector}\"\r\n\r\n" + ex.ToString();
                     throw;
                 }
                 catch (WebDriverTimeoutException ex)
                 {
                     var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
-                    this.Error = $"Элемент {SelectorType}=\"{selector}\" не найден за отведённое время\r\n\r\n" + ex.ToString();
+                    this.Log = $"Элемент {SelectorType}=\"{selector}\" не найден за отведённое время\r\n\r\n" + ex.ToString();
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    this.Error = ex.ToString();
+                    this.Log = ex.ToString();
                     throw;
                 }
             }
             catch
             {
-                this.StepState = (this.IgnoreError && canIgnoreErrorIfStepIgnoringThem) ? StepStates.IgnoredError : StepStates.Error;
+                this.StepState = (this.IgnoreError) ? StepStates.IgnoredError : StepStates.Error;
+                SetParentStatus(this);
                 if (this.StepState == StepStates.Error)
                 {
                     ParentAutotest.ErrorStep = this;
                     throw;
                 }
             }
+        }
+
+        private void SetParentStatus(TestStep step)
+        {
+            if (step.Parent == null) { return; }
+            if (step.Parent.Substeps.Count == step.Parent.Substeps.Where(x => x.StepState == StepStates.Passed || x.StepState == StepStates.Skipped).Count())
+            {
+                step.Parent.StepState = StepStates.Passed;
+            }
+            if (step.Parent.Substeps.Where(x => x.StepState == StepStates.IgnoredError).Count() > 0)
+            {
+                step.Parent.StepState = StepStates.IgnoredError;
+            }
+            if (step.Parent.Substeps.Where(x => x.StepState == StepStates.Error).Count() > 0)
+            {
+                step.Parent.StepState = StepStates.Error;
+            }
+            SetParentStatus(step.Parent);
         }
 
         private string GetElementXPath(IWebDriver driver, IWebElement element)
@@ -599,7 +664,7 @@ namespace SeleniumAutotest
         public void ClearState()
         {
             this.StepState = StepStates.NotStarted;
-            this.Error = "";
+            this.Log = "";
             foreach (var substep in Substeps)
             {
                 substep.ClearState();
@@ -647,7 +712,7 @@ namespace SeleniumAutotest
 
         public void StepModeRun(IWebDriver driver, Action StateUpdated, bool selectFoundElements)
         {
-            StepWork(driver, StateUpdated, false, selectFoundElements, false);
+            StepWork(driver, StateUpdated, false, selectFoundElements);
         }
     }
 }
