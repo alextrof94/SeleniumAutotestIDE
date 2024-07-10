@@ -26,7 +26,7 @@ namespace SeleniumAutotest
     {
         // TODO:
         // refactoring
-        private const string Version = "v1.3";
+        private const string Version = "v1.4";
         private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
 
         private Project Project { get; set; }
