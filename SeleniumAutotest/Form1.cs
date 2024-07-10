@@ -19,6 +19,7 @@ using System.Security.Cryptography;
 using System.Windows.Input;
 using OpenQA.Selenium.DevTools.V124.Debugger;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Interop;
 
 namespace SeleniumAutotest
 {
@@ -27,7 +28,7 @@ namespace SeleniumAutotest
         // TODO:
         // refactoring
         private const string Version = "v1.4";
-        private const string AppName = "Selenium Autotest IDE by alextrof94 " + Version;
+        private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
 
@@ -1129,6 +1130,36 @@ namespace SeleniumAutotest
             msg += "В поиске элемента можно переходить в родителя с помощью /..\r\n";
             msg += "//div/..//span - сначала находим первый span, затем переходим в родителя и ищем в родителе span\r\n\r\n";
             MessageBox.Show(msg, "Справка по XPATH");
+        }
+
+        private void BuAbout_Click(object sender, EventArgs e)
+        {
+            string msg = "Автор: Трофимов Александр (alextrof94)\r\n";
+            msg += "Программа распространяется бесплатно\r\n\r\n";
+            msg += "Изображения взяты с сайта https://icons8.com";
+            MessageBox.Show(msg, "О программе");
+        }
+
+        private void BuGithub_Click(object sender, EventArgs e)
+        {
+            string args = "/c start \"\" \"https://github.com/alextrof94/SeleniumAutotestIDE\"";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = args,
+                UseShellExecute = true
+            });
+        }
+
+        private void BuDonate_Click(object sender, EventArgs e)
+        {
+            string args = "/c start \"\" \"https://boosty.to/goodvrgames/donate\"";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd",
+                Arguments = args,
+                UseShellExecute = true
+            });
         }
     }
 }

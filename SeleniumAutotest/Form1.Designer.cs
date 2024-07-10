@@ -39,6 +39,7 @@
             this.инфоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BuTestParametersHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.BuCantDownloadDriverHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuXpathHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.LiTests = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.BuTestStepModePrev = new System.Windows.Forms.Button();
@@ -122,7 +123,9 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
-            this.BuXpathHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuGithub = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -203,7 +206,10 @@
             this.инфоToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.BuTestParametersHelp,
             this.BuCantDownloadDriverHelp,
-            this.BuXpathHelp});
+            this.BuXpathHelp,
+            this.BuAbout,
+            this.BuGithub,
+            this.BuDonate});
             this.инфоToolStripMenuItem.Name = "инфоToolStripMenuItem";
             this.инфоToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.инфоToolStripMenuItem.Text = "Инфо";
@@ -221,6 +227,13 @@
             this.BuCantDownloadDriverHelp.Size = new System.Drawing.Size(208, 22);
             this.BuCantDownloadDriverHelp.Text = "Нет доступа к интернету";
             this.BuCantDownloadDriverHelp.Click += new System.EventHandler(this.BuCantDownloadDriverHelp_Click);
+            // 
+            // BuXpathHelp
+            // 
+            this.BuXpathHelp.Name = "BuXpathHelp";
+            this.BuXpathHelp.Size = new System.Drawing.Size(208, 22);
+            this.BuXpathHelp.Text = "Справка по XPATH";
+            this.BuXpathHelp.Click += new System.EventHandler(this.BuXpathHelp_Click);
             // 
             // LiTests
             // 
@@ -1304,12 +1317,26 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
-            // BuXpathHelp
+            // BuAbout
             // 
-            this.BuXpathHelp.Name = "BuXpathHelp";
-            this.BuXpathHelp.Size = new System.Drawing.Size(208, 22);
-            this.BuXpathHelp.Text = "Справка по XPATH";
-            this.BuXpathHelp.Click += new System.EventHandler(this.BuXpathHelp_Click);
+            this.BuAbout.Name = "BuAbout";
+            this.BuAbout.Size = new System.Drawing.Size(208, 22);
+            this.BuAbout.Text = "О программе";
+            this.BuAbout.Click += new System.EventHandler(this.BuAbout_Click);
+            // 
+            // BuGithub
+            // 
+            this.BuGithub.Name = "BuGithub";
+            this.BuGithub.Size = new System.Drawing.Size(208, 22);
+            this.BuGithub.Text = "GitHub";
+            this.BuGithub.Click += new System.EventHandler(this.BuGithub_Click);
+            // 
+            // BuDonate
+            // 
+            this.BuDonate.Name = "BuDonate";
+            this.BuDonate.Size = new System.Drawing.Size(208, 22);
+            this.BuDonate.Text = "Donate";
+            this.BuDonate.Click += new System.EventHandler(this.BuDonate_Click);
             // 
             // Form1
             // 
@@ -1459,6 +1486,9 @@
         private System.Windows.Forms.Button BuTestRunStepMode;
         private System.Windows.Forms.Button BuTestStepModePrev;
         private System.Windows.Forms.ToolStripMenuItem BuXpathHelp;
+        private System.Windows.Forms.ToolStripMenuItem BuAbout;
+        private System.Windows.Forms.ToolStripMenuItem BuGithub;
+        private System.Windows.Forms.ToolStripMenuItem BuDonate;
     }
 }
 
