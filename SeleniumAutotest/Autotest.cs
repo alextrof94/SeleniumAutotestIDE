@@ -136,8 +136,10 @@ namespace SeleniumAutotest
                 {
                     GenerateParameters();
                 }
+                ChromeOptions options = new ChromeOptions();
+                options.AddArguments("--disable-notifications");
                 string driverPath = TryToDownloadDriver();
-                IWebDriver driver = new ChromeDriver(driverPath);
+                IWebDriver driver = new ChromeDriver(driverPath, options);
                 driver.Manage().Window.Maximize();
                 try
                 {
@@ -211,8 +213,10 @@ namespace SeleniumAutotest
             {
                 GenerateParameters();
             }
+            ChromeOptions options = new ChromeOptions();
+            options.AddArguments("--disable-notifications");
             string driverPath = TryToDownloadDriver();
-            WebDriver = new ChromeDriver(driverPath);
+            WebDriver = new ChromeDriver(driverPath, options);
             WebDriver.Manage().Window.Maximize();
             foreach (var substep in Root.Substeps)
             {
