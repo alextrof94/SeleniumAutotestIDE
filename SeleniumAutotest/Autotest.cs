@@ -177,28 +177,41 @@ namespace SeleniumAutotest
         private TestStep GetNextStep(TestStep step)
         {
             // root
-            // L step 0 started/finished/error/ignore
+            // L step 0 
             //   L substep 0-0
             //   L substep 0-1
             //   L substep 0-2
             // L step 1
             //   L substep 1-0
 
-            // get first substep if have not started substeps (step 0 -> substep 0-0)
-            if (step.Substeps.Where(x => x.StepState == StepStates.NotStarted || x.StepState == StepStates.Error).Count() > 0)
+            // get first not started substep (step 0 -> substep 0-0)
+            List<TestStep> validSubsteps = step.Substeps.Where(x => (x.StepState == StepStates.NotStarted || x.StepState == StepStates.Error) && x.Enabled).ToList<TestStep>();
+            if (validSubsteps.Count() > 0)
             {
-                return step.Substeps[0];
+                return validSubsteps[0];
             }
 
             // if parent is not exists - root finished, complete (root -> null)
             if (step.Parent == null)
                 return null;
 
-            // get next substep (substep 0-1 -> substep 0-2)
-            var indexNow = step.Parent.Substeps.IndexOf(step);
-            if (indexNow < step.Parent.Substeps.Count - 1)
+            // get next substep (substep 0-0 -> substep 0-2 if substep 0-1 disabled)
+            var index = step.Parent.Substeps.IndexOf(step);
+            bool allNextChecked = false;
+            while (!allNextChecked)
             {
-                return step.Parent.Substeps[indexNow + 1];
+                index++;
+                if (index < step.Parent.Substeps.Count - 1)
+                {
+                    if (step.Parent.Substeps[index].Enabled)
+                    {
+                        return step.Parent.Substeps[index];
+                    }
+                }
+                else
+                {
+                    allNextChecked = true;
+                }
             }
 
             // return next step for parent (substep 0-2 -> step 1)

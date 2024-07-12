@@ -27,7 +27,7 @@ namespace SeleniumAutotest
     {
         // TODO:
         // refactoring
-        private const string Version = "v1.4";
+        private const string Version = "v1.5";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
@@ -68,6 +68,15 @@ namespace SeleniumAutotest
             toolTip1.SetToolTip(BuStepReloadTree, "Обновить дерево [CTRL+R]");
             toolTip1.SetToolTip(BuFontIncrease, "Увеличить размер текста в дереве");
             toolTip1.SetToolTip(BuFontDecrease, "Уменьшить размер текста в дереве");
+
+            toolTip1.SetToolTip(ChProjectRegenerateParameters, "Генерировать параметры проекта автоматически при запуске автотеста");
+            toolTip1.SetToolTip(BuProjectGenerateParameters, "Перегенерировать параметры проекта");
+            toolTip1.SetToolTip(BuProjectParametersUp, "Передвинуть строку с параметром проекта выше");
+            toolTip1.SetToolTip(BuProjectParametersDown, "Передвинуть строку с параметром проекта ниже");
+            toolTip1.SetToolTip(ChTestRegenerateParameters, "Генерировать параметры теста автоматически при запуске автотеста");
+            toolTip1.SetToolTip(BuTestGenerateParameters, "Перегенерировать параметры теста");
+            toolTip1.SetToolTip(BuTestParametersUp, "Передвинуть строку с параметром теста выше");
+            toolTip1.SetToolTip(BuTestParametersDown, "Передвинуть строку с параметром теста ниже");
             var selectorTypes = Enum.GetValues(typeof(SelectorType)).Cast<SelectorType>().Select(v => v.ToString()).ToList();
             foreach (var item in selectorTypes)
             {
@@ -505,6 +514,7 @@ namespace SeleniumAutotest
                         TrSteps.SelectedNode = nodeToBeSelected;
                     }
                     MessageBox.Show(errorMsg, "Произошла ошибка во время выполнения", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    RiLog.Text = errorMsg;
                 }
                 StepMode = false;
                 AutoMode = false;
@@ -668,38 +678,12 @@ namespace SeleniumAutotest
 
         private void DaTestParameters_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (!NeedUpdateTestFields) { return; }
-            if (Project.SelectedAutotest == null) { return; }
-
-            Project.SelectedAutotest.Parameters.Clear();
-            foreach (DataGridViewRow row in DaTestParameters.Rows)
-            {
-                if (row.Cells[0].Value == null && row.Cells[1].Value == null && row.Cells[2].Value == null)
-                    continue;
-                Project.SelectedAutotest.Parameters.Add(new Parameter { 
-                    Name = row.Cells[0].Value?.ToString(), 
-                    Pattern = row.Cells[1].Value?.ToString(), 
-                    Value = row.Cells[2].Value?.ToString() 
-                });
-            }
+            RefreshTestParameters();
         }
 
         private void DaProjectParameters_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (!NeedUpdateTestFields) { return; }
-
-            Project.Parameters.Clear();
-            foreach (DataGridViewRow row in DaProjectParameters.Rows)
-            {
-                if (row.Cells[0].Value == null && row.Cells[1].Value == null && row.Cells[2].Value == null)
-                    continue;
-                Project.Parameters.Add(new Parameter
-                {
-                    Name = row.Cells[0].Value?.ToString(),
-                    Pattern = row.Cells[1].Value?.ToString(),
-                    Value = row.Cells[2].Value?.ToString()
-                });
-            }
+            RefreshProjectParameters();
         }
 
         private void ChProjectRegenerateParameters_CheckedChanged(object sender, EventArgs e)
@@ -1160,6 +1144,125 @@ namespace SeleniumAutotest
                 Arguments = args,
                 UseShellExecute = true
             });
+        }
+
+        private void DaProjectParameters_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            RefreshProjectParameters();
+        }
+
+        private void RefreshProjectParameters()
+        {
+            if (!NeedUpdateTestFields) { return; }
+
+            Project.Parameters.Clear();
+            foreach (DataGridViewRow row in DaProjectParameters.Rows)
+            {
+                if (row.Cells[0].Value == null && row.Cells[1].Value == null && row.Cells[2].Value == null)
+                    continue;
+                Project.Parameters.Add(new Parameter
+                {
+                    Name = row.Cells[0].Value?.ToString(),
+                    Pattern = row.Cells[1].Value?.ToString(),
+                    Value = row.Cells[2].Value?.ToString()
+                });
+            }
+        }
+
+        private void DaTestParameters_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            RefreshTestParameters();
+        }
+
+        private void RefreshTestParameters()
+        {
+            if (!NeedUpdateTestFields) { return; }
+            if (Project.SelectedAutotest == null) { return; }
+
+            Project.SelectedAutotest.Parameters.Clear();
+            foreach (DataGridViewRow row in DaTestParameters.Rows)
+            {
+                if (row.Cells[0].Value == null && row.Cells[1].Value == null && row.Cells[2].Value == null)
+                    continue;
+                Project.SelectedAutotest.Parameters.Add(new Parameter
+                {
+                    Name = row.Cells[0].Value?.ToString(),
+                    Pattern = row.Cells[1].Value?.ToString(),
+                    Value = row.Cells[2].Value?.ToString()
+                });
+            }
+        }
+
+        private bool DataGridViewSwapRows(DataGridView dgv, int rowIndex1, int rowIndex2)
+        {
+            if (rowIndex1 == -1 || rowIndex2 == -1 || rowIndex1 == rowIndex2 || rowIndex1 >= dgv.Rows.Count - 1 || rowIndex2 >= dgv.Rows.Count - 1) { return false; }
+
+            DataGridViewRow row1 = dgv.Rows[rowIndex1];
+            DataGridViewRow row2 = dgv.Rows[rowIndex2];
+
+            for (int i = 0; i < row1.Cells.Count; i++)
+            {
+                object temp = row1.Cells[i].Value;
+                row1.Cells[i].Value = row2.Cells[i].Value;
+                row2.Cells[i].Value = temp;
+            }
+            return true;
+        }
+
+        private void BuProjectParametersDown_Click(object sender, EventArgs e)
+        {
+            if (DaProjectParameters.SelectedRows.Count != 1) { return; }
+            if (DaProjectParameters.SelectedRows[0].IsNewRow) { return; }
+
+            int rowIndex = DaProjectParameters.SelectedRows[0].Index;
+            if (DataGridViewSwapRows(DaProjectParameters, rowIndex, rowIndex + 1))
+            {
+                DaProjectParameters.Rows[rowIndex].Selected = false;
+                DaProjectParameters.Rows[rowIndex + 1].Selected = true;
+                RefreshProjectParameters();
+            }
+        }
+
+        private void BuProjectParametersUp_Click(object sender, EventArgs e)
+        {
+            if (DaProjectParameters.SelectedRows.Count != 1) { return; }
+            if (DaProjectParameters.SelectedRows[0].IsNewRow) { return; }
+
+            int rowIndex = DaProjectParameters.SelectedRows[0].Index;
+            if (DataGridViewSwapRows(DaProjectParameters, rowIndex, rowIndex - 1))
+            {
+                DaProjectParameters.Rows[rowIndex].Selected = false;
+                DaProjectParameters.Rows[rowIndex - 1].Selected = true;
+                RefreshProjectParameters();
+            }
+        }
+
+        private void BuTestParametersUp_Click(object sender, EventArgs e)
+        {
+            if (DaTestParameters.SelectedRows.Count != 1) { return; }
+            if (DaTestParameters.SelectedRows[0].IsNewRow) { return; }
+
+            int rowIndex = DaTestParameters.SelectedRows[0].Index;
+            if (DataGridViewSwapRows(DaTestParameters, rowIndex, rowIndex - 1))
+            {
+                DaTestParameters.Rows[rowIndex].Selected = false;
+                DaTestParameters.Rows[rowIndex - 1].Selected = true;
+                RefreshTestParameters();
+            }
+        }
+
+        private void BuTestParametersDown_Click(object sender, EventArgs e)
+        {
+            if (DaTestParameters.SelectedRows.Count != 1) { return; }
+            if (DaTestParameters.SelectedRows[0].IsNewRow) { return; }
+
+            int rowIndex = DaTestParameters.SelectedRows[0].Index;
+            if (DataGridViewSwapRows(DaTestParameters, rowIndex, rowIndex + 1))
+            {
+                DaTestParameters.Rows[rowIndex].Selected = false;
+                DaTestParameters.Rows[rowIndex + 1].Selected = true;
+                RefreshTestParameters();
+            }
         }
     }
 }

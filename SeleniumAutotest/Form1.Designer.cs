@@ -40,6 +40,9 @@
             this.BuTestParametersHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.BuCantDownloadDriverHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.BuXpathHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuGithub = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.LiTests = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.BuTestStepModePrev = new System.Windows.Forms.Button();
@@ -123,9 +126,10 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
-            this.BuAbout = new System.Windows.Forms.ToolStripMenuItem();
-            this.BuGithub = new System.Windows.Forms.ToolStripMenuItem();
-            this.BuDonate = new System.Windows.Forms.ToolStripMenuItem();
+            this.BuProjectParametersDown = new System.Windows.Forms.Button();
+            this.BuProjectParametersUp = new System.Windows.Forms.Button();
+            this.BuTestParametersUp = new System.Windows.Forms.Button();
+            this.BuTestParametersDown = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -234,6 +238,27 @@
             this.BuXpathHelp.Size = new System.Drawing.Size(208, 22);
             this.BuXpathHelp.Text = "Справка по XPATH";
             this.BuXpathHelp.Click += new System.EventHandler(this.BuXpathHelp_Click);
+            // 
+            // BuAbout
+            // 
+            this.BuAbout.Name = "BuAbout";
+            this.BuAbout.Size = new System.Drawing.Size(208, 22);
+            this.BuAbout.Text = "О программе";
+            this.BuAbout.Click += new System.EventHandler(this.BuAbout_Click);
+            // 
+            // BuGithub
+            // 
+            this.BuGithub.Name = "BuGithub";
+            this.BuGithub.Size = new System.Drawing.Size(208, 22);
+            this.BuGithub.Text = "GitHub";
+            this.BuGithub.Click += new System.EventHandler(this.BuGithub_Click);
+            // 
+            // BuDonate
+            // 
+            this.BuDonate.Name = "BuDonate";
+            this.BuDonate.Size = new System.Drawing.Size(208, 22);
+            this.BuDonate.Text = "Donate";
+            this.BuDonate.Click += new System.EventHandler(this.BuDonate_Click);
             // 
             // LiTests
             // 
@@ -1021,6 +1046,8 @@
             // 
             // GrTestParameters
             // 
+            this.GrTestParameters.Controls.Add(this.BuTestParametersUp);
+            this.GrTestParameters.Controls.Add(this.BuTestParametersDown);
             this.GrTestParameters.Controls.Add(this.ChTestRegenerateParameters);
             this.GrTestParameters.Controls.Add(this.BuTestGenerateParameters);
             this.GrTestParameters.Controls.Add(this.DaTestParameters);
@@ -1039,25 +1066,25 @@
             // 
             this.ChTestRegenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ChTestRegenerateParameters.AutoSize = true;
-            this.ChTestRegenerateParameters.Location = new System.Drawing.Point(7, 163);
+            this.ChTestRegenerateParameters.Location = new System.Drawing.Point(7, 195);
             this.ChTestRegenerateParameters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ChTestRegenerateParameters.Name = "ChTestRegenerateParameters";
-            this.ChTestRegenerateParameters.Size = new System.Drawing.Size(402, 21);
+            this.ChTestRegenerateParameters.Size = new System.Drawing.Size(117, 21);
             this.ChTestRegenerateParameters.TabIndex = 6;
-            this.ChTestRegenerateParameters.Text = "Генерировать параметры автоматически при запуске автотеста";
+            this.ChTestRegenerateParameters.Text = "Автогенерация";
             this.ChTestRegenerateParameters.UseVisualStyleBackColor = true;
             this.ChTestRegenerateParameters.CheckedChanged += new System.EventHandler(this.ChTestRegenerateParameters_CheckedChanged);
             // 
             // BuTestGenerateParameters
             // 
-            this.BuTestGenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuTestGenerateParameters.Location = new System.Drawing.Point(7, 188);
+            this.BuTestGenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuTestGenerateParameters.ImageIndex = 6;
+            this.BuTestGenerateParameters.ImageList = this.ImButtons;
+            this.BuTestGenerateParameters.Location = new System.Drawing.Point(310, 176);
             this.BuTestGenerateParameters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BuTestGenerateParameters.Name = "BuTestGenerateParameters";
-            this.BuTestGenerateParameters.Size = new System.Drawing.Size(344, 27);
+            this.BuTestGenerateParameters.Size = new System.Drawing.Size(41, 40);
             this.BuTestGenerateParameters.TabIndex = 5;
-            this.BuTestGenerateParameters.Text = "Сгенерировать";
             this.BuTestGenerateParameters.UseVisualStyleBackColor = true;
             this.BuTestGenerateParameters.Click += new System.EventHandler(this.BuTestGenerateParameters_Click);
             // 
@@ -1079,9 +1106,10 @@
             this.DaTestParameters.Name = "DaTestParameters";
             this.DaTestParameters.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.DaTestParameters.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
-            this.DaTestParameters.Size = new System.Drawing.Size(344, 138);
+            this.DaTestParameters.Size = new System.Drawing.Size(344, 152);
             this.DaTestParameters.TabIndex = 0;
             this.DaTestParameters.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DaTestParameters_CellEndEdit);
+            this.DaTestParameters.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DaTestParameters_RowsRemoved);
             // 
             // CoTestParameterName
             // 
@@ -1104,6 +1132,8 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.BuProjectParametersUp);
+            this.groupBox5.Controls.Add(this.BuProjectParametersDown);
             this.groupBox5.Controls.Add(this.ChProjectRegenerateParameters);
             this.groupBox5.Controls.Add(this.BuProjectGenerateParameters);
             this.groupBox5.Controls.Add(this.DaProjectParameters);
@@ -1121,25 +1151,25 @@
             // 
             this.ChProjectRegenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ChProjectRegenerateParameters.AutoSize = true;
-            this.ChProjectRegenerateParameters.Location = new System.Drawing.Point(7, 373);
+            this.ChProjectRegenerateParameters.Location = new System.Drawing.Point(7, 405);
             this.ChProjectRegenerateParameters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ChProjectRegenerateParameters.Name = "ChProjectRegenerateParameters";
-            this.ChProjectRegenerateParameters.Size = new System.Drawing.Size(402, 21);
+            this.ChProjectRegenerateParameters.Size = new System.Drawing.Size(117, 21);
             this.ChProjectRegenerateParameters.TabIndex = 6;
-            this.ChProjectRegenerateParameters.Text = "Генерировать параметры автоматически при запуске автотеста";
+            this.ChProjectRegenerateParameters.Text = "Автогенерация";
             this.ChProjectRegenerateParameters.UseVisualStyleBackColor = true;
             this.ChProjectRegenerateParameters.CheckedChanged += new System.EventHandler(this.ChProjectRegenerateParameters_CheckedChanged);
             // 
             // BuProjectGenerateParameters
             // 
-            this.BuProjectGenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuProjectGenerateParameters.Location = new System.Drawing.Point(7, 399);
+            this.BuProjectGenerateParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuProjectGenerateParameters.ImageIndex = 6;
+            this.BuProjectGenerateParameters.ImageList = this.ImButtons;
+            this.BuProjectGenerateParameters.Location = new System.Drawing.Point(310, 386);
             this.BuProjectGenerateParameters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BuProjectGenerateParameters.Name = "BuProjectGenerateParameters";
-            this.BuProjectGenerateParameters.Size = new System.Drawing.Size(344, 27);
+            this.BuProjectGenerateParameters.Size = new System.Drawing.Size(41, 40);
             this.BuProjectGenerateParameters.TabIndex = 5;
-            this.BuProjectGenerateParameters.Text = "Сгенерировать";
             this.BuProjectGenerateParameters.UseVisualStyleBackColor = true;
             this.BuProjectGenerateParameters.Click += new System.EventHandler(this.BuProjectGenerateParameters_Click);
             // 
@@ -1161,9 +1191,10 @@
             this.DaProjectParameters.Name = "DaProjectParameters";
             this.DaProjectParameters.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.DaProjectParameters.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
-            this.DaProjectParameters.Size = new System.Drawing.Size(344, 349);
+            this.DaProjectParameters.Size = new System.Drawing.Size(344, 362);
             this.DaProjectParameters.TabIndex = 0;
             this.DaProjectParameters.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DaProjectParameters_CellEndEdit);
+            this.DaProjectParameters.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DaProjectParameters_RowsRemoved);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -1317,26 +1348,57 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
-            // BuAbout
+            // BuProjectParametersDown
             // 
-            this.BuAbout.Name = "BuAbout";
-            this.BuAbout.Size = new System.Drawing.Size(208, 22);
-            this.BuAbout.Text = "О программе";
-            this.BuAbout.Click += new System.EventHandler(this.BuAbout_Click);
+            this.BuProjectParametersDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuProjectParametersDown.ImageIndex = 7;
+            this.BuProjectParametersDown.ImageList = this.ImButtons;
+            this.BuProjectParametersDown.Location = new System.Drawing.Point(261, 386);
+            this.BuProjectParametersDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuProjectParametersDown.Name = "BuProjectParametersDown";
+            this.BuProjectParametersDown.Size = new System.Drawing.Size(41, 40);
+            this.BuProjectParametersDown.TabIndex = 7;
+            this.BuProjectParametersDown.UseVisualStyleBackColor = true;
+            this.BuProjectParametersDown.Click += new System.EventHandler(this.BuProjectParametersDown_Click);
             // 
-            // BuGithub
+            // BuProjectParametersUp
             // 
-            this.BuGithub.Name = "BuGithub";
-            this.BuGithub.Size = new System.Drawing.Size(208, 22);
-            this.BuGithub.Text = "GitHub";
-            this.BuGithub.Click += new System.EventHandler(this.BuGithub_Click);
+            this.BuProjectParametersUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuProjectParametersUp.ImageIndex = 8;
+            this.BuProjectParametersUp.ImageList = this.ImButtons;
+            this.BuProjectParametersUp.Location = new System.Drawing.Point(212, 386);
+            this.BuProjectParametersUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuProjectParametersUp.Name = "BuProjectParametersUp";
+            this.BuProjectParametersUp.Size = new System.Drawing.Size(41, 40);
+            this.BuProjectParametersUp.TabIndex = 8;
+            this.BuProjectParametersUp.UseVisualStyleBackColor = true;
+            this.BuProjectParametersUp.Click += new System.EventHandler(this.BuProjectParametersUp_Click);
             // 
-            // BuDonate
+            // BuTestParametersUp
             // 
-            this.BuDonate.Name = "BuDonate";
-            this.BuDonate.Size = new System.Drawing.Size(208, 22);
-            this.BuDonate.Text = "Donate";
-            this.BuDonate.Click += new System.EventHandler(this.BuDonate_Click);
+            this.BuTestParametersUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuTestParametersUp.ImageIndex = 8;
+            this.BuTestParametersUp.ImageList = this.ImButtons;
+            this.BuTestParametersUp.Location = new System.Drawing.Point(212, 176);
+            this.BuTestParametersUp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuTestParametersUp.Name = "BuTestParametersUp";
+            this.BuTestParametersUp.Size = new System.Drawing.Size(41, 40);
+            this.BuTestParametersUp.TabIndex = 10;
+            this.BuTestParametersUp.UseVisualStyleBackColor = true;
+            this.BuTestParametersUp.Click += new System.EventHandler(this.BuTestParametersUp_Click);
+            // 
+            // BuTestParametersDown
+            // 
+            this.BuTestParametersDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuTestParametersDown.ImageIndex = 7;
+            this.BuTestParametersDown.ImageList = this.ImButtons;
+            this.BuTestParametersDown.Location = new System.Drawing.Point(261, 176);
+            this.BuTestParametersDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuTestParametersDown.Name = "BuTestParametersDown";
+            this.BuTestParametersDown.Size = new System.Drawing.Size(41, 40);
+            this.BuTestParametersDown.TabIndex = 9;
+            this.BuTestParametersDown.UseVisualStyleBackColor = true;
+            this.BuTestParametersDown.Click += new System.EventHandler(this.BuTestParametersDown_Click);
             // 
             // Form1
             // 
@@ -1489,6 +1551,10 @@
         private System.Windows.Forms.ToolStripMenuItem BuAbout;
         private System.Windows.Forms.ToolStripMenuItem BuGithub;
         private System.Windows.Forms.ToolStripMenuItem BuDonate;
+        private System.Windows.Forms.Button BuTestParametersUp;
+        private System.Windows.Forms.Button BuTestParametersDown;
+        private System.Windows.Forms.Button BuProjectParametersUp;
+        private System.Windows.Forms.Button BuProjectParametersDown;
     }
 }
 

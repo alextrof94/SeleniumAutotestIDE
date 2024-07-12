@@ -311,6 +311,7 @@ namespace SeleniumAutotest
                                             break;
                                     }
                                 }
+                                this.FoundElement = el;
                             }
                             break;
                         case StepTypes.EnterText:
