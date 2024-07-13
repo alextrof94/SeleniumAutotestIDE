@@ -1,33 +1,22 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Windows.Input;
-using OpenQA.Selenium.DevTools.V124.Debugger;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Windows.Interop;
 
 namespace SeleniumAutotest
 {
     public partial class Form1 : Form
     {
         // TODO:
+        // translate
         // refactoring
-        private const string Version = "v1.5";
+        private const string Version = "v1.6";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
@@ -45,38 +34,7 @@ namespace SeleniumAutotest
             Project.SelectedAutotestChanged += Project_SelectedAutotestChanged;
             ChProjectRegenerateParameters.Checked = Project.RegenerateParametersOnRun;
             LiTests.DataSource = Project.Autotests;
-            toolTip1.SetToolTip(BuTestAdd, "Добавить автотест");
-            toolTip1.SetToolTip(BuTestDelete, "Удалить автотест");
-            toolTip1.SetToolTip(BuTestClone, "Дублировать автотест");
-            toolTip1.SetToolTip(BuTestUp, "Переместить автотест выше");
-            toolTip1.SetToolTip(BuTestDown, "Переместить автотест ниже");
 
-            toolTip1.SetToolTip(BuTestRun, "Запустить автотест");
-            toolTip1.SetToolTip(BuTestStop, "Остановить автотест");
-            toolTip1.SetToolTip(BuTestRunStepMode, "Запустить в режиме пошагового выполнения");
-            toolTip1.SetToolTip(BuTestStepModePrev, "На шаг назад в режиме пошагового выполнения");
-
-            toolTip1.SetToolTip(BuStepAdd, "Добавить шаг [CTRL+A]");
-            toolTip1.SetToolTip(BuStepDelete, "Удалить выделенный шаг [CTRL+Delete]");
-            toolTip1.SetToolTip(BuStepClone, "Дублировать выделенный шаг [CTRL+D]");
-            toolTip1.SetToolTip(BuStepUp, "Переместить шаг выше [CTRL+Up]");
-            toolTip1.SetToolTip(BuStepDown, "Переместить шаг ниже [CTRL+Down]");
-            toolTip1.SetToolTip(BuStepCopy, "Скопировать шаг [CTRL+C]");
-            toolTip1.SetToolTip(BuStepPaste, "Вставить шаг [CTRL+V]");
-            toolTip1.SetToolTip(BuStepClearFocus, "Сбросить фокус с шага [Escape]");
-
-            toolTip1.SetToolTip(BuStepReloadTree, "Обновить дерево [CTRL+R]");
-            toolTip1.SetToolTip(BuFontIncrease, "Увеличить размер текста в дереве");
-            toolTip1.SetToolTip(BuFontDecrease, "Уменьшить размер текста в дереве");
-
-            toolTip1.SetToolTip(ChProjectRegenerateParameters, "Генерировать параметры проекта автоматически при запуске автотеста");
-            toolTip1.SetToolTip(BuProjectGenerateParameters, "Перегенерировать параметры проекта");
-            toolTip1.SetToolTip(BuProjectParametersUp, "Передвинуть строку с параметром проекта выше");
-            toolTip1.SetToolTip(BuProjectParametersDown, "Передвинуть строку с параметром проекта ниже");
-            toolTip1.SetToolTip(ChTestRegenerateParameters, "Генерировать параметры теста автоматически при запуске автотеста");
-            toolTip1.SetToolTip(BuTestGenerateParameters, "Перегенерировать параметры теста");
-            toolTip1.SetToolTip(BuTestParametersUp, "Передвинуть строку с параметром теста выше");
-            toolTip1.SetToolTip(BuTestParametersDown, "Передвинуть строку с параметром теста ниже");
             var selectorTypes = Enum.GetValues(typeof(SelectorType)).Cast<SelectorType>().Select(v => v.ToString()).ToList();
             foreach (var item in selectorTypes)
             {
@@ -294,6 +252,8 @@ namespace SeleniumAutotest
             NuStepWait.Visible = false;
             ChStepIgnoreError.Visible = false;
             TeStepParameter.Visible = false;
+            ChStepScrollTo.Visible = false;
+            ChStepIgnoreParent.Visible = false;
             switch (type)
             {
                 case StepTypes.Group:
@@ -308,12 +268,15 @@ namespace SeleniumAutotest
                     CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     NuStepWait.Visible = true;
+                    ChStepScrollTo.Visible = true;
+                    ChStepIgnoreParent.Visible = true;
                     break;
                 case StepTypes.CheckElement:
                     CoStepSelectorType.Visible = true;
                     TeStepSelector.Visible = true;
                     NuStepWait.Visible = true;
                     ChStepIgnoreError.Visible = true;
+                    ChStepIgnoreParent.Visible = true;
                     break;
                 case StepTypes.Open:
                     TeStepValue.Visible = true;
@@ -381,11 +344,6 @@ namespace SeleniumAutotest
             //ReloadTree();
         }
 
-        private void TeStepName_TextChanged(object sender, EventArgs e)
-        {
-            UpdateStepField(nameof(TestStep.Name), TeStepName.Text);
-        }
-
         private void CoStepType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (NeedUpdateTestFields == false) { return; }
@@ -409,39 +367,25 @@ namespace SeleniumAutotest
             SetStepFieldsVisible(selectedStep.Type);
             //ReloadTree();
         }
-        private void CoStepSelectorType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateStepField(nameof(TestStep.SelectorType), CoStepSelectorType.SelectedIndex);
-        }
 
-        private void TeStepSelector_TextChanged(object sender, EventArgs e)
+        private void ChStepParameterChanged(object sender, EventArgs e)
         {
-            UpdateStepField(nameof(TestStep.Selector), TeStepSelector.Text);
-        }
+            try
+            {
+                var control = sender as Control;
+                object value = null;
 
-        private void NuStepWait_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateStepField(nameof(TestStep.SecondsToWait), (float)NuStepWait.Value);
-        }
-
-        private void TeStepValue_TextChanged(object sender, EventArgs e)
-        {
-            UpdateStepField(nameof(TestStep.Value), TeStepValue.Text);
-        }
-
-        private void TeStepParameter_TextChanged(object sender, EventArgs e)
-        {
-            UpdateStepField(nameof(TestStep.Parameter), TeStepParameter.Text);
-        }
-
-        private void ChStepIgnoreError_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateStepField(nameof(TestStep.IgnoreError), ChStepIgnoreError.Checked);
-        }
-
-        private void ChStepIsEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateStepField(nameof(TestStep.Enabled), ChStepIsEnabled.Checked);
+                if (sender is CheckBox checkBox) { value = checkBox.Checked; }
+                else if (sender is TextBox textBox) { value = textBox.Text; }
+                else if (sender is ComboBox comboBox) { value = comboBox.SelectedIndex; }
+                else if (sender is NumericUpDown numericUpDown) { value = (float)numericUpDown.Value; }
+                else { throw new NotSupportedException("Unsupported control type"); }
+                UpdateStepField((string)control.Tag, value);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error");
+            }
         }
 
         #endregion StepFields
@@ -865,6 +809,8 @@ namespace SeleniumAutotest
             TeStepParameter.Text = selectedStep.Parameter;
             ChStepIgnoreError.Checked = selectedStep.IgnoreError;
             ChStepIsEnabled.Checked = selectedStep.Enabled;
+            ChStepIgnoreParent.Checked = selectedStep.IgnoreParent;
+            ChStepScrollTo.Checked = selectedStep.ScrollTo;
             try
             {
                 NuStepWait.Value = (decimal)selectedStep.SecondsToWait;

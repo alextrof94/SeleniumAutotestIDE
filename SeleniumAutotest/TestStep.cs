@@ -41,6 +41,8 @@ namespace SeleniumAutotest
         public string Parameter { get; set; }
         public bool IgnoreError { get; set; }
         public bool Enabled { get; set; }
+        public bool ScrollTo { get; set; }
+        public bool IgnoreParent { get; set; }
 
         public bool Expanded { get; set; }
 
@@ -72,6 +74,8 @@ namespace SeleniumAutotest
             Expanded = true;
             Enabled = true;
             Parent = null;
+            ScrollTo = true;
+            IgnoreParent = false;
         }
 
         public override string ToString()
@@ -197,7 +201,7 @@ namespace SeleniumAutotest
                                 var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(this.SecondsToWait));
                                 IWebElement el = null;
-                                if (this.Parent.FoundElement != null)
+                                if (this.Parent.FoundElement != null && !IgnoreParent)
                                 {
                                     IReadOnlyCollection<IWebElement> tempElementsBySelector = null;
                                     switch (SelectorType)
@@ -247,10 +251,12 @@ namespace SeleniumAutotest
                                             break;
                                     }
                                 }
-                                //wait.Until(d => el.Displayed);
-                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                                js.ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", el);
                                 FoundElement = el;
+                                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                if (ScrollTo)
+                                {
+                                    js.ExecuteScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", el);
+                                }
                                 if (selectFoundElements)
                                 {
                                     js.ExecuteScript("arguments[0].style.border='2px solid red';", el);
@@ -261,7 +267,7 @@ namespace SeleniumAutotest
                             {
                                 var selector = ValuesFromParameters.ProcessInput(this.Selector, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
                                 IWebElement el = null;
-                                if (this.Parent.FoundElement != null)
+                                if (this.Parent.FoundElement != null && !IgnoreParent)
                                 {
                                     IReadOnlyCollection<IWebElement> tempElementsBySelector = null;
                                     switch (SelectorType)
@@ -378,11 +384,12 @@ namespace SeleniumAutotest
                         case StepTypes.CheckText:
                             {
                                 var el = this.Parent.FoundElement;
-                                if (!IsMatchMask(el.Text, ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                                var text = el.Text.Replace("\r", "").Replace("\n", "").Trim();
+                                if (!IsMatchMask(text, ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
                                 {
-                                    throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{el.Text}]");
+                                    throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{text}]");
                                 }
-                                Log = $"Значение = [{el.Text}]";
+                                Log = $"Значение = [{text}]";
                             }
                             break;
                         case StepTypes.CheckAttribute:
@@ -393,12 +400,12 @@ namespace SeleniumAutotest
                                 {
                                     throw new Exception($"Атрибут {selector} не найден");
                                 }
-                                if (!IsMatchMask(el.GetAttribute(selector), ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
+                                var text = el.GetAttribute(selector).Replace("\r", "").Replace("\n", "").Trim();
+                                if (!IsMatchMask(text, ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)))
                                 {
-                                    var errValue = el.GetAttribute(selector);
-                                    throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{errValue}]");
+                                    throw new Exception($"Ожидалось [{ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters)}], было [{text}]");
                                 }
-                                Log = $"Значение = [{el.GetAttribute(selector)}]";
+                                Log = $"Значение = [{text}]";
                             }
                             break;
                         case StepTypes.CheckClassExists:
