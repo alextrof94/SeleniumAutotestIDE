@@ -185,8 +185,8 @@ namespace SeleniumAutotest
             //   L substep 1-0
 
             // get first not started substep (step 0 -> substep 0-0)
-            var indexNow = (step.Parent == null) ? 0 : step.Parent.Substeps.IndexOf(step);
-            List<TestStep> validSubsteps = step.Substeps.Where(x => (x.StepState == StepStates.NotStarted || x.StepState == StepStates.Error) && x.Enabled && (step.Parent == null || step.Parent.Substeps.IndexOf(x) > indexNow)).ToList();
+            var indexNow = (step.Parent == null) ? 0 : step.Substeps.IndexOf(step);
+            List<TestStep> validSubsteps = step.Substeps.Where(x => (x.StepState == StepStates.NotStarted || x.StepState == StepStates.Error) && x.Enabled && (x.Parent == null || step.Substeps.IndexOf(x) >= indexNow)).ToList();
             if (validSubsteps.Count() > 0)
             {
                 return validSubsteps[0];

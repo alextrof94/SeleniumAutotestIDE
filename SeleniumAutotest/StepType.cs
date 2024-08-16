@@ -11,7 +11,7 @@ namespace SeleniumAutotest
         Group, Open, FindElement, Click, CheckText, EnterText, CheckElement, 
         WaitTime, CheckClassExists, DoubleClick, CheckAttribute, ReadAttributeToParameter, 
         ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, 
-        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage, ScrollTo, ScrollByPixels, JsCode
+        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage, ScrollTo, ScrollByPixels, JsCode, GroupOneOfSubsteps
         // Add new to tail
     }
     // TODO: Предусмотреть прямое нажатие клавиш клавиатуры (например, для сочетаний)
@@ -38,11 +38,11 @@ namespace SeleniumAutotest
                 ImageIndex = 0,
                 Name = "Группа шагов",
                 Parents = new List<StepTypes?>(){ StepTypes.Group, null },
-                Types = new List<StepTypes>(){ StepTypes.Group } },
+                Types = new List<StepTypes>(){ StepTypes.Group, StepTypes.GroupOneOfSubsteps } },
             new StepTypesGroup(){
                 ImageIndex = 1,
                 Name = "Поиск",                
-                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },       
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.GroupOneOfSubsteps, StepTypes.FindElement },       
                 Types = new List<StepTypes>(){ StepTypes.FindElement } },
             new StepTypesGroup(){
                 ImageIndex = 2,
@@ -67,12 +67,12 @@ namespace SeleniumAutotest
             new StepTypesGroup(){
                 ImageIndex = 7,
                 Name = "Ждать время",
-                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.GroupOneOfSubsteps, StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.WaitTime } },
             new StepTypesGroup(){
                 ImageIndex = 8,
                 Name = "Открыть сайт",
-                Parents = new List<StepTypes?>(){ StepTypes.Group },
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.GroupOneOfSubsteps },
                 Types = new List<StepTypes>(){ StepTypes.Open, StepTypes.RefreshPage } },
             new StepTypesGroup(){
                 ImageIndex = 5,
@@ -82,22 +82,23 @@ namespace SeleniumAutotest
             new StepTypesGroup(){
                 ImageIndex = 9,
                 Name = "Ввод пользователя",
-                Parents = new List<StepTypes?>(){ StepTypes.Group, },
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.GroupOneOfSubsteps },
                 Types = new List<StepTypes>(){ StepTypes.InputToParameterByUser } },
             new StepTypesGroup(){
                 ImageIndex = 5,
                 Name = "JS действие",
-                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.GroupOneOfSubsteps, StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.ScrollByPixels, StepTypes.JsCode } },
             new StepTypesGroup(){
                 ImageIndex = 4,
                 Name = "Проверить существование",
-                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.FindElement },
+                Parents = new List<StepTypes?>(){ StepTypes.Group, StepTypes.GroupOneOfSubsteps, StepTypes.FindElement },
                 Types = new List<StepTypes>(){ StepTypes.CheckElement } },
         };
 
         public static Dictionary<StepTypes, string> Descriptions { get; } = new Dictionary<StepTypes, string>{
             { StepTypes.Group, "Группа шагов" },
+            { StepTypes.GroupOneOfSubsteps, "Один из подшагов выполняется" }, // Don't stop test, green if any substep green
             { StepTypes.FindElement, "Найти элемент" },
             { StepTypes.WaitTime, "Ждать время" },
             { StepTypes.CheckElement, "Элемента" },

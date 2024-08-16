@@ -16,7 +16,8 @@ namespace SeleniumAutotest
         // TODO:
         // translate
         // refactoring
-        private const string Version = "v1.6";
+        // DONT CLOSE BROWSER IF ERROR
+        private const string Version = "v1.7";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }

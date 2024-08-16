@@ -92,6 +92,9 @@ namespace SeleniumAutotest
                 case StepTypes.Group:
                     str = Name;
                     break;
+                case StepTypes.GroupOneOfSubsteps:
+                    str = Name;
+                    break;
                 case StepTypes.EnterText:
                     str = $"{Name} [{Value}]";
                     break;
@@ -572,7 +575,8 @@ namespace SeleniumAutotest
             }
             catch
             {
-                this.StepState = (this.IgnoreError) ? StepStates.IgnoredError : StepStates.Error;
+                bool IsInGroupOneOfSubsteps = GetInGroupOneOfSubstep(this);
+                this.StepState = (this.IgnoreError || IsInGroupOneOfSubsteps) ? StepStates.IgnoredError : StepStates.Error;
                 SetParentStatus(this);
                 if (this.StepState == StepStates.Error)
                 {
@@ -582,20 +586,51 @@ namespace SeleniumAutotest
             }
         }
 
+        private bool GetInGroupOneOfSubstep(TestStep step)
+        {
+            if (step.Parent != null)
+            {
+                if (step.Parent.Type == StepTypes.GroupOneOfSubsteps) return true;
+                return GetInGroupOneOfSubstep(step.Parent);
+            }
+            return false;
+        }
+
         private void SetParentStatus(TestStep step)
         {
             if (step.Parent == null) { return; }
-            if (step.Parent.Substeps.Count == step.Parent.Substeps.Where(x => x.StepState == StepStates.Passed || x.StepState == StepStates.Skipped).Count())
+            if (step.Parent.Type == StepTypes.GroupOneOfSubsteps)
             {
-                step.Parent.StepState = StepStates.Passed;
+                if (step.Parent.Substeps.Any(x => x.StepState == StepStates.Passed))
+                {
+                    step.Parent.StepState = StepStates.Passed;
+                }
+                else
+                {
+                    if (step.Parent.Substeps.All(x => x.StepState != StepStates.NotStarted))
+                    {
+                        step.Parent.StepState = StepStates.Error;
+                    }
+                }
             }
-            if (step.Parent.Substeps.Where(x => x.StepState == StepStates.IgnoredError).Count() > 0)
+            else
             {
-                step.Parent.StepState = StepStates.IgnoredError;
-            }
-            if (step.Parent.Substeps.Where(x => x.StepState == StepStates.Error).Count() > 0)
-            {
-                step.Parent.StepState = StepStates.Error;
+                if (step.Parent.Substeps.Count == step.Parent.Substeps.Where(x => x.StepState == StepStates.Passed || x.StepState == StepStates.Skipped).Count())
+                {
+                    step.Parent.StepState = StepStates.Passed;
+                }
+                if (step.Parent.Substeps.Where(x => x.StepState == StepStates.IgnoredError).Count() > 0)
+                {
+                    step.Parent.StepState = StepStates.IgnoredError;
+                }
+                if (step.Parent.Substeps.Where(x => x.StepState == StepStates.Error).Count() > 0)
+                {
+                    step.Parent.StepState = StepStates.Error;
+                }
+                if (step.Parent.Substeps.Where(x => x.StepState == StepStates.NotStarted).Count() > 0)
+                {
+                    step.Parent.StepState = StepStates.Started;
+                }
             }
             SetParentStatus(step.Parent);
         }
