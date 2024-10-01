@@ -8,16 +8,19 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SeleniumAutotest
 {
     public partial class Form1 : Form
     {
         // TODO:
+        // Add random start to step-by-step tests
+
         // translate
         // refactoring
-        // DONT CLOSE BROWSER IF ERROR
-        private const string Version = "v1.7.1";
+        private const string Version = "v1.8";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
@@ -418,9 +421,11 @@ namespace SeleniumAutotest
             {
                 test.StateUpdated -= AutotestUpdated;
                 test.ParametersUpdated -= SelectedAutotest_ParametersGenerated;
+                test.CanContinueStepMode -= SelectedAutotest_CanContinueStepMode;
             }
             Project.SelectedAutotest.StateUpdated += AutotestUpdated;
             Project.SelectedAutotest.ParametersUpdated += SelectedAutotest_ParametersGenerated;
+            Project.SelectedAutotest.CanContinueStepMode += SelectedAutotest_CanContinueStepMode;
 
             Project.SelectedAutotest.ResetAllParentsForSteps(Project);
             ReloadTree();
@@ -974,7 +979,7 @@ namespace SeleniumAutotest
         private void BuTestRun_Click(object sender, EventArgs e)
         {
             AutoMode = true;
-            Project.RunAutotest(ChSlowMode.Checked, ChSelectFoundElements.Checked);
+            Project.RunAutotest(ChSlowMode.Checked, (int)NuSlowModeMs.Value, ChSelectFoundElements.Checked, ChWaitPageLoad.Checked);
             BuTestRun.Enabled = false;
             BuTestStop.Enabled = true;
             BuTestRunStepMode.Enabled = false;
@@ -1007,26 +1012,58 @@ namespace SeleniumAutotest
             ReloadTree();
         }
 
+        CancellationTokenSource CancellationTokenSourceForStepMode = new CancellationTokenSource();
+
         private void BuTestRunStepMode_Click(object sender, EventArgs e)
         {
+            CancellationTokenSourceForStepMode = new CancellationTokenSource();
             if (!StepMode)
             {
-                if (Project.StepModeRun(ChSelectFoundElements.Checked))
+                BuPauseStepMode.Enabled = true;
+                BuTestRunStepMode.Enabled = false;
+                BuTestStop.Enabled = false;
+                BuTestStepModePrev.Enabled = false;
+                if (Project.StepModeRun(ChSelectFoundElements.Checked, ChWaitPageLoad.Checked, CancellationTokenSourceForStepMode.Token))
                 {
                     StepMode = true;
                     BuTestStop.Enabled = true;
                     BuTestStepModePrev.Enabled = true;
                     BuTestRun.Enabled = false;
                     LiTests.Enabled = false;
+                    BuPauseStepMode.Enabled = false;
+                    BuTestRunStepMode.Enabled = true;
+                    BuTestStop.Enabled = true;
+                    BuTestStepModePrev.Enabled = true;
                 }
                 Activate();
                 return;
             }
 
-            Opacity = 0;
-            Project.StepModeContinue(ChSelectFoundElements.Checked);
-            ReloadTree();
-            Opacity = 1;
+            Opacity = 0.2;
+            BuPauseStepMode.Enabled = true;
+            BuTestRunStepMode.Enabled = false;
+            BuTestStop.Enabled = false;
+            BuTestStepModePrev.Enabled = false;
+            Project.StepModeContinue(ChSelectFoundElements.Checked, ChWaitPageLoad.Checked, CancellationTokenSourceForStepMode.Token);
+        }
+
+        private void SelectedAutotest_CanContinueStepMode()
+        {
+            this.Invoke(new Action(() =>
+            {
+                ReloadTree();
+                BuPauseStepMode.Enabled = false;
+                BuTestRunStepMode.Enabled = true;
+                BuTestStop.Enabled = true;
+                BuTestStepModePrev.Enabled = true;
+                Opacity = 1;
+                Activate();
+            }));
+        }
+
+        private void BuPauseRunStepMode_Click(object sender, EventArgs e)
+        {
+            CancellationTokenSourceForStepMode.Cancel();
         }
 
         private void BuTestStepModePrev_Click(object sender, EventArgs e)

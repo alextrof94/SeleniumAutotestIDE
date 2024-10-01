@@ -31,6 +31,8 @@ namespace SeleniumAutotest
         [JsonIgnore]
         public bool SlowMode { get; set; }
         [JsonIgnore]
+        public int SlowModeTime { get; set; }
+        [JsonIgnore]
         public bool SelectFoundElements { get; set; }
 
         public event Action ParametersUpdated;
@@ -202,7 +204,7 @@ namespace SeleniumAutotest
                 SelectAutotest(Autotests[ind + 1]);
                 SelectedAutotestChanged?.Invoke();
                 Thread.Sleep(3000);
-                RunAutotest(SlowMode, SelectFoundElements, false);
+                RunAutotest(SlowMode, SlowModeTime, SelectFoundElements, false);
             }
             else
             {
@@ -265,10 +267,11 @@ namespace SeleniumAutotest
             return true;
         }
 
-        public void RunAutotest(bool slowMode, bool selectFoundElements, bool needResetTimer = true)
+        public void RunAutotest(bool slowMode, int slowModeTime, bool selectFoundElements, bool waitPageLoad, bool needResetTimer = true)
         {
             if (SelectedAutotest == null) { return; }
             SlowMode = slowMode;
+            SlowModeTime = slowModeTime;
             SelectFoundElements = selectFoundElements;
             if (needResetTimer)
             {
@@ -280,7 +283,7 @@ namespace SeleniumAutotest
             }
             TestStopwatch.Restart();
             CancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => SelectedAutotest.AutoModeRun(CancellationTokenSource.Token, slowMode, selectFoundElements), CancellationTokenSource.Token);
+            Task.Run(() => SelectedAutotest.AutoModeRun(CancellationTokenSource.Token, slowMode, slowModeTime, selectFoundElements, waitPageLoad), CancellationTokenSource.Token);
             return;
         }
 
@@ -289,19 +292,19 @@ namespace SeleniumAutotest
             CancellationTokenSource?.Cancel();
         }
 
-        public bool StepModeRun(bool selectFoundElements)
+        public bool StepModeRun(bool selectFoundElements, bool waitPageLoad, CancellationToken cancellationToken)
         {
             if (SelectedAutotest == null) { return false; }
             if (RegenerateParametersOnRun)
             {
                 GenerateParameters();
             }
-            return SelectedAutotest.StepModeRun(selectFoundElements);
+            return SelectedAutotest.StepModeRun(selectFoundElements, waitPageLoad, cancellationToken);
         }
 
-        public void StepModeContinue(bool selectFoundElements)
+        public void StepModeContinue(bool selectFoundElements, bool waitPageLoad, CancellationToken cancellationToken)
         {
-            SelectedAutotest.StepModeContinue(selectFoundElements);
+            SelectedAutotest.StepModeContinue(selectFoundElements, waitPageLoad, cancellationToken);
         }
 
         internal void StepModeStop()

@@ -10,6 +10,7 @@ using System.Threading;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SeleniumAutotest
 {
@@ -25,6 +26,7 @@ namespace SeleniumAutotest
         public event Action StateUpdated;
         public event Action RunFinished;
         public event Action ParametersUpdated;
+        public event Action CanContinueStepMode;
 
         [JsonIgnore]
         public TimeSpan CompleteTime { get; set; }
@@ -126,7 +128,7 @@ namespace SeleniumAutotest
             }
         }
 
-        public void AutoModeRun(CancellationToken token, bool slowMode, bool selectFoundElements)
+        public void AutoModeRun(CancellationToken token, bool slowMode, int slowModeTime, bool selectFoundElements, bool waitPageLoad)
         {
             try
             {
@@ -151,9 +153,10 @@ namespace SeleniumAutotest
                     {
                         if (token.IsCancellationRequested)
                             break;
-                        substep.AutoModeRun(driver, token, StateUpdated, slowMode, selectFoundElements);
+                        substep.AutoModeRun(driver, token, StateUpdated, slowMode, slowModeTime, selectFoundElements, waitPageLoad);
                     }
                     Thread.Sleep(3000);
+                    driver.Quit();
                 }
                 catch
                 {
@@ -161,7 +164,6 @@ namespace SeleniumAutotest
                 }
                 finally
                 {
-                    driver.Quit();
                 }
             }
             catch (Exception ex)
@@ -219,7 +221,7 @@ namespace SeleniumAutotest
             return GetNextStep(step.Parent);
         }
 
-        public bool StepModeRun(bool selectFoundElements)
+        public bool StepModeRun(bool selectFoundElements, bool waitPageLoad, CancellationToken cancellationToken)
         {
             if (Root.Substeps.Count == 0) { return false; }
 
@@ -237,35 +239,42 @@ namespace SeleniumAutotest
                 substep.ClearState();
             }
             CurrentStep = Root.Substeps[0];
-            StepModeContinue(selectFoundElements, true);
+            StepModeContinue(selectFoundElements, waitPageLoad, cancellationToken, true);
 
             return true;
         }
 
-        public void StepModeContinue(bool selectFoundElements, bool firstStep = false)
+        public void StepModeContinue(bool selectFoundElements, bool waitPageLoad, CancellationToken cancellationToken, bool firstStep = false)
         {
-            try
+            Task.Run(() =>
             {
-                if (!firstStep)
+                try
                 {
-                    TestStep prevStep = CurrentStep;
-                    CurrentStep = GetNextStep(CurrentStep);
-                    if (CurrentStep == null)
+                    if (!firstStep)
                     {
-                        StepModeStop();
-                        RunFinished?.Invoke();
-                        return;
+                        TestStep prevStep = CurrentStep;
+                        CurrentStep = GetNextStep(CurrentStep);
+                        if (CurrentStep == null)
+                        {
+                            StepModeStop();
+                            RunFinished?.Invoke();
+                            StateUpdated?.Invoke();
+                            CanContinueStepMode?.Invoke();
+                            return;
+                        }
+                        CurrentStep.PrevStep = prevStep;
                     }
-                    CurrentStep.PrevStep = prevStep;
+                    CurrentStep.StepModeRun(WebDriver, StateUpdated, selectFoundElements, waitPageLoad, cancellationToken);
+                    StateUpdated?.Invoke();
+                    CanContinueStepMode?.Invoke();
                 }
-                CurrentStep.StepModeRun(WebDriver, StateUpdated, selectFoundElements);
-                StateUpdated?.Invoke();
-            }
-            catch 
-            {
-                CurrentStep = CurrentStep.PrevStep;
-                StateUpdated?.Invoke();
-            }
+                catch
+                {
+                    CurrentStep = CurrentStep.PrevStep;
+                    StateUpdated?.Invoke();
+                    CanContinueStepMode?.Invoke();
+                }
+            });
         }
 
         public void StepModeStop()

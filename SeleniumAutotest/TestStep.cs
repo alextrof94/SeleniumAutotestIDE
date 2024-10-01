@@ -13,6 +13,7 @@ using AngleSharp.Dom;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Support.Extensions;
 
 namespace SeleniumAutotest
 {
@@ -170,10 +171,14 @@ namespace SeleniumAutotest
             return str;
         }
 
-        private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, bool selectFoundElements, int staleErrorCount = 0)
+        private void StepWork(IWebDriver driver, Action StateUpdated, bool slowMode, int slowModeTime, bool selectFoundElements, bool waitPageLoad, int staleErrorCount = 0, CancellationToken? cancellationToken = null)
         {
             try
             {
+                if (cancellationToken == null)
+                {
+                    cancellationToken = new CancellationToken();
+                }
                 try
                 {
                     if (!Enabled)
@@ -210,19 +215,19 @@ namespace SeleniumAutotest
                                     switch (SelectorType)
                                     {
                                         case SelectorType.ID:
-                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.Id(selector)));
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.Id(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.Class:
-                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.ClassName(selector)));
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.ClassName(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.XPath:
-                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.XPath(selector)));
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.XPath(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.Tag:
-                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.TagName(selector)));
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.TagName(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.PartLink:
-                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.PartialLinkText(selector)));
+                                            tempElementsBySelector = wait.Until(d => this.Parent.FoundElement.FindElements(By.PartialLinkText(selector)), cancellationToken.Value);
                                             break;
                                     }
                                     el = tempElementsBySelector.FirstOrDefault(element => IsChildOf(driver, element, this.Parent.FoundElement));
@@ -238,19 +243,19 @@ namespace SeleniumAutotest
                                     switch (SelectorType)
                                     {
                                         case SelectorType.ID:
-                                            el = wait.Until(d => driver.FindElement(By.Id(selector)));
+                                            el = wait.Until(d => driver.FindElement(By.Id(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.Class:
-                                            el = wait.Until(d => driver.FindElement(By.ClassName(selector)));
+                                            el = wait.Until(d => driver.FindElement(By.ClassName(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.XPath:
-                                            el = wait.Until(d => driver.FindElement(By.XPath(selector)));
+                                            el = wait.Until(d => driver.FindElement(By.XPath(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.Tag:
-                                            el = wait.Until(d => driver.FindElement(By.TagName(selector)));
+                                            el = wait.Until(d => driver.FindElement(By.TagName(selector)), cancellationToken.Value);
                                             break;
                                         case SelectorType.PartLink:
-                                            el = wait.Until(d => driver.FindElement(By.PartialLinkText(selector)));
+                                            el = wait.Until(d => driver.FindElement(By.PartialLinkText(selector)), cancellationToken.Value);
                                             break;
                                     }
                                 }
@@ -524,6 +529,12 @@ namespace SeleniumAutotest
                             needToSlow = false;
                             break;
                     }
+                    if (waitPageLoad)
+                    {
+                        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(600));
+                        wait.Until(d =>
+                            ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
+                    }
                     if (this.Substeps.Count == 0)
                     {
                         this.StepState = StepStates.Passed;
@@ -531,7 +542,7 @@ namespace SeleniumAutotest
                     }
                     if (needToSlow && slowMode)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(slowModeTime);
                     }
                 }
                 catch (StaleElementReferenceException ex)
@@ -540,7 +551,7 @@ namespace SeleniumAutotest
                     if (staleErrorCount < 10)
                     {
                         Thread.Sleep(1000);
-                        StepWork(driver, StateUpdated, slowMode, selectFoundElements, staleErrorCount);
+                        StepWork(driver, StateUpdated, slowMode, slowModeTime, selectFoundElements, waitPageLoad, staleErrorCount);
                     }
                     else
                     {
@@ -741,21 +752,21 @@ namespace SeleniumAutotest
             }
         }
 
-        public void AutoModeRun(IWebDriver driver, CancellationToken token, Action StateUpdated, bool slowMode, bool selectFoundElements)
+        public void AutoModeRun(IWebDriver driver, CancellationToken token, Action StateUpdated, bool slowMode, int slowModeTime, bool selectFoundElements, bool waitPageLoad)
         {
-            StepWork(driver, StateUpdated, slowMode, selectFoundElements);
+            StepWork(driver, StateUpdated, slowMode, slowModeTime, selectFoundElements, waitPageLoad);
 
             foreach (var substep in Substeps)
             {
                 if (token.IsCancellationRequested)
                     break;
-                substep.AutoModeRun(driver, token, StateUpdated, slowMode, selectFoundElements);
+                substep.AutoModeRun(driver, token, StateUpdated, slowMode, slowModeTime, selectFoundElements, waitPageLoad);
             }
         }
 
-        public void StepModeRun(IWebDriver driver, Action StateUpdated, bool selectFoundElements)
+        public void StepModeRun(IWebDriver driver, Action StateUpdated, bool selectFoundElements, bool waitPageLoad, CancellationToken cancellationToken)
         {
-            StepWork(driver, StateUpdated, false, selectFoundElements);
+            StepWork(driver, StateUpdated, false, 0, selectFoundElements, waitPageLoad, 0, cancellationToken);
         }
     }
 }

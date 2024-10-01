@@ -77,6 +77,8 @@
             this.PaMiddleDownDown = new System.Windows.Forms.Panel();
             this.PaMiddleDownDownLeft = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.ChStepScrollTo = new System.Windows.Forms.CheckBox();
+            this.ChStepIgnoreParent = new System.Windows.Forms.CheckBox();
             this.CoStepSelectorType = new System.Windows.Forms.ComboBox();
             this.CoStepTypeGroup = new System.Windows.Forms.ComboBox();
             this.ChStepIsEnabled = new System.Windows.Forms.CheckBox();
@@ -130,8 +132,10 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
-            this.ChStepIgnoreParent = new System.Windows.Forms.CheckBox();
-            this.ChStepScrollTo = new System.Windows.Forms.CheckBox();
+            this.NuSlowModeMs = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.BuPauseStepMode = new System.Windows.Forms.Button();
+            this.ChWaitPageLoad = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.GrTestSteps.SuspendLayout();
@@ -154,6 +158,7 @@
             this.PaMIddleDown.SuspendLayout();
             this.PaMiddleUp.SuspendLayout();
             this.PaLeft.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -272,12 +277,16 @@
             this.LiTests.Location = new System.Drawing.Point(7, 67);
             this.LiTests.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.LiTests.Name = "LiTests";
-            this.LiTests.Size = new System.Drawing.Size(263, 394);
+            this.LiTests.Size = new System.Drawing.Size(263, 379);
             this.LiTests.TabIndex = 1;
             this.LiTests.SelectedIndexChanged += new System.EventHandler(this.LiTests_SelectedIndexChanged);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.ChWaitPageLoad);
+            this.groupBox1.Controls.Add(this.BuPauseStepMode);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.NuSlowModeMs);
             this.groupBox1.Controls.Add(this.BuTestStepModePrev);
             this.groupBox1.Controls.Add(this.BuTestRunStepMode);
             this.groupBox1.Controls.Add(this.ChSelectFoundElements);
@@ -338,6 +347,7 @@
             this.ImButtons.Images.SetKeyName(13, "icons8-stop-32.png");
             this.ImButtons.Images.SetKeyName(14, "icons8-end-32.png");
             this.ImButtons.Images.SetKeyName(15, "icons8-back-32.png");
+            this.ImButtons.Images.SetKeyName(16, "icons8-pause-32.png");
             // 
             // BuTestRunStepMode
             // 
@@ -358,6 +368,8 @@
             // 
             this.ChSelectFoundElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ChSelectFoundElements.AutoSize = true;
+            this.ChSelectFoundElements.Checked = true;
+            this.ChSelectFoundElements.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ChSelectFoundElements.Location = new System.Drawing.Point(7, 477);
             this.ChSelectFoundElements.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.ChSelectFoundElements.Name = "ChSelectFoundElements";
@@ -382,7 +394,7 @@
             // 
             this.LaRunTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LaRunTime.AutoSize = true;
-            this.LaRunTime.Location = new System.Drawing.Point(8, 543);
+            this.LaRunTime.Location = new System.Drawing.Point(8, 571);
             this.LaRunTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LaRunTime.Name = "LaRunTime";
             this.LaRunTime.Size = new System.Drawing.Size(163, 17);
@@ -421,7 +433,7 @@
             // 
             this.LaTestTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LaTestTime.AutoSize = true;
-            this.LaTestTime.Location = new System.Drawing.Point(8, 526);
+            this.LaTestTime.Location = new System.Drawing.Point(8, 554);
             this.LaTestTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LaTestTime.Name = "LaTestTime";
             this.LaTestTime.Size = new System.Drawing.Size(155, 17);
@@ -789,6 +801,40 @@
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Параметры шага";
+            // 
+            // ChStepScrollTo
+            // 
+            this.ChStepScrollTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChStepScrollTo.AutoSize = true;
+            this.ChStepScrollTo.Location = new System.Drawing.Point(416, 22);
+            this.ChStepScrollTo.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ChStepScrollTo.Name = "ChStepScrollTo";
+            this.ChStepScrollTo.Size = new System.Drawing.Size(69, 21);
+            this.ChStepScrollTo.TabIndex = 21;
+            this.ChStepScrollTo.Tag = "ScrollTo";
+            this.ChStepScrollTo.Text = "Скролл";
+            this.toolTip1.SetToolTip(this.ChStepScrollTo, "При нахождении элемента прокрутить страницу до него (иногда может вызывать пробле" +
+        "мы с всплывающими меню)");
+            this.ChStepScrollTo.UseVisualStyleBackColor = true;
+            this.ChStepScrollTo.Visible = false;
+            this.ChStepScrollTo.CheckedChanged += new System.EventHandler(this.ChStepParameterChanged);
+            // 
+            // ChStepIgnoreParent
+            // 
+            this.ChStepIgnoreParent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChStepIgnoreParent.AutoSize = true;
+            this.ChStepIgnoreParent.Location = new System.Drawing.Point(316, 140);
+            this.ChStepIgnoreParent.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ChStepIgnoreParent.Name = "ChStepIgnoreParent";
+            this.ChStepIgnoreParent.Size = new System.Drawing.Size(169, 21);
+            this.ChStepIgnoreParent.TabIndex = 20;
+            this.ChStepIgnoreParent.Tag = "IgnoreParent";
+            this.ChStepIgnoreParent.Text = "Игнорировать родителя";
+            this.toolTip1.SetToolTip(this.ChStepIgnoreParent, "Если установлено, при поиске элемента, родитель будет игнорироваться и поиск буде" +
+        "т по всему документу");
+            this.ChStepIgnoreParent.UseVisualStyleBackColor = true;
+            this.ChStepIgnoreParent.Visible = false;
+            this.ChStepIgnoreParent.CheckedChanged += new System.EventHandler(this.ChStepParameterChanged);
             // 
             // CoStepSelectorType
             // 
@@ -1453,39 +1499,75 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
-            // ChStepIgnoreParent
+            // NuSlowModeMs
             // 
-            this.ChStepIgnoreParent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ChStepIgnoreParent.AutoSize = true;
-            this.ChStepIgnoreParent.Location = new System.Drawing.Point(316, 140);
-            this.ChStepIgnoreParent.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.ChStepIgnoreParent.Name = "ChStepIgnoreParent";
-            this.ChStepIgnoreParent.Size = new System.Drawing.Size(169, 21);
-            this.ChStepIgnoreParent.TabIndex = 20;
-            this.ChStepIgnoreParent.Tag = "IgnoreParent";
-            this.ChStepIgnoreParent.Text = "Игнорировать родителя";
-            this.toolTip1.SetToolTip(this.ChStepIgnoreParent, "Если установлено, при поиске элемента, родитель будет игнорироваться и поиск буде" +
-        "т по всему документу");
-            this.ChStepIgnoreParent.UseVisualStyleBackColor = true;
-            this.ChStepIgnoreParent.Visible = false;
-            this.ChStepIgnoreParent.CheckedChanged += new System.EventHandler(this.ChStepParameterChanged);
+            this.NuSlowModeMs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NuSlowModeMs.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.NuSlowModeMs.Location = new System.Drawing.Point(105, 523);
+            this.NuSlowModeMs.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.NuSlowModeMs.Minimum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.NuSlowModeMs.Name = "NuSlowModeMs";
+            this.NuSlowModeMs.Size = new System.Drawing.Size(165, 24);
+            this.NuSlowModeMs.TabIndex = 16;
+            this.NuSlowModeMs.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             // 
-            // ChStepScrollTo
+            // label6
             // 
-            this.ChStepScrollTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ChStepScrollTo.AutoSize = true;
-            this.ChStepScrollTo.Location = new System.Drawing.Point(416, 22);
-            this.ChStepScrollTo.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.ChStepScrollTo.Name = "ChStepScrollTo";
-            this.ChStepScrollTo.Size = new System.Drawing.Size(69, 21);
-            this.ChStepScrollTo.TabIndex = 21;
-            this.ChStepScrollTo.Tag = "ScrollTo";
-            this.ChStepScrollTo.Text = "Скролл";
-            this.toolTip1.SetToolTip(this.ChStepScrollTo, "При нахождении элемента прокрутить страницу до него (иногда может вызывать пробле" +
-        "мы с всплывающими меню)");
-            this.ChStepScrollTo.UseVisualStyleBackColor = true;
-            this.ChStepScrollTo.Visible = false;
-            this.ChStepScrollTo.CheckedChanged += new System.EventHandler(this.ChStepParameterChanged);
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(4, 525);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(94, 17);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "Задержка (мс)";
+            // 
+            // BuPauseStepMode
+            // 
+            this.BuPauseStepMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BuPauseStepMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BuPauseStepMode.Enabled = false;
+            this.BuPauseStepMode.ImageIndex = 16;
+            this.BuPauseStepMode.ImageList = this.ImButtons;
+            this.BuPauseStepMode.Location = new System.Drawing.Point(132, 611);
+            this.BuPauseStepMode.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuPauseStepMode.Name = "BuPauseStepMode";
+            this.BuPauseStepMode.Size = new System.Drawing.Size(41, 40);
+            this.BuPauseStepMode.TabIndex = 18;
+            this.toolTip1.SetToolTip(this.BuPauseStepMode, "Остановить тест");
+            this.BuPauseStepMode.UseVisualStyleBackColor = true;
+            this.BuPauseStepMode.Click += new System.EventHandler(this.BuPauseRunStepMode_Click);
+            // 
+            // ChWaitPageLoad
+            // 
+            this.ChWaitPageLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ChWaitPageLoad.AutoSize = true;
+            this.ChWaitPageLoad.Checked = true;
+            this.ChWaitPageLoad.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ChWaitPageLoad.Location = new System.Drawing.Point(6, 453);
+            this.ChWaitPageLoad.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ChWaitPageLoad.Name = "ChWaitPageLoad";
+            this.ChWaitPageLoad.Size = new System.Drawing.Size(256, 21);
+            this.ChWaitPageLoad.TabIndex = 19;
+            this.ChWaitPageLoad.Text = "Ждать завершения загрузки страницы";
+            this.ChWaitPageLoad.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -1535,6 +1617,7 @@
             this.PaMIddleDown.ResumeLayout(false);
             this.PaMiddleUp.ResumeLayout(false);
             this.PaLeft.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1644,6 +1727,10 @@
         private System.Windows.Forms.Button BuProjectParametersDown;
         private System.Windows.Forms.CheckBox ChStepIgnoreParent;
         private System.Windows.Forms.CheckBox ChStepScrollTo;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown NuSlowModeMs;
+        private System.Windows.Forms.Button BuPauseStepMode;
+        private System.Windows.Forms.CheckBox ChWaitPageLoad;
     }
 }
 
