@@ -45,8 +45,12 @@
             this.BuDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.LiTests = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.BuTestStepModePrev = new System.Windows.Forms.Button();
+            this.ChWaitPageLoad = new System.Windows.Forms.CheckBox();
+            this.BuPauseStepMode = new System.Windows.Forms.Button();
             this.ImButtons = new System.Windows.Forms.ImageList(this.components);
+            this.label6 = new System.Windows.Forms.Label();
+            this.NuSlowModeMs = new System.Windows.Forms.NumericUpDown();
+            this.BuTestStepModePrev = new System.Windows.Forms.Button();
             this.BuTestRunStepMode = new System.Windows.Forms.Button();
             this.ChSelectFoundElements = new System.Windows.Forms.CheckBox();
             this.ChSlowMode = new System.Windows.Forms.CheckBox();
@@ -132,12 +136,9 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
-            this.NuSlowModeMs = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
-            this.BuPauseStepMode = new System.Windows.Forms.Button();
-            this.ChWaitPageLoad = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).BeginInit();
             this.GrTestSteps.SuspendLayout();
             this.PaMiddleDownMiddle.SuspendLayout();
             this.PaMiddleDownDown.SuspendLayout();
@@ -158,7 +159,6 @@
             this.PaMIddleDown.SuspendLayout();
             this.PaMiddleUp.SuspendLayout();
             this.PaLeft.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -311,21 +311,35 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Автотесты";
             // 
-            // BuTestStepModePrev
+            // ChWaitPageLoad
             // 
-            this.BuTestStepModePrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuTestStepModePrev.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.BuTestStepModePrev.Enabled = false;
-            this.BuTestStepModePrev.ImageIndex = 15;
-            this.BuTestStepModePrev.ImageList = this.ImButtons;
-            this.BuTestStepModePrev.Location = new System.Drawing.Point(181, 611);
-            this.BuTestStepModePrev.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.BuTestStepModePrev.Name = "BuTestStepModePrev";
-            this.BuTestStepModePrev.Size = new System.Drawing.Size(41, 40);
-            this.BuTestStepModePrev.TabIndex = 15;
-            this.toolTip1.SetToolTip(this.BuTestStepModePrev, "На шаг назад в режиме пошагового выполнения");
-            this.BuTestStepModePrev.UseVisualStyleBackColor = true;
-            this.BuTestStepModePrev.Click += new System.EventHandler(this.BuTestStepModePrev_Click);
+            this.ChWaitPageLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ChWaitPageLoad.AutoSize = true;
+            this.ChWaitPageLoad.Checked = true;
+            this.ChWaitPageLoad.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ChWaitPageLoad.Location = new System.Drawing.Point(6, 453);
+            this.ChWaitPageLoad.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ChWaitPageLoad.Name = "ChWaitPageLoad";
+            this.ChWaitPageLoad.Size = new System.Drawing.Size(256, 21);
+            this.ChWaitPageLoad.TabIndex = 19;
+            this.ChWaitPageLoad.Text = "Ждать завершения загрузки страницы";
+            this.ChWaitPageLoad.UseVisualStyleBackColor = true;
+            // 
+            // BuPauseStepMode
+            // 
+            this.BuPauseStepMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BuPauseStepMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BuPauseStepMode.Enabled = false;
+            this.BuPauseStepMode.ImageIndex = 16;
+            this.BuPauseStepMode.ImageList = this.ImButtons;
+            this.BuPauseStepMode.Location = new System.Drawing.Point(132, 611);
+            this.BuPauseStepMode.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuPauseStepMode.Name = "BuPauseStepMode";
+            this.BuPauseStepMode.Size = new System.Drawing.Size(41, 40);
+            this.BuPauseStepMode.TabIndex = 18;
+            this.toolTip1.SetToolTip(this.BuPauseStepMode, "Остановить тест");
+            this.BuPauseStepMode.UseVisualStyleBackColor = true;
+            this.BuPauseStepMode.Click += new System.EventHandler(this.BuPauseRunStepMode_Click);
             // 
             // ImButtons
             // 
@@ -348,6 +362,62 @@
             this.ImButtons.Images.SetKeyName(14, "icons8-end-32.png");
             this.ImButtons.Images.SetKeyName(15, "icons8-back-32.png");
             this.ImButtons.Images.SetKeyName(16, "icons8-pause-32.png");
+            // 
+            // label6
+            // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(4, 525);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(94, 17);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "Задержка (мс)";
+            // 
+            // NuSlowModeMs
+            // 
+            this.NuSlowModeMs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NuSlowModeMs.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.NuSlowModeMs.Location = new System.Drawing.Point(105, 523);
+            this.NuSlowModeMs.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.NuSlowModeMs.Minimum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.NuSlowModeMs.Name = "NuSlowModeMs";
+            this.NuSlowModeMs.Size = new System.Drawing.Size(165, 24);
+            this.NuSlowModeMs.TabIndex = 16;
+            this.NuSlowModeMs.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            // 
+            // BuTestStepModePrev
+            // 
+            this.BuTestStepModePrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BuTestStepModePrev.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BuTestStepModePrev.Enabled = false;
+            this.BuTestStepModePrev.ImageIndex = 15;
+            this.BuTestStepModePrev.ImageList = this.ImButtons;
+            this.BuTestStepModePrev.Location = new System.Drawing.Point(181, 611);
+            this.BuTestStepModePrev.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BuTestStepModePrev.Name = "BuTestStepModePrev";
+            this.BuTestStepModePrev.Size = new System.Drawing.Size(41, 40);
+            this.BuTestStepModePrev.TabIndex = 15;
+            this.toolTip1.SetToolTip(this.BuTestStepModePrev, "На шаг назад в режиме пошагового выполнения");
+            this.BuTestStepModePrev.UseVisualStyleBackColor = true;
+            this.BuTestStepModePrev.Click += new System.EventHandler(this.BuTestStepModePrev_Click);
             // 
             // BuTestRunStepMode
             // 
@@ -1499,76 +1569,6 @@
             this.SpLeft.TabIndex = 23;
             this.SpLeft.TabStop = false;
             // 
-            // NuSlowModeMs
-            // 
-            this.NuSlowModeMs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.NuSlowModeMs.Increment = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.NuSlowModeMs.Location = new System.Drawing.Point(105, 523);
-            this.NuSlowModeMs.Maximum = new decimal(new int[] {
-            5000,
-            0,
-            0,
-            0});
-            this.NuSlowModeMs.Minimum = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
-            this.NuSlowModeMs.Name = "NuSlowModeMs";
-            this.NuSlowModeMs.Size = new System.Drawing.Size(165, 24);
-            this.NuSlowModeMs.TabIndex = 16;
-            this.NuSlowModeMs.Value = new decimal(new int[] {
-            500,
-            0,
-            0,
-            0});
-            // 
-            // label6
-            // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(4, 525);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 17);
-            this.label6.TabIndex = 17;
-            this.label6.Text = "Задержка (мс)";
-            // 
-            // BuPauseStepMode
-            // 
-            this.BuPauseStepMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.BuPauseStepMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.BuPauseStepMode.Enabled = false;
-            this.BuPauseStepMode.ImageIndex = 16;
-            this.BuPauseStepMode.ImageList = this.ImButtons;
-            this.BuPauseStepMode.Location = new System.Drawing.Point(132, 611);
-            this.BuPauseStepMode.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.BuPauseStepMode.Name = "BuPauseStepMode";
-            this.BuPauseStepMode.Size = new System.Drawing.Size(41, 40);
-            this.BuPauseStepMode.TabIndex = 18;
-            this.toolTip1.SetToolTip(this.BuPauseStepMode, "Остановить тест");
-            this.BuPauseStepMode.UseVisualStyleBackColor = true;
-            this.BuPauseStepMode.Click += new System.EventHandler(this.BuPauseRunStepMode_Click);
-            // 
-            // ChWaitPageLoad
-            // 
-            this.ChWaitPageLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ChWaitPageLoad.AutoSize = true;
-            this.ChWaitPageLoad.Checked = true;
-            this.ChWaitPageLoad.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ChWaitPageLoad.Location = new System.Drawing.Point(6, 453);
-            this.ChWaitPageLoad.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.ChWaitPageLoad.Name = "ChWaitPageLoad";
-            this.ChWaitPageLoad.Size = new System.Drawing.Size(256, 21);
-            this.ChWaitPageLoad.TabIndex = 19;
-            this.ChWaitPageLoad.Text = "Ждать завершения загрузки страницы";
-            this.ChWaitPageLoad.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1593,6 +1593,7 @@
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).EndInit();
             this.GrTestSteps.ResumeLayout(false);
             this.PaMiddleDownMiddle.ResumeLayout(false);
             this.PaMiddleDownDown.ResumeLayout(false);
@@ -1617,7 +1618,6 @@
             this.PaMIddleDown.ResumeLayout(false);
             this.PaMiddleUp.ResumeLayout(false);
             this.PaLeft.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
