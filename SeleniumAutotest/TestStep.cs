@@ -86,6 +86,7 @@ namespace SeleniumAutotest
             string str;
             switch (this.Type)
             {
+                // NEWSTEP add name-label for step
                 case StepTypes.Click:
                 case StepTypes.JsClick:
                 case StepTypes.AltClick:
@@ -103,6 +104,9 @@ namespace SeleniumAutotest
                     break;
                 case StepTypes.SetAttribute:
                     str = $"{Name} [{Selector}={Value}]";
+                    break;
+                case StepTypes.ClearValue:
+                    str = $"{Name}";
                     break;
                 case StepTypes.CheckElement:
                     str = $"{Name} | {SelectorType}={Selector}";
@@ -199,6 +203,7 @@ namespace SeleniumAutotest
                     Log = "";
                     switch (Type)
                     {
+                        // NEWSTEP add action for new step
                         case StepTypes.Open:
                             driver.Navigate().GoToUrl(ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters));
                             break;
@@ -347,6 +352,14 @@ namespace SeleniumAutotest
                                 var el = this.Parent.FoundElement;
                                 IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
                                 js.ExecuteScript("arguments[0].setAttribute(arguments[1], arguments[2]);", el, this.Selector, value);
+                            }
+                            break;
+                        case StepTypes.ClearValue:
+                            {
+                                needToSlow = true;
+                                string value = ValuesFromParameters.ProcessInput(this.Value, ParentAutotest.ParentProject.Parameters, ParentAutotest.Parameters);
+                                var el = this.Parent.FoundElement;
+                                el.Clear();
                             }
                             break;
                         case StepTypes.Click:

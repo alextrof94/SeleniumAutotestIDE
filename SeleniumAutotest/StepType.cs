@@ -11,8 +11,9 @@ namespace SeleniumAutotest
         Group, Open, FindElement, Click, CheckText, EnterText, CheckElement, 
         WaitTime, CheckClassExists, DoubleClick, CheckAttribute, ReadAttributeToParameter, 
         ReadTextToParameter, CheckClassNotExists, ReadAddressToParameter, CompareParameters, 
-        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage, ScrollTo, ScrollByPixels, JsCode, GroupOneOfSubsteps
+        JsClick, AltClick, JsEvent, SetAttribute, InputToParameterByUser, RefreshPage, ScrollTo, ScrollByPixels, JsCode, GroupOneOfSubsteps, ClearValue
         // Add new to tail
+        // Find NEWSTEP for showing where need to add stepTypes (1 in Form1, 2 in TestStep, 2+this here)
     }
     // TODO: Предусмотреть прямое нажатие клавиш клавиатуры (например, для сочетаний)
 
@@ -34,6 +35,7 @@ namespace SeleniumAutotest
     {
         public static List<StepTypesGroup> StepTypesGroups { get; set; } = new List<StepTypesGroup>()
         {
+            // NEWSTEP add new Group for step or add step to Types  as child of existing group
             new StepTypesGroup(){ 
                 ImageIndex = 0,
                 Name = "Группа шагов",
@@ -53,7 +55,7 @@ namespace SeleniumAutotest
                 ImageIndex = 3,
                 Name = "Изменить",
                 Parents = new List<StepTypes?>(){ StepTypes.FindElement },
-                Types = new List<StepTypes>(){ StepTypes.EnterText, StepTypes.SetAttribute } },
+                Types = new List<StepTypes>(){ StepTypes.EnterText, StepTypes.SetAttribute, StepTypes.ClearValue } },
             new StepTypesGroup(){
                 ImageIndex = 4,
                 Name = "Проверить",
@@ -97,6 +99,7 @@ namespace SeleniumAutotest
         };
 
         public static Dictionary<StepTypes, string> Descriptions { get; } = new Dictionary<StepTypes, string>{
+            // NEWSTEP add name for step
             { StepTypes.Group, "Группа шагов" },
             { StepTypes.GroupOneOfSubsteps, "Один из подшагов выполняется" }, // Don't stop test, green if any substep green
             { StepTypes.FindElement, "Найти элемент" },
@@ -125,6 +128,7 @@ namespace SeleniumAutotest
 
             { StepTypes.EnterText, "Ввести значение" },
             { StepTypes.SetAttribute, "Атрибут" },
+            { StepTypes.ClearValue, "Очистить значение" },
 
             { StepTypes.ReadTextToParameter, "Текст" },
             { StepTypes.ReadAttributeToParameter, "Атрибут" },

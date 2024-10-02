@@ -20,7 +20,7 @@ namespace SeleniumAutotest
 
         // translate
         // refactoring
-        private const string Version = "v1.9";
+        private const string Version = "v1.9.1";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
@@ -261,6 +261,7 @@ namespace SeleniumAutotest
             ChStepIgnoreParent.Visible = false;
             switch (type)
             {
+                // NEWSTEP add visible controls
                 case StepTypes.Group:
                 case StepTypes.RefreshPage:
                 case StepTypes.Click:
@@ -268,6 +269,7 @@ namespace SeleniumAutotest
                 case StepTypes.JsClick:
                 case StepTypes.DoubleClick:
                 case StepTypes.ScrollTo:
+                case StepTypes.ClearValue:
                     break;
                 case StepTypes.FindElement:
                     CoStepSelectorType.Visible = true;
