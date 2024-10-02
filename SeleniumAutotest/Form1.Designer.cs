@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.MeMain = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BuFileOpenLast = new System.Windows.Forms.ToolStripMenuItem();
             this.BuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +69,14 @@
             this.BuStepAdd = new System.Windows.Forms.Button();
             this.BuStepClone = new System.Windows.Forms.Button();
             this.TrSteps = new System.Windows.Forms.TreeView();
+            this.MeNodes = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.выставитьСтатусToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemNotStarted = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemPassed = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemError = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemIgnoredError = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemSkipped = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemStarted = new System.Windows.Forms.ToolStripMenuItem();
             this.ImTree = new System.Windows.Forms.ImageList(this.components);
             this.BuFontDecrease = new System.Windows.Forms.Button();
             this.BuFontIncrease = new System.Windows.Forms.Button();
@@ -81,6 +89,7 @@
             this.PaMiddleDownDown = new System.Windows.Forms.Panel();
             this.PaMiddleDownDownLeft = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.ChSkipIfElementNotFound = new System.Windows.Forms.CheckBox();
             this.ChStepScrollTo = new System.Windows.Forms.CheckBox();
             this.ChStepIgnoreParent = new System.Windows.Forms.CheckBox();
             this.CoStepSelectorType = new System.Windows.Forms.ComboBox();
@@ -125,7 +134,7 @@
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GrTestSettings = new System.Windows.Forms.GroupBox();
             this.ChTestRunAfterPrevious = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ToMain = new System.Windows.Forms.ToolTip(this.components);
             this.PaRight = new System.Windows.Forms.Panel();
             this.PaRightUp = new System.Windows.Forms.Panel();
             this.SpRightDown = new System.Windows.Forms.Splitter();
@@ -136,11 +145,12 @@
             this.SpRight = new System.Windows.Forms.Splitter();
             this.PaLeft = new System.Windows.Forms.Panel();
             this.SpLeft = new System.Windows.Forms.Splitter();
-            this.menuStrip1.SuspendLayout();
+            this.MeMain.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).BeginInit();
             this.GrTestSteps.SuspendLayout();
             this.PaMiddleDownMiddle.SuspendLayout();
+            this.MeNodes.SuspendLayout();
             this.PaMiddleDownDown.SuspendLayout();
             this.PaMiddleDownDownLeft.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -161,17 +171,17 @@
             this.PaLeft.SuspendLayout();
             this.SuspendLayout();
             // 
-            // menuStrip1
+            // MeMain
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MeMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.файлToolStripMenuItem,
             this.инфоToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1386, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            this.MeMain.Location = new System.Drawing.Point(0, 0);
+            this.MeMain.Name = "MeMain";
+            this.MeMain.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            this.MeMain.Size = new System.Drawing.Size(1386, 24);
+            this.MeMain.TabIndex = 0;
+            this.MeMain.Text = "menuStrip1";
             // 
             // файлToolStripMenuItem
             // 
@@ -337,7 +347,7 @@
             this.BuPauseStepMode.Name = "BuPauseStepMode";
             this.BuPauseStepMode.Size = new System.Drawing.Size(41, 40);
             this.BuPauseStepMode.TabIndex = 18;
-            this.toolTip1.SetToolTip(this.BuPauseStepMode, "Остановить тест");
+            this.ToMain.SetToolTip(this.BuPauseStepMode, "Остановить тест");
             this.BuPauseStepMode.UseVisualStyleBackColor = true;
             this.BuPauseStepMode.Click += new System.EventHandler(this.BuPauseRunStepMode_Click);
             // 
@@ -415,7 +425,7 @@
             this.BuTestStepModePrev.Name = "BuTestStepModePrev";
             this.BuTestStepModePrev.Size = new System.Drawing.Size(41, 40);
             this.BuTestStepModePrev.TabIndex = 15;
-            this.toolTip1.SetToolTip(this.BuTestStepModePrev, "На шаг назад в режиме пошагового выполнения");
+            this.ToMain.SetToolTip(this.BuTestStepModePrev, "На шаг назад в режиме пошагового выполнения");
             this.BuTestStepModePrev.UseVisualStyleBackColor = true;
             this.BuTestStepModePrev.Click += new System.EventHandler(this.BuTestStepModePrev_Click);
             // 
@@ -430,7 +440,7 @@
             this.BuTestRunStepMode.Name = "BuTestRunStepMode";
             this.BuTestRunStepMode.Size = new System.Drawing.Size(41, 40);
             this.BuTestRunStepMode.TabIndex = 14;
-            this.toolTip1.SetToolTip(this.BuTestRunStepMode, "Запустить в режиме пошагового выполнения");
+            this.ToMain.SetToolTip(this.BuTestRunStepMode, "Запустить в режиме пошагового выполнения");
             this.BuTestRunStepMode.UseVisualStyleBackColor = true;
             this.BuTestRunStepMode.Click += new System.EventHandler(this.BuTestRunStepMode_Click);
             // 
@@ -481,7 +491,7 @@
             this.BuTestDown.Name = "BuTestDown";
             this.BuTestDown.Size = new System.Drawing.Size(41, 40);
             this.BuTestDown.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.BuTestDown, "Переместить автотест ниже");
+            this.ToMain.SetToolTip(this.BuTestDown, "Переместить автотест ниже");
             this.BuTestDown.UseVisualStyleBackColor = true;
             this.BuTestDown.Click += new System.EventHandler(this.BuTestDown_Click);
             // 
@@ -495,7 +505,7 @@
             this.BuTestUp.Name = "BuTestUp";
             this.BuTestUp.Size = new System.Drawing.Size(41, 40);
             this.BuTestUp.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.BuTestUp, "Переместить автотест выше");
+            this.ToMain.SetToolTip(this.BuTestUp, "Переместить автотест выше");
             this.BuTestUp.UseVisualStyleBackColor = true;
             this.BuTestUp.Click += new System.EventHandler(this.BuTestUp_Click);
             // 
@@ -522,7 +532,7 @@
             this.BuTestStop.Name = "BuTestStop";
             this.BuTestStop.Size = new System.Drawing.Size(41, 40);
             this.BuTestStop.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.BuTestStop, "Остановить тест");
+            this.ToMain.SetToolTip(this.BuTestStop, "Остановить тест");
             this.BuTestStop.UseVisualStyleBackColor = true;
             this.BuTestStop.Click += new System.EventHandler(this.BuTestStop_Click);
             // 
@@ -536,7 +546,7 @@
             this.BuTestClone.Name = "BuTestClone";
             this.BuTestClone.Size = new System.Drawing.Size(41, 40);
             this.BuTestClone.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.BuTestClone, "Дублировать автотест");
+            this.ToMain.SetToolTip(this.BuTestClone, "Дублировать автотест");
             this.BuTestClone.UseVisualStyleBackColor = true;
             this.BuTestClone.Click += new System.EventHandler(this.BuTestClone_Click);
             // 
@@ -551,7 +561,7 @@
             this.BuTestDelete.Name = "BuTestDelete";
             this.BuTestDelete.Size = new System.Drawing.Size(41, 40);
             this.BuTestDelete.TabIndex = 4;
-            this.toolTip1.SetToolTip(this.BuTestDelete, "Удалить автотест");
+            this.ToMain.SetToolTip(this.BuTestDelete, "Удалить автотест");
             this.BuTestDelete.UseVisualStyleBackColor = true;
             this.BuTestDelete.Click += new System.EventHandler(this.BuTestDelete_Click);
             // 
@@ -565,7 +575,7 @@
             this.BuTestAdd.Name = "BuTestAdd";
             this.BuTestAdd.Size = new System.Drawing.Size(41, 40);
             this.BuTestAdd.TabIndex = 3;
-            this.toolTip1.SetToolTip(this.BuTestAdd, "Добавить автотест");
+            this.ToMain.SetToolTip(this.BuTestAdd, "Добавить автотест");
             this.BuTestAdd.UseVisualStyleBackColor = true;
             this.BuTestAdd.Click += new System.EventHandler(this.BuTestAdd_Click);
             // 
@@ -580,7 +590,7 @@
             this.BuTestRun.Name = "BuTestRun";
             this.BuTestRun.Size = new System.Drawing.Size(41, 40);
             this.BuTestRun.TabIndex = 2;
-            this.toolTip1.SetToolTip(this.BuTestRun, "Запустить автотест");
+            this.ToMain.SetToolTip(this.BuTestRun, "Запустить автотест");
             this.BuTestRun.UseVisualStyleBackColor = true;
             this.BuTestRun.Click += new System.EventHandler(this.BuTestRun_Click);
             // 
@@ -631,7 +641,7 @@
             this.BuStepDelete.Name = "BuStepDelete";
             this.BuStepDelete.Size = new System.Drawing.Size(41, 40);
             this.BuStepDelete.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.BuStepDelete, "Удалить выделенный шаг [CTRL+Delete]");
+            this.ToMain.SetToolTip(this.BuStepDelete, "Удалить выделенный шаг [CTRL+Delete]");
             this.BuStepDelete.UseVisualStyleBackColor = true;
             this.BuStepDelete.Click += new System.EventHandler(this.BuStepDelete_Click);
             // 
@@ -646,7 +656,7 @@
             this.BuStepAdd.Name = "BuStepAdd";
             this.BuStepAdd.Size = new System.Drawing.Size(41, 40);
             this.BuStepAdd.TabIndex = 4;
-            this.toolTip1.SetToolTip(this.BuStepAdd, "Добавить шаг [CTRL+A]");
+            this.ToMain.SetToolTip(this.BuStepAdd, "Добавить шаг [CTRL+A]");
             this.BuStepAdd.UseVisualStyleBackColor = true;
             this.BuStepAdd.Click += new System.EventHandler(this.BuStepAdd_Click);
             // 
@@ -661,7 +671,7 @@
             this.BuStepClone.Name = "BuStepClone";
             this.BuStepClone.Size = new System.Drawing.Size(41, 40);
             this.BuStepClone.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.BuStepClone, "Дублировать выделенный шаг [CTRL+D]");
+            this.ToMain.SetToolTip(this.BuStepClone, "Дублировать выделенный шаг [CTRL+D]");
             this.BuStepClone.UseVisualStyleBackColor = true;
             this.BuStepClone.Click += new System.EventHandler(this.BuStepClone_Click);
             // 
@@ -670,6 +680,7 @@
             this.TrSteps.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.TrSteps.ContextMenuStrip = this.MeNodes;
             this.TrSteps.HideSelection = false;
             this.TrSteps.ImageIndex = 0;
             this.TrSteps.ImageList = this.ImTree;
@@ -683,6 +694,74 @@
             this.TrSteps.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TrSteps_ChangeExpanded);
             this.TrSteps.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TrSteps_NodeMouseClick);
             this.TrSteps.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TrSteps_KeyUp);
+            // 
+            // MeNodes
+            // 
+            this.MeNodes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.выставитьСтатусToolStripMenuItem});
+            this.MeNodes.Name = "MeNodes";
+            this.MeNodes.Size = new System.Drawing.Size(169, 26);
+            // 
+            // выставитьСтатусToolStripMenuItem
+            // 
+            this.выставитьСтатусToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemNotStarted,
+            this.ToolStripMenuItemPassed,
+            this.ToolStripMenuItemError,
+            this.ToolStripMenuItemIgnoredError,
+            this.ToolStripMenuItemSkipped,
+            this.ToolStripMenuItemStarted});
+            this.выставитьСтатусToolStripMenuItem.Name = "выставитьСтатусToolStripMenuItem";
+            this.выставитьСтатусToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.выставитьСтатусToolStripMenuItem.Text = "Выставить статус";
+            // 
+            // ToolStripMenuItemNotStarted
+            // 
+            this.ToolStripMenuItemNotStarted.Name = "ToolStripMenuItemNotStarted";
+            this.ToolStripMenuItemNotStarted.Size = new System.Drawing.Size(236, 22);
+            this.ToolStripMenuItemNotStarted.Tag = "NotStarted";
+            this.ToolStripMenuItemNotStarted.Text = "Не начат";
+            this.ToolStripMenuItemNotStarted.Click += new System.EventHandler(this.MeNodesItem_Click);
+            // 
+            // ToolStripMenuItemPassed
+            // 
+            this.ToolStripMenuItemPassed.Name = "ToolStripMenuItemPassed";
+            this.ToolStripMenuItemPassed.Size = new System.Drawing.Size(236, 22);
+            this.ToolStripMenuItemPassed.Tag = "Passed";
+            this.ToolStripMenuItemPassed.Text = "Пройден";
+            this.ToolStripMenuItemPassed.Click += new System.EventHandler(this.MeNodesItem_Click);
+            // 
+            // ToolStripMenuItemError
+            // 
+            this.ToolStripMenuItemError.Name = "ToolStripMenuItemError";
+            this.ToolStripMenuItemError.Size = new System.Drawing.Size(236, 22);
+            this.ToolStripMenuItemError.Tag = "Error";
+            this.ToolStripMenuItemError.Text = "Ошибка";
+            this.ToolStripMenuItemError.Click += new System.EventHandler(this.MeNodesItem_Click);
+            // 
+            // ToolStripMenuItemIgnoredError
+            // 
+            this.ToolStripMenuItemIgnoredError.Name = "ToolStripMenuItemIgnoredError";
+            this.ToolStripMenuItemIgnoredError.Size = new System.Drawing.Size(236, 22);
+            this.ToolStripMenuItemIgnoredError.Tag = "IgnoredError";
+            this.ToolStripMenuItemIgnoredError.Text = "Проигнорированная ошибка";
+            this.ToolStripMenuItemIgnoredError.Click += new System.EventHandler(this.MeNodesItem_Click);
+            // 
+            // ToolStripMenuItemSkipped
+            // 
+            this.ToolStripMenuItemSkipped.Name = "ToolStripMenuItemSkipped";
+            this.ToolStripMenuItemSkipped.Size = new System.Drawing.Size(236, 22);
+            this.ToolStripMenuItemSkipped.Tag = "Skipped";
+            this.ToolStripMenuItemSkipped.Text = "Скипнут";
+            this.ToolStripMenuItemSkipped.Click += new System.EventHandler(this.MeNodesItem_Click);
+            // 
+            // ToolStripMenuItemStarted
+            // 
+            this.ToolStripMenuItemStarted.Name = "ToolStripMenuItemStarted";
+            this.ToolStripMenuItemStarted.Size = new System.Drawing.Size(236, 22);
+            this.ToolStripMenuItemStarted.Tag = "Started";
+            this.ToolStripMenuItemStarted.Text = "Начат";
+            this.ToolStripMenuItemStarted.Click += new System.EventHandler(this.MeNodesItem_Click);
             // 
             // ImTree
             // 
@@ -711,7 +790,7 @@
             this.BuFontDecrease.Name = "BuFontDecrease";
             this.BuFontDecrease.Size = new System.Drawing.Size(41, 40);
             this.BuFontDecrease.TabIndex = 14;
-            this.toolTip1.SetToolTip(this.BuFontDecrease, "Уменьшить размер текста в дереве");
+            this.ToMain.SetToolTip(this.BuFontDecrease, "Уменьшить размер текста в дереве");
             this.BuFontDecrease.UseVisualStyleBackColor = true;
             this.BuFontDecrease.Click += new System.EventHandler(this.BuFontDecrease_Click);
             // 
@@ -726,7 +805,7 @@
             this.BuFontIncrease.Name = "BuFontIncrease";
             this.BuFontIncrease.Size = new System.Drawing.Size(41, 40);
             this.BuFontIncrease.TabIndex = 13;
-            this.toolTip1.SetToolTip(this.BuFontIncrease, "Увеличить размер текста в дереве");
+            this.ToMain.SetToolTip(this.BuFontIncrease, "Увеличить размер текста в дереве");
             this.BuFontIncrease.UseVisualStyleBackColor = true;
             this.BuFontIncrease.Click += new System.EventHandler(this.BuFontIncrease_Click);
             // 
@@ -741,7 +820,7 @@
             this.BuStepDown.Name = "BuStepDown";
             this.BuStepDown.Size = new System.Drawing.Size(41, 40);
             this.BuStepDown.TabIndex = 7;
-            this.toolTip1.SetToolTip(this.BuStepDown, "Переместить шаг ниже [CTRL+Down]");
+            this.ToMain.SetToolTip(this.BuStepDown, "Переместить шаг ниже [CTRL+Down]");
             this.BuStepDown.UseVisualStyleBackColor = true;
             this.BuStepDown.Click += new System.EventHandler(this.BuStepDown_Click);
             // 
@@ -756,7 +835,7 @@
             this.BuStepReloadTree.Name = "BuStepReloadTree";
             this.BuStepReloadTree.Size = new System.Drawing.Size(41, 40);
             this.BuStepReloadTree.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.BuStepReloadTree, "Обновить дерево [CTRL+R]");
+            this.ToMain.SetToolTip(this.BuStepReloadTree, "Обновить дерево [CTRL+R]");
             this.BuStepReloadTree.UseVisualStyleBackColor = true;
             this.BuStepReloadTree.Click += new System.EventHandler(this.BuStepReloadTree_Click);
             // 
@@ -771,7 +850,7 @@
             this.BuStepUp.Name = "BuStepUp";
             this.BuStepUp.Size = new System.Drawing.Size(41, 40);
             this.BuStepUp.TabIndex = 8;
-            this.toolTip1.SetToolTip(this.BuStepUp, "Переместить шаг выше [CTRL+Up]");
+            this.ToMain.SetToolTip(this.BuStepUp, "Переместить шаг выше [CTRL+Up]");
             this.BuStepUp.UseVisualStyleBackColor = true;
             this.BuStepUp.Click += new System.EventHandler(this.BuStepUp_Click);
             // 
@@ -786,7 +865,7 @@
             this.BuStepPaste.Name = "BuStepPaste";
             this.BuStepPaste.Size = new System.Drawing.Size(41, 40);
             this.BuStepPaste.TabIndex = 12;
-            this.toolTip1.SetToolTip(this.BuStepPaste, "Вставить шаг [CTRL+V]");
+            this.ToMain.SetToolTip(this.BuStepPaste, "Вставить шаг [CTRL+V]");
             this.BuStepPaste.UseVisualStyleBackColor = true;
             this.BuStepPaste.Click += new System.EventHandler(this.BuStepPaste_Click);
             // 
@@ -801,7 +880,7 @@
             this.BuStepClearFocus.Name = "BuStepClearFocus";
             this.BuStepClearFocus.Size = new System.Drawing.Size(41, 40);
             this.BuStepClearFocus.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.BuStepClearFocus, "Сбросить фокус с шага [Escape]");
+            this.ToMain.SetToolTip(this.BuStepClearFocus, "Сбросить фокус с шага [Escape]");
             this.BuStepClearFocus.UseVisualStyleBackColor = true;
             this.BuStepClearFocus.Click += new System.EventHandler(this.BuStepClearFocus_Click);
             // 
@@ -816,7 +895,7 @@
             this.BuStepCopy.Name = "BuStepCopy";
             this.BuStepCopy.Size = new System.Drawing.Size(41, 40);
             this.BuStepCopy.TabIndex = 11;
-            this.toolTip1.SetToolTip(this.BuStepCopy, "Скопировать шаг [CTRL+C]");
+            this.ToMain.SetToolTip(this.BuStepCopy, "Скопировать шаг [CTRL+C]");
             this.BuStepCopy.UseVisualStyleBackColor = true;
             this.BuStepCopy.Click += new System.EventHandler(this.BuStepCopy_Click);
             // 
@@ -844,6 +923,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.ChSkipIfElementNotFound);
             this.groupBox3.Controls.Add(this.ChStepScrollTo);
             this.groupBox3.Controls.Add(this.ChStepIgnoreParent);
             this.groupBox3.Controls.Add(this.CoStepSelectorType);
@@ -872,6 +952,22 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Параметры шага";
             // 
+            // ChSkipIfElementNotFound
+            // 
+            this.ChSkipIfElementNotFound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChSkipIfElementNotFound.AutoSize = true;
+            this.ChSkipIfElementNotFound.Location = new System.Drawing.Point(250, 22);
+            this.ChSkipIfElementNotFound.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.ChSkipIfElementNotFound.Name = "ChSkipIfElementNotFound";
+            this.ChSkipIfElementNotFound.Size = new System.Drawing.Size(162, 21);
+            this.ChSkipIfElementNotFound.TabIndex = 22;
+            this.ChSkipIfElementNotFound.Tag = "SkipIfElementNotFound";
+            this.ChSkipIfElementNotFound.Text = "Скип, если не найдено";
+            this.ToMain.SetToolTip(this.ChSkipIfElementNotFound, "Пропустить шаг, если элемент не найден");
+            this.ChSkipIfElementNotFound.UseVisualStyleBackColor = true;
+            this.ChSkipIfElementNotFound.Visible = false;
+            this.ChSkipIfElementNotFound.CheckedChanged += new System.EventHandler(this.ChStepParameterChanged);
+            // 
             // ChStepScrollTo
             // 
             this.ChStepScrollTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -883,7 +979,7 @@
             this.ChStepScrollTo.TabIndex = 21;
             this.ChStepScrollTo.Tag = "ScrollTo";
             this.ChStepScrollTo.Text = "Скролл";
-            this.toolTip1.SetToolTip(this.ChStepScrollTo, "При нахождении элемента прокрутить страницу до него (иногда может вызывать пробле" +
+            this.ToMain.SetToolTip(this.ChStepScrollTo, "При нахождении элемента прокрутить страницу до него (иногда может вызывать пробле" +
         "мы с всплывающими меню)");
             this.ChStepScrollTo.UseVisualStyleBackColor = true;
             this.ChStepScrollTo.Visible = false;
@@ -900,7 +996,7 @@
             this.ChStepIgnoreParent.TabIndex = 20;
             this.ChStepIgnoreParent.Tag = "IgnoreParent";
             this.ChStepIgnoreParent.Text = "Игнорировать родителя";
-            this.toolTip1.SetToolTip(this.ChStepIgnoreParent, "Если установлено, при поиске элемента, родитель будет игнорироваться и поиск буде" +
+            this.ToMain.SetToolTip(this.ChStepIgnoreParent, "Если установлено, при поиске элемента, родитель будет игнорироваться и поиск буде" +
         "т по всему документу");
             this.ChStepIgnoreParent.UseVisualStyleBackColor = true;
             this.ChStepIgnoreParent.Visible = false;
@@ -916,7 +1012,7 @@
             this.CoStepSelectorType.TabIndex = 19;
             this.CoStepSelectorType.Tag = "SelectorType";
             this.CoStepSelectorType.Text = "PartLink";
-            this.toolTip1.SetToolTip(this.CoStepSelectorType, "Способ поиска элемента");
+            this.ToMain.SetToolTip(this.CoStepSelectorType, "Способ поиска элемента");
             this.CoStepSelectorType.Visible = false;
             this.CoStepSelectorType.SelectedIndexChanged += new System.EventHandler(this.ChStepParameterChanged);
             // 
@@ -937,7 +1033,7 @@
             this.CoStepTypeGroup.Name = "CoStepTypeGroup";
             this.CoStepTypeGroup.Size = new System.Drawing.Size(238, 23);
             this.CoStepTypeGroup.TabIndex = 18;
-            this.toolTip1.SetToolTip(this.CoStepTypeGroup, "Группа действий");
+            this.ToMain.SetToolTip(this.CoStepTypeGroup, "Группа действий");
             this.CoStepTypeGroup.SelectedIndexChanged += new System.EventHandler(this.CoStepTypeGroup_SelectedIndexChanged);
             // 
             // ChStepIsEnabled
@@ -950,7 +1046,7 @@
             this.ChStepIsEnabled.TabIndex = 17;
             this.ChStepIsEnabled.Tag = "Enabled";
             this.ChStepIsEnabled.Text = "Активен";
-            this.toolTip1.SetToolTip(this.ChStepIsEnabled, "Если элемент деактивирован, то он и его дочерние элементы не будут выполняться");
+            this.ToMain.SetToolTip(this.ChStepIsEnabled, "Если элемент деактивирован, то он и его дочерние элементы не будут выполняться");
             this.ChStepIsEnabled.UseVisualStyleBackColor = true;
             this.ChStepIsEnabled.CheckedChanged += new System.EventHandler(this.ChStepParameterChanged);
             // 
@@ -964,7 +1060,7 @@
             this.TeStepParameter.Size = new System.Drawing.Size(321, 24);
             this.TeStepParameter.TabIndex = 16;
             this.TeStepParameter.Tag = "Parameter";
-            this.toolTip1.SetToolTip(this.TeStepParameter, "Название параметра (без %)");
+            this.ToMain.SetToolTip(this.TeStepParameter, "Название параметра (без %)");
             this.TeStepParameter.Visible = false;
             this.TeStepParameter.TextChanged += new System.EventHandler(this.ChStepParameterChanged);
             this.TeStepParameter.Leave += new System.EventHandler(this.Control_FocusLeave);
@@ -989,7 +1085,7 @@
             this.ChStepIgnoreError.TabIndex = 14;
             this.ChStepIgnoreError.Tag = "IgnoreError";
             this.ChStepIgnoreError.Text = "Игнорировать ошибку";
-            this.toolTip1.SetToolTip(this.ChStepIgnoreError, "Если стоит игнорирование ошибки - выполнение теста не прервется, а пункт будет по" +
+            this.ToMain.SetToolTip(this.ChStepIgnoreError, "Если стоит игнорирование ошибки - выполнение теста не прервется, а пункт будет по" +
         "мечен желтым, вместо красного");
             this.ChStepIgnoreError.UseVisualStyleBackColor = true;
             this.ChStepIgnoreError.Visible = false;
@@ -1005,7 +1101,7 @@
             this.TeStepValue.Size = new System.Drawing.Size(321, 24);
             this.TeStepValue.TabIndex = 11;
             this.TeStepValue.Tag = "Value";
-            this.toolTip1.SetToolTip(this.TeStepValue, "Значение, которое надо установить или проверить (также выполняет роль второго пар" +
+            this.ToMain.SetToolTip(this.TeStepValue, "Значение, которое надо установить или проверить (также выполняет роль второго пар" +
         "аметра для сравнения двух параметров)");
             this.TeStepValue.Visible = false;
             this.TeStepValue.TextChanged += new System.EventHandler(this.ChStepParameterChanged);
@@ -1040,7 +1136,7 @@
             this.NuStepWait.Size = new System.Drawing.Size(92, 24);
             this.NuStepWait.TabIndex = 9;
             this.NuStepWait.Tag = "SecondsToWait";
-            this.toolTip1.SetToolTip(this.NuStepWait, "Время поиска элемента");
+            this.ToMain.SetToolTip(this.NuStepWait, "Время поиска элемента");
             this.NuStepWait.Value = new decimal(new int[] {
             10,
             0,
@@ -1070,7 +1166,7 @@
             this.TeStepSelector.Size = new System.Drawing.Size(321, 24);
             this.TeStepSelector.TabIndex = 7;
             this.TeStepSelector.Tag = "Selector";
-            this.toolTip1.SetToolTip(this.TeStepSelector, "Адрес элемента");
+            this.ToMain.SetToolTip(this.TeStepSelector, "Адрес элемента");
             this.TeStepSelector.Visible = false;
             this.TeStepSelector.TextChanged += new System.EventHandler(this.ChStepParameterChanged);
             this.TeStepSelector.Leave += new System.EventHandler(this.Control_FocusLeave);
@@ -1111,7 +1207,7 @@
             this.CoStepType.Name = "CoStepType";
             this.CoStepType.Size = new System.Drawing.Size(159, 23);
             this.CoStepType.TabIndex = 4;
-            this.toolTip1.SetToolTip(this.CoStepType, "Действие");
+            this.ToMain.SetToolTip(this.CoStepType, "Действие");
             this.CoStepType.SelectedIndexChanged += new System.EventHandler(this.CoStepType_SelectedIndexChanged);
             // 
             // TeStepName
@@ -1125,7 +1221,7 @@
             this.TeStepName.TabIndex = 3;
             this.TeStepName.Tag = "Name";
             this.TeStepName.Text = "Name";
-            this.toolTip1.SetToolTip(this.TeStepName, "Название действия для отображения в дереве");
+            this.ToMain.SetToolTip(this.TeStepName, "Название действия для отображения в дереве");
             this.TeStepName.TextChanged += new System.EventHandler(this.ChStepParameterChanged);
             this.TeStepName.Leave += new System.EventHandler(this.Control_FocusLeave);
             // 
@@ -1233,7 +1329,7 @@
             this.BuTestParametersUp.Name = "BuTestParametersUp";
             this.BuTestParametersUp.Size = new System.Drawing.Size(41, 40);
             this.BuTestParametersUp.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.BuTestParametersUp, "Передвинуть строку с параметром теста выше");
+            this.ToMain.SetToolTip(this.BuTestParametersUp, "Передвинуть строку с параметром теста выше");
             this.BuTestParametersUp.UseVisualStyleBackColor = true;
             this.BuTestParametersUp.Click += new System.EventHandler(this.BuTestParametersUp_Click);
             // 
@@ -1247,7 +1343,7 @@
             this.BuTestParametersDown.Name = "BuTestParametersDown";
             this.BuTestParametersDown.Size = new System.Drawing.Size(41, 40);
             this.BuTestParametersDown.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.BuTestParametersDown, "Передвинуть строку с параметром теста ниже");
+            this.ToMain.SetToolTip(this.BuTestParametersDown, "Передвинуть строку с параметром теста ниже");
             this.BuTestParametersDown.UseVisualStyleBackColor = true;
             this.BuTestParametersDown.Click += new System.EventHandler(this.BuTestParametersDown_Click);
             // 
@@ -1261,7 +1357,7 @@
             this.ChTestRegenerateParameters.Size = new System.Drawing.Size(117, 21);
             this.ChTestRegenerateParameters.TabIndex = 6;
             this.ChTestRegenerateParameters.Text = "Автогенерация";
-            this.toolTip1.SetToolTip(this.ChTestRegenerateParameters, "Генерировать параметры теста автоматически при запуске автотеста");
+            this.ToMain.SetToolTip(this.ChTestRegenerateParameters, "Генерировать параметры теста автоматически при запуске автотеста");
             this.ChTestRegenerateParameters.UseVisualStyleBackColor = true;
             this.ChTestRegenerateParameters.CheckedChanged += new System.EventHandler(this.ChTestRegenerateParameters_CheckedChanged);
             // 
@@ -1275,7 +1371,7 @@
             this.BuTestGenerateParameters.Name = "BuTestGenerateParameters";
             this.BuTestGenerateParameters.Size = new System.Drawing.Size(41, 40);
             this.BuTestGenerateParameters.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.BuTestGenerateParameters, "Перегенерировать параметры теста");
+            this.ToMain.SetToolTip(this.BuTestGenerateParameters, "Перегенерировать параметры теста");
             this.BuTestGenerateParameters.UseVisualStyleBackColor = true;
             this.BuTestGenerateParameters.Click += new System.EventHandler(this.BuTestGenerateParameters_Click);
             // 
@@ -1348,7 +1444,7 @@
             this.BuProjectParametersUp.Name = "BuProjectParametersUp";
             this.BuProjectParametersUp.Size = new System.Drawing.Size(41, 40);
             this.BuProjectParametersUp.TabIndex = 8;
-            this.toolTip1.SetToolTip(this.BuProjectParametersUp, "Передвинуть строку с параметром проекта выше");
+            this.ToMain.SetToolTip(this.BuProjectParametersUp, "Передвинуть строку с параметром проекта выше");
             this.BuProjectParametersUp.UseVisualStyleBackColor = true;
             this.BuProjectParametersUp.Click += new System.EventHandler(this.BuProjectParametersUp_Click);
             // 
@@ -1362,7 +1458,7 @@
             this.BuProjectParametersDown.Name = "BuProjectParametersDown";
             this.BuProjectParametersDown.Size = new System.Drawing.Size(41, 40);
             this.BuProjectParametersDown.TabIndex = 7;
-            this.toolTip1.SetToolTip(this.BuProjectParametersDown, "Передвинуть строку с параметром проекта ниже");
+            this.ToMain.SetToolTip(this.BuProjectParametersDown, "Передвинуть строку с параметром проекта ниже");
             this.BuProjectParametersDown.UseVisualStyleBackColor = true;
             this.BuProjectParametersDown.Click += new System.EventHandler(this.BuProjectParametersDown_Click);
             // 
@@ -1376,7 +1472,7 @@
             this.ChProjectRegenerateParameters.Size = new System.Drawing.Size(117, 21);
             this.ChProjectRegenerateParameters.TabIndex = 6;
             this.ChProjectRegenerateParameters.Text = "Автогенерация";
-            this.toolTip1.SetToolTip(this.ChProjectRegenerateParameters, "Генерировать параметры проекта автоматически при запуске автотеста");
+            this.ToMain.SetToolTip(this.ChProjectRegenerateParameters, "Генерировать параметры проекта автоматически при запуске автотеста");
             this.ChProjectRegenerateParameters.UseVisualStyleBackColor = true;
             this.ChProjectRegenerateParameters.CheckedChanged += new System.EventHandler(this.ChProjectRegenerateParameters_CheckedChanged);
             // 
@@ -1390,7 +1486,7 @@
             this.BuProjectGenerateParameters.Name = "BuProjectGenerateParameters";
             this.BuProjectGenerateParameters.Size = new System.Drawing.Size(41, 40);
             this.BuProjectGenerateParameters.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.BuProjectGenerateParameters, "Перегенерировать параметры проекта");
+            this.ToMain.SetToolTip(this.BuProjectGenerateParameters, "Перегенерировать параметры проекта");
             this.BuProjectGenerateParameters.UseVisualStyleBackColor = true;
             this.BuProjectGenerateParameters.Click += new System.EventHandler(this.BuProjectGenerateParameters_Click);
             // 
@@ -1579,23 +1675,24 @@
             this.Controls.Add(this.PaLeft);
             this.Controls.Add(this.SpRight);
             this.Controls.Add(this.PaRight);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.MeMain);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip1;
+            this.MainMenuStrip = this.MeMain;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MinimumSize = new System.Drawing.Size(1280, 720);
             this.Name = "Form1";
             this.Text = "Selenium Autotest IDE by alextrof94";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.MeMain.ResumeLayout(false);
+            this.MeMain.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NuSlowModeMs)).EndInit();
             this.GrTestSteps.ResumeLayout(false);
             this.PaMiddleDownMiddle.ResumeLayout(false);
+            this.MeNodes.ResumeLayout(false);
             this.PaMiddleDownDown.ResumeLayout(false);
             this.PaMiddleDownDownLeft.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -1625,7 +1722,7 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip MeMain;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem BuFileOpen;
         private System.Windows.Forms.ToolStripMenuItem BuFileSave;
@@ -1685,7 +1782,7 @@
         private System.Windows.Forms.CheckBox ChTestRunAfterPrevious;
         private System.Windows.Forms.TextBox TeStepParameter;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolTip ToMain;
         private System.Windows.Forms.ImageList ImButtons;
         private System.Windows.Forms.Button BuFontDecrease;
         private System.Windows.Forms.Button BuFontIncrease;
@@ -1731,6 +1828,15 @@
         private System.Windows.Forms.NumericUpDown NuSlowModeMs;
         private System.Windows.Forms.Button BuPauseStepMode;
         private System.Windows.Forms.CheckBox ChWaitPageLoad;
+        private System.Windows.Forms.CheckBox ChSkipIfElementNotFound;
+        private System.Windows.Forms.ContextMenuStrip MeNodes;
+        private System.Windows.Forms.ToolStripMenuItem выставитьСтатусToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemNotStarted;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemStarted;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemPassed;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemError;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemIgnoredError;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSkipped;
     }
 }
 

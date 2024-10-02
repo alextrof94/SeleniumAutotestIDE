@@ -20,7 +20,7 @@ namespace SeleniumAutotest
 
         // translate
         // refactoring
-        private const string Version = "v1.8";
+        private const string Version = "v1.9";
         private const string AppName = "Selenium Autotest IDE " + Version;
 
         private Project Project { get; set; }
@@ -257,6 +257,7 @@ namespace SeleniumAutotest
             ChStepIgnoreError.Visible = false;
             TeStepParameter.Visible = false;
             ChStepScrollTo.Visible = false;
+            ChSkipIfElementNotFound.Visible = false;
             ChStepIgnoreParent.Visible = false;
             switch (type)
             {
@@ -274,6 +275,7 @@ namespace SeleniumAutotest
                     NuStepWait.Visible = true;
                     ChStepScrollTo.Visible = true;
                     ChStepIgnoreParent.Visible = true;
+                    ChSkipIfElementNotFound.Visible= true;
                     break;
                 case StepTypes.CheckElement:
                     CoStepSelectorType.Visible = true;
@@ -817,6 +819,7 @@ namespace SeleniumAutotest
             ChStepIsEnabled.Checked = selectedStep.Enabled;
             ChStepIgnoreParent.Checked = selectedStep.IgnoreParent;
             ChStepScrollTo.Checked = selectedStep.ScrollTo;
+            ChSkipIfElementNotFound.Checked = selectedStep.SkipIfElementNotFound;
             try
             {
                 NuStepWait.Value = (decimal)selectedStep.SecondsToWait;
@@ -1247,6 +1250,23 @@ namespace SeleniumAutotest
                 DaTestParameters.Rows[rowIndex + 1].Selected = true;
                 RefreshTestParameters();
             }
+        }
+
+        private void MeNodesItem_Click(object sender, EventArgs e)
+        {
+            if (Project.SelectedAutotest == null) { return; }
+            if (TrSteps.SelectedNode == null) { return; }
+
+            var buttonTag = ((ToolStripMenuItem)sender).Tag.ToString();
+            if (!StepStates.TryParse(buttonTag, out StepStates stepState))
+            { 
+                return; 
+            }
+
+            var selectedStep = Project.SelectedAutotest.FindStepById((Guid)TrSteps.SelectedNode.Tag);
+            selectedStep.StepState = stepState;
+
+            ReloadTree();
         }
     }
 }

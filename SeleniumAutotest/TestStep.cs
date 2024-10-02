@@ -44,6 +44,7 @@ namespace SeleniumAutotest
         public bool Enabled { get; set; }
         public bool ScrollTo { get; set; }
         public bool IgnoreParent { get; set; }
+        public bool SkipIfElementNotFound { get; set; }
 
         public bool Expanded { get; set; }
 
@@ -77,6 +78,7 @@ namespace SeleniumAutotest
             Parent = null;
             ScrollTo = true;
             IgnoreParent = false;
+            SkipIfElementNotFound = false;
         }
 
         public override string ToString()
@@ -181,7 +183,7 @@ namespace SeleniumAutotest
                 }
                 try
                 {
-                    if (!Enabled)
+                    if (!Enabled || this.StepState == StepStates.Skipped)
                     {
                         this.StepState = StepStates.Skipped;
                         SetParentStatus(this);
@@ -587,13 +589,31 @@ namespace SeleniumAutotest
             catch
             {
                 bool IsInGroupOneOfSubsteps = GetInGroupOneOfSubstep(this);
-                this.StepState = (this.IgnoreError || IsInGroupOneOfSubsteps) ? StepStates.IgnoredError : StepStates.Error;
+                this.StepState = (this.IgnoreError || IsInGroupOneOfSubsteps || SkipIfElementNotFound) ? StepStates.IgnoredError : StepStates.Error;
+
+
                 SetParentStatus(this);
+
+                if (this.StepState == StepStates.IgnoredError)
+                {
+                    SetStatusForSubsteps(this, StepStates.Skipped);
+                    return;
+                }
+
                 if (this.StepState == StepStates.Error)
                 {
                     ParentAutotest.ErrorStep = this;
                     throw;
                 }
+            }
+        }
+
+        private void SetStatusForSubsteps(TestStep testStep, StepStates state)
+        {
+            foreach (TestStep sub in testStep.Substeps)
+            {
+                sub.StepState = state;
+                SetStatusForSubsteps(sub, state);
             }
         }
 

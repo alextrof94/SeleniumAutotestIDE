@@ -81,7 +81,21 @@ namespace SeleniumAutotest
                             new TestStep() {
                                 Name = "Ждать кнопку поиска по XPATH",
                                 Type = StepTypes.FindElement,
-                                SecondsToWait = 30,
+                                SecondsToWait = 3,
+                                Selector = "//input[@name='btnK1' and @value='Поиск в Google']",
+                                SkipIfElementNotFound = true,
+                                Substeps = new List<TestStep>
+                                {
+                                    new TestStep {
+                                        Name = "Клик",
+                                        Type = StepTypes.Click
+                                    }
+                                }
+                            },
+                            new TestStep() {
+                                Name = "Ждать кнопку поиска по XPATH",
+                                Type = StepTypes.FindElement,
+                                SecondsToWait = 3,
                                 Selector = "//input[@name='btnK' and @value='Поиск в Google']",
                                 Substeps = new List<TestStep>
                                 {
